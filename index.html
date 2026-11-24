@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JobExpress, il lavoro quando serve</title>
+    <meta
+      name="description"
+      content="JobExpress mette in contatto chi ha qualche ora libera con le attività che hanno bisogno di personale in tempi brevi. Il progetto parte da Forlì: lascia i tuoi contatti."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:title" content="JobExpress, il lavoro quando serve" />
+    <meta
+      property="og:description"
+      content="Dichiari gli orari in cui sei disponibile. Le attività che hanno un turno scoperto ti trovano. Si parte da Forlì."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+    <header class="testata" id="inizio">
+      <div class="contenitore testata__riga">
+        <a class="marchio" href="#inizio" aria-label="JobExpress, torna all’inizio">
+          <svg class="marchio__segno" viewBox="0 0 32 26" aria-hidden="true">
+            <rect x="12" y="0" width="20" height="7" rx="2.5" />
+            <rect x="5" y="9.5" width="20" height="7" rx="2.5" />
+            <rect x="0" y="19" width="14" height="7" rx="2.5" />
+          </svg>
+          <span>JobExpress</span>
+        </a>
+
+        <button class="menu-tasto" type="button" aria-expanded="false" aria-controls="menu">
+          <span class="menu-tasto__testo">Menu</span>
+        </button>
+
+        <nav class="menu" id="menu" aria-label="Principale">
+          <a href="#come-funziona">Come funziona</a>
+          <a href="#per-chi">Per chi è</a>
+          <a href="#costi">Quanto costa</a>
+          <a href="#territorio">Forlì</a>
+          <a href="#domande">Domande</a>
+          <a class="tasto tasto--piccolo" href="#contatti">Lascia i contatti</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenuto">
+      <!-- APERTURA: il tabellone dei turni -->
+      <section class="apertura" aria-labelledby="titolo">
+        <div class="contenitore apertura__testa">
+          <h1 id="titolo">Il lavoro,<br />quando serve.</h1>
+          <p class="apertura__intro">
+            Tu dici in quali orari puoi lavorare. Chi ha un turno scoperto ti trova. Partiamo da Forlì, con ristoranti,
+            bar e hotel.
+          </p>
+        </div>
+
+        <div class="contenitore">
+          <div class="tabellone" data-tabellone data-modo="lavoro">
+            <div class="tabellone__comandi">
+              <div class="scelta" role="group" aria-label="Cosa cerchi">
+                <button type="button" data-modo-tasto="lavoro" aria-pressed="true">Cerco lavoro</button>
+                <button type="button" data-modo-tasto="personale" aria-pressed="false">Cerco personale</button>
+              </div>
+              <div class="scelta scelta--leggera" role="group" aria-label="Quando">
+                <button type="button" data-giorno-tasto="oggi" aria-pressed="true">Oggi</button>
+                <button type="button" data-giorno-tasto="domani" aria-pressed="false">Domani</button>
+                <button type="button" data-giorno-tasto="weekend" aria-pressed="false">Nel weekend</button>
+              </div>
+            </div>
+
+            <p class="tabellone__frase" data-frase>Posso lavorare oggi dalle 18:00 alle 23:00.</p>
+
+            <div class="griglia" data-griglia>
+              <div class="griglia__ore" data-ore aria-hidden="true"></div>
+              <div class="griglia__linee" data-linee aria-hidden="true"></div>
+              <div class="fascia" data-fascia>
+                <button
+                  type="button"
+                  class="maniglia maniglia--inizio"
+                  data-maniglia="inizio"
+                  role="slider"
+                  aria-label="Inizio della fascia oraria"
+                  aria-valuemin="6"
+                  aria-valuemax="25"
+                  aria-valuenow="18"
+                ></button>
+                <button
+                  type="button"
+                  class="maniglia maniglia--fine"
+                  data-maniglia="fine"
+                  role="slider"
+                  aria-label="Fine della fascia oraria"
+                  aria-valuemin="7"
+                  aria-valuemax="26"
+                  aria-valuenow="23"
+                ></button>
+              </div>
+              <ul class="turni" data-turni aria-label="Turni di esempio"></ul>
+            </div>
+
+            <div class="tabellone__esito">
+              <p class="tabellone__conto" data-conto aria-live="polite"></p>
+              <p class="tabellone__nota">Trascina i bordi della fascia. I dati qui sopra sono esempi, non offerte reali.</p>
+              <a class="tasto" href="#contatti" data-usa-orari>Lascia i contatti con questi orari</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COME FUNZIONA: corsie -->
+      <section class="sezione" id="come-funziona" aria-labelledby="t-come">
+        <div class="contenitore">
+          <div class="intro">
+            <h2 id="t-come">Dal turno scoperto al turno coperto</h2>
+            <p>
+              Così funzionerà JobExpress: otto passaggi, tre ruoli. Il rapporto di lavoro resta sempre fra chi assume e chi
+              lavora.
+            </p>
+          </div>
+
+          <div class="corsie">
+            <div class="corsie__nomi" aria-hidden="true">
+              <span>L’attività</span>
+              <span>Chi lavora</span>
+              <span>JobExpress</span>
+            </div>
+            <ol class="passi">
+              <li class="passo passo--attivita">
+                <span class="passo__chi">L’attività</span>
+                <h3>Pubblica l’incarico</h3>
+                <p>Mansione, luogo, data, orario, compenso e requisiti. Pubblicare è gratuito.</p>
+              </li>
+              <li class="passo passo--jobexpress">
+                <span class="passo__chi">JobExpress</span>
+                <h3>Avvisa chi è compatibile</h3>
+                <p>In base agli orari e alla zona che le persone hanno dichiarato.</p>
+              </li>
+              <li class="passo passo--lavoro">
+                <span class="passo__chi">Chi lavora</span>
+                <h3>Si candida</h3>
+                <p>Solo se l’incarico interessa. Candidarsi è gratuito.</p>
+              </li>
+              <li class="passo passo--attivita">
+                <span class="passo__chi">L’attività</span>
+                <h3>Sceglie la persona</h3>
+                <p>Guarda esperienza, competenze e disponibilità.</p>
+              </li>
+              <li class="passo passo--insieme">
+                <span class="passo__chi">L’attività e chi lavora</span>
+                <h3>Formalizzano il rapporto</h3>
+                <p>Con il contratto giusto per quell’incarico, prima di iniziare. Non basta un accordo in chat.</p>
+              </li>
+              <li class="passo passo--lavoro">
+                <span class="passo__chi">Chi lavora</span>
+                <h3>Svolge l’incarico</h3>
+                <p>Negli orari e con le mansioni concordate.</p>
+              </li>
+              <li class="passo passo--attivita">
+                <span class="passo__chi">L’attività</span>
+                <h3>Paga direttamente</h3>
+                <p>Il compenso concordato va per intero a chi ha lavorato.</p>
+              </li>
+              <li class="passo passo--jobexpress">
+                <span class="passo__chi">JobExpress</span>
+                <h3>Fattura la commissione</h3>
+                <p>All’attività, e solo per gli incarichi svolti.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- PER CHI -->
+      <section class="per-chi" id="per-chi" aria-label="Per chi è JobExpress">
+        <div class="per-chi__lato per-chi__lato--lavoro">
+          <div class="per-chi__testo">
+            <h2>Hai qualche ora libera?</h2>
+            <p>
+              Incarichi compatibili con la tua disponibilità, vicino a te. Studi, lavori part-time, cerchi un’entrata in più o sei
+              fra un impiego e l’altro: gli orari li decidi tu.
+            </p>
+            <h3 class="elenco__titolo">Quando apriamo, potrai</h3>
+            <ul class="elenco">
+              <li>dichiarare la disponibilità giorno per giorno</li>
+              <li>scegliere la zona e le mansioni</li>
+              <li>candidarti in pochi tocchi</li>
+              <li>ritrovare gli incarichi svolti e le valutazioni ricevute</li>
+            </ul>
+            <a class="tasto" href="#contatti" data-apri-modulo="lavoro">Lascia i contatti per lavorare</a>
+          </div>
+        </div>
+        <div class="per-chi__lato per-chi__lato--attivita">
+          <div class="per-chi__testo">
+            <h2>Ti manca una persona in turno?</h2>
+            <p>
+              Un’assenza improvvisa, un evento, un weekend pieno. Invece di dieci telefonate, vedi subito chi ha detto di
+              essere disponibile in quegli orari.
+            </p>
+            <h3 class="elenco__titolo">Quando apriamo, potrai</h3>
+            <ul class="elenco">
+              <li>pubblicare un incarico senza pagare nulla</li>
+              <li>filtrare per esperienza e disponibilità</li>
+              <li>gestire candidature e conferme in un posto solo</li>
+              <li>ritrovare richieste, commissioni e fatture</li>
+            </ul>
+            <a class="tasto tasto--chiaro" href="#contatti" data-apri-modulo="attivita">Lascia i contatti dell’attività</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CATEGORIE -->
+      <section class="sezione" id="categorie" aria-labelledby="t-cat">
+        <div class="contenitore categorie">
+          <div class="intro intro--stretta">
+            <h2 id="t-cat">Prima la ristorazione, poi il resto</h2>
+            <p>
+              Meglio poche categorie con abbastanza persone e attività che venti categorie vuote. Ne apriremo una alla volta.
+            </p>
+          </div>
+          <ul class="categorie__lista">
+            <li class="categoria categoria--prima">
+              <h3>Ristorazione</h3>
+              <p>Sala, aiuto cucina, lavapiatti, runner, personale per eventi. <strong>Si parte da qui.</strong></p>
+            </li>
+            <li class="categoria">
+              <h3>Bar e locali</h3>
+              <p>Banco bar e supporto nei momenti di punta.</p>
+            </li>
+            <li class="categoria">
+              <h3>Hotel e strutture ricettive</h3>
+              <p>Supporto operativo, riassetto, eventi.</p>
+            </li>
+            <li class="categoria">
+              <h3>Commercio</h3>
+              <p>Supporto alla vendita, inventario, riordino.</p>
+            </li>
+            <li class="categoria">
+              <h3>Eventi</h3>
+              <p>Allestimento, accoglienza, assistenza, organizzazione.</p>
+            </li>
+            <li class="categoria categoria--futura">
+              <h3>Più avanti</h3>
+              <p>
+                Pulizie, pet sitting, babysitting, assistenza domestica e piccole commissioni, ma solo dopo una verifica
+                giuridica dedicata.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- COSTI -->
+      <section class="sezione sezione--menta" id="costi" aria-labelledby="t-costi">
+        <div class="contenitore costi">
+          <div class="intro intro--stretta">
+            <h2 id="t-costi">Chi lavora riceve tutto il compenso</h2>
+            <p>
+              JobExpress non trattiene nulla dalla paga. Chiede una commissione all’attività, solo quando l’incarico viene
+              svolto.
+            </p>
+            <p class="nota">
+              Il 12% è un’ipotesi che stiamo verificando con le attività, non una tariffa definitiva. Anche l’IVA è indicativa.
+            </p>
+          </div>
+
+          <div class="calcolo" data-calcolo>
+            <label class="calcolo__etichetta" for="compenso">Compenso lordo dell’incarico</label>
+            <output class="calcolo__valore" for="compenso" data-c-compenso>80 €</output>
+            <input id="compenso" type="range" min="40" max="200" step="5" value="80" />
+            <div class="barra" aria-hidden="true">
+              <span class="barra__lavoro">A chi lavora</span>
+              <span class="barra__commissione"></span>
+              <span class="barra__iva"></span>
+            </div>
+            <dl class="conto">
+              <div class="conto__riga conto__riga--lavoro">
+                <dt>A chi lavora, pagato direttamente dall’attività</dt>
+                <dd data-c-lavoro>80,00 €</dd>
+              </div>
+              <div class="conto__riga conto__riga--commissione">
+                <dt>Commissione JobExpress, 12%</dt>
+                <dd data-c-commissione>9,60 €</dd>
+              </div>
+              <div class="conto__riga conto__riga--iva">
+                <dt>IVA sulla commissione, 22% se applicabile</dt>
+                <dd data-c-iva>2,11 €</dd>
+              </div>
+              <div class="conto__riga conto__riga--totale">
+                <dt>Fattura JobExpress all’attività</dt>
+                <dd data-c-totale>11,71 €</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- TERRITORIO -->
+      <section class="sezione" id="territorio" aria-labelledby="t-terr">
+        <div class="contenitore territorio">
+          <figure class="mappa">
+            <svg viewBox="-215 -262 450 420" role="img" aria-labelledby="mappa-t mappa-d">
+              <title id="mappa-t">Forlì e i comuni vicini</title>
+              <desc id="mappa-d">
+                Mappa schematica in scala con Forlì al centro, i comuni entro 15 chilometri e, più lontane, Cesena e Ravenna.
+              </desc>
+              <circle class="mappa__area" r="155" />
+              <polyline class="mappa__via" points="-215,-121 -125,-70 0,0 69,38 161,93 235,137" />
+              <g class="mappa__vicini">
+                <circle cx="69" cy="38" r="6" /><text x="80" y="34">Forlimpopoli</text>
+                <circle cx="75" cy="82" r="6" /><text x="64" y="87" text-anchor="end">Bertinoro</text>
+                <circle cx="18" cy="107" r="6" /><text x="29" y="113">Meldola</text>
+                <circle cx="-73" cy="53" r="6" /><text x="-84" y="58" text-anchor="end">Castrocaro</text>
+                <circle cx="-50" cy="132" r="6" /><text x="-39" y="137">Predappio</text>
+              </g>
+              <g class="mappa__dopo">
+                <circle cx="161" cy="93" r="6" /><text x="161" y="119" text-anchor="middle">Cesena</text>
+                <circle cx="130" cy="-218" r="6" /><text x="130" y="-232" text-anchor="middle">Ravenna</text>
+              </g>
+              <g class="mappa__forli">
+                <circle r="13" />
+                <text x="0" y="-26" text-anchor="middle">Forlì</text>
+              </g>
+            </svg>
+            <figcaption>In verde l’area del pilota, circa 15 km intorno a Forlì. La linea è la via Emilia.</figcaption>
+          </figure>
+
+          <div class="territorio__testo">
+            <h2 id="t-terr">Una città alla volta</h2>
+            <p>
+              Una rete funziona se nella stessa zona ci sono abbastanza persone e abbastanza turni. Per questo cerchiamo prima
+              venti attività vicine con un bisogno vero, non migliaia di iscritti sparsi.
+            </p>
+            <ol class="tappe">
+              <li class="tappa tappa--ora">
+                <h3>Adesso, ascolto</h3>
+                <p>Parliamo con attività e persone di Forlì, raccogliamo bisogni reali e verifichiamo il modello giuridico.</p>
+              </li>
+              <li class="tappa">
+                <h3>Poi, la prima versione</h3>
+                <p>Profili, disponibilità, incarichi, candidature e conferme. Solo l’essenziale.</p>
+              </li>
+              <li class="tappa">
+                <h3>Pilota a Forlì</h3>
+                <p>I primi incarichi, con le regole e i partner giusti già al loro posto.</p>
+              </li>
+              <li class="tappa">
+                <h3>Emilia-Romagna</h3>
+                <p>Comuni vicini, poi Cesena, Ravenna, Rimini e Bologna.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- IMPEGNI -->
+      <section class="impegni" aria-labelledby="t-imp">
+        <div class="contenitore impegni__riga">
+          <h2 id="t-imp">Veloci sugli orari, non sulle regole</h2>
+          <div class="impegni__testi">
+            <p>
+              Un turno di un giorno è comunque lavoro. JobExpress partirà solo dopo le verifiche con un consulente del lavoro e,
+              se necessario, insieme a un’agenzia autorizzata.
+            </p>
+            <p>
+              Per ogni incarico sarà chiaro chi è il datore di lavoro, chi fa le comunicazioni obbligatorie e chi si occupa di
+              assicurazione e sicurezza.
+            </p>
+            <p>
+              Chi usa la piattaforma saprà con quali criteri vengono proposti gli incarichi e quali dati vengono usati per farlo.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULI -->
+      <section class="sezione" id="contatti" aria-labelledby="t-contatti">
+        <div class="contenitore contatti">
+          <div class="intro intro--stretta">
+            <h2 id="t-contatti">Aiutaci a farlo partire</h2>
+            <p>
+              Lascia i contatti e raccontaci di cosa hai bisogno. Ti scriveremo quando il servizio apre nella tua zona.
+            </p>
+            <p class="nota">Non è una candidatura né un’offerta di lavoro: oggi JobExpress sta solo raccogliendo interesse.</p>
+          </div>
+
+          <div class="moduli" data-moduli>
+            <div class="scelta scelta--piena" role="tablist" aria-label="Chi sei">
+              <button type="button" role="tab" id="tab-lavoro" aria-controls="pan-lavoro" aria-selected="true">Cerco lavoro</button>
+              <button type="button" role="tab" id="tab-attivita" aria-controls="pan-attivita" aria-selected="false" tabindex="-1">Ho un’attività</button>
+              <button type="button" role="tab" id="tab-partner" aria-controls="pan-partner" aria-selected="false" tabindex="-1">Voglio collaborare</button>
+            </div>
+
+            <!-- LAVORO -->
+            <div role="tabpanel" id="pan-lavoro" aria-labelledby="tab-lavoro">
+              <form class="modulo" data-modulo="lavoro" novalidate>
+                <div class="campi">
+                  <div class="campo">
+                    <label for="l-nome">Nome e cognome</label>
+                    <input id="l-nome" name="nome" autocomplete="name" required maxlength="120" />
+                  </div>
+                  <div class="campo">
+                    <label for="l-email">Email</label>
+                    <input id="l-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+                  </div>
+                  <div class="campo">
+                    <label for="l-tel">Telefono <span class="facoltativo">facoltativo</span></label>
+                    <input id="l-tel" name="telefono" type="tel" autocomplete="tel" maxlength="30" />
+                  </div>
+                  <div class="campo">
+                    <label for="l-comune">Comune</label>
+                    <input id="l-comune" name="comune" autocomplete="address-level2" required maxlength="80" placeholder="Forlì" />
+                  </div>
+                </div>
+
+                <fieldset class="gruppo" data-almeno-uno="Scegli almeno una mansione.">
+                  <legend>Cosa ti piacerebbe fare</legend>
+                  <div class="pillole">
+                    <label><input type="checkbox" name="mansioni" value="sala" /><span>Sala</span></label>
+                    <label><input type="checkbox" name="mansioni" value="cucina" /><span>Cucina</span></label>
+                    <label><input type="checkbox" name="mansioni" value="bar" /><span>Bar</span></label>
+                    <label><input type="checkbox" name="mansioni" value="hotel" /><span>Hotel</span></label>
+                    <label><input type="checkbox" name="mansioni" value="commercio" /><span>Commercio</span></label>
+                    <label><input type="checkbox" name="mansioni" value="eventi" /><span>Eventi</span></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="gruppo" data-almeno-uno="Scegli almeno un momento.">
+                  <legend>Quando puoi lavorare</legend>
+                  <div class="pillole">
+                    <label><input type="checkbox" name="disponibilita" value="ultimo_minuto" /><span>Anche all’ultimo minuto</span></label>
+                    <label><input type="checkbox" name="disponibilita" value="feriali" /><span>Giorni feriali</span></label>
+                    <label><input type="checkbox" name="disponibilita" value="weekend" /><span>Weekend</span></label>
+                    <label><input type="checkbox" name="disponibilita" value="fino_tre_giorni" /><span>Incarichi fino a 3 giorni</span></label>
+                  </div>
+                </fieldset>
+
+                <div class="campi campi--tre">
+                  <div class="campo">
+                    <label for="l-dalle">Dalle</label>
+                    <select id="l-dalle" name="dalle" data-ore-select="inizio"></select>
+                  </div>
+                  <div class="campo">
+                    <label for="l-alle">Alle</label>
+                    <select id="l-alle" name="alle" data-ore-select="fine"></select>
+                  </div>
+                  <div class="campo">
+                    <label for="l-esp">Esperienza</label>
+                    <select id="l-esp" name="esperienza">
+                      <option value="nessuna">Nessuna, per ora</option>
+                      <option value="meno_di_uno">Meno di un anno</option>
+                      <option value="uno_tre">Da uno a tre anni</option>
+                      <option value="oltre_tre">Più di tre anni</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="spunte">
+                  <label class="spunta">
+                    <input type="checkbox" name="maggiorenne" required data-errore="JobExpress è riservato a chi ha almeno 18 anni." />
+                    <span>Ho almeno 18 anni</span>
+                  </label>
+                  <label class="spunta">
+                    <input type="checkbox" name="intervista" />
+                    <span>Potete contattarmi per un’intervista di 15 minuti <span class="facoltativo">facoltativo</span></span>
+                  </label>
+                  <label class="spunta">
+                    <input type="checkbox" name="privacy" required data-errore="Per inviare i contatti serve la conferma di lettura dell’informativa." />
+                    <span>Ho letto l’<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a></span>
+                  </label>
+                </div>
+
+                <div class="trappola" aria-hidden="true">
+                  <label>Non compilare <input name="sito_web" tabindex="-1" autocomplete="off" /></label>
+                </div>
+                <div class="modulo__fine">
+                  <button class="tasto" type="submit">Lascia i contatti</button>
+                  <p class="modulo__esito" role="alert"></p>
+                </div>
+              </form>
+            </div>
+
+            <!-- ATTIVITÀ -->
+            <div role="tabpanel" id="pan-attivita" aria-labelledby="tab-attivita" hidden>
+              <form class="modulo" data-modulo="attivita" novalidate>
+                <div class="campi">
+                  <div class="campo">
+                    <label for="a-nome">Nome dell’attività</label>
+                    <input id="a-nome" name="nome_attivita" autocomplete="organization" required maxlength="160" />
+                  </div>
+                  <div class="campo">
+                    <label for="a-tipo">Tipo di attività</label>
+                    <select id="a-tipo" name="tipo" required>
+                      <option value="">Scegli</option>
+                      <option value="ristorante">Ristorante</option>
+                      <option value="pizzeria">Pizzeria</option>
+                      <option value="bar">Bar</option>
+                      <option value="pub">Pub o locale</option>
+                      <option value="hotel">Hotel o struttura ricettiva</option>
+                      <option value="catering">Catering</option>
+                      <option value="negozio">Negozio</option>
+                      <option value="eventi">Eventi</option>
+                      <option value="altro">Altro</option>
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <label for="a-ref">Nome del referente</label>
+                    <input id="a-ref" name="referente" autocomplete="name" required maxlength="120" />
+                  </div>
+                  <div class="campo">
+                    <label for="a-comune">Comune</label>
+                    <input id="a-comune" name="comune" autocomplete="address-level2" required maxlength="80" placeholder="Forlì" />
+                  </div>
+                  <div class="campo">
+                    <label for="a-email">Email</label>
+                    <input id="a-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+                  </div>
+                  <div class="campo">
+                    <label for="a-tel">Telefono <span class="facoltativo">facoltativo</span></label>
+                    <input id="a-tel" name="telefono" type="tel" autocomplete="tel" maxlength="30" />
+                  </div>
+                </div>
+
+                <fieldset class="gruppo" data-almeno-uno="Scegli almeno una mansione.">
+                  <legend>Di chi hai bisogno più spesso</legend>
+                  <div class="pillole">
+                    <label><input type="checkbox" name="mansioni" value="sala" /><span>Sala</span></label>
+                    <label><input type="checkbox" name="mansioni" value="cucina" /><span>Cucina</span></label>
+                    <label><input type="checkbox" name="mansioni" value="bar" /><span>Bar</span></label>
+                    <label><input type="checkbox" name="mansioni" value="hotel" /><span>Hotel</span></label>
+                    <label><input type="checkbox" name="mansioni" value="commercio" /><span>Commercio</span></label>
+                    <label><input type="checkbox" name="mansioni" value="eventi" /><span>Eventi</span></label>
+                  </div>
+                </fieldset>
+
+                <div class="campi">
+                  <div class="campo">
+                    <label for="a-freq">Quante volte al mese ti manca una persona</label>
+                    <select id="a-freq" name="frequenza" required>
+                      <option value="">Scegli</option>
+                      <option value="meno_di_una">Meno di una</option>
+                      <option value="una_due">Una o due</option>
+                      <option value="tre_cinque">Da tre a cinque</option>
+                      <option value="oltre_cinque">Più di cinque</option>
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <label for="a-comm">Una commissione del 12% ti sembra accettabile</label>
+                    <select id="a-comm" name="opinione_commissione">
+                      <option value="non_so">Non so ancora</option>
+                      <option value="si">Sì</option>
+                      <option value="forse">Dipende dall’incarico</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="campo">
+                  <label for="a-turno">Un turno che hai faticato a coprire <span class="facoltativo">facoltativo</span></label>
+                  <textarea id="a-turno" name="esempio_turno" rows="3" maxlength="1000" placeholder="Sabato sera, una persona in sala dalle 19 alle 24"></textarea>
+                </div>
+
+                <div class="spunte">
+                  <label class="spunta">
+                    <input type="checkbox" name="intervista" />
+                    <span>Potete contattarmi per un’intervista di 15 minuti <span class="facoltativo">facoltativo</span></span>
+                  </label>
+                  <label class="spunta">
+                    <input type="checkbox" name="privacy" required data-errore="Per inviare i contatti serve la conferma di lettura dell’informativa." />
+                    <span>Ho letto l’<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a></span>
+                  </label>
+                </div>
+
+                <div class="trappola" aria-hidden="true">
+                  <label>Non compilare <input name="sito_web" tabindex="-1" autocomplete="off" /></label>
+                </div>
+                <div class="modulo__fine">
+                  <button class="tasto" type="submit">Lascia i contatti</button>
+                  <p class="modulo__esito" role="alert"></p>
+                </div>
+              </form>
+            </div>
+
+            <!-- PARTNER -->
+            <div role="tabpanel" id="pan-partner" aria-labelledby="tab-partner" hidden>
+              <form class="modulo" data-modulo="partner" novalidate>
+                <div class="campi">
+                  <div class="campo">
+                    <label for="p-nome">Nome e cognome</label>
+                    <input id="p-nome" name="nome" autocomplete="name" required maxlength="120" />
+                  </div>
+                  <div class="campo">
+                    <label for="p-email">Email</label>
+                    <input id="p-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+                  </div>
+                  <div class="campo">
+                    <label for="p-org">Organizzazione <span class="facoltativo">facoltativo</span></label>
+                    <input id="p-org" name="organizzazione" autocomplete="organization" maxlength="160" />
+                  </div>
+                  <div class="campo">
+                    <label for="p-tipo">Come vorresti collaborare</label>
+                    <select id="p-tipo" name="tipo" required>
+                      <option value="">Scegli</option>
+                      <option value="agenzia_lavoro">Agenzia per il lavoro autorizzata</option>
+                      <option value="associazione_categoria">Associazione di categoria</option>
+                      <option value="sviluppo">Sviluppo tecnologico</option>
+                      <option value="universita">Università o associazione studentesca</option>
+                      <option value="consulenza">Consulenza legale, fiscale o del lavoro</option>
+                      <option value="altro">Altro</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="campo">
+                  <label for="p-msg">Messaggio</label>
+                  <textarea id="p-msg" name="messaggio" rows="5" required maxlength="2000"></textarea>
+                </div>
+                <div class="spunte">
+                  <label class="spunta">
+                    <input type="checkbox" name="privacy" required data-errore="Per inviare i contatti serve la conferma di lettura dell’informativa." />
+                    <span>Ho letto l’<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a></span>
+                  </label>
+                </div>
+                <div class="trappola" aria-hidden="true">
+                  <label>Non compilare <input name="sito_web" tabindex="-1" autocomplete="off" /></label>
+                </div>
+                <div class="modulo__fine">
+                  <button class="tasto" type="submit">Lascia i contatti</button>
+                  <p class="modulo__esito" role="alert"></p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOMANDE -->
+      <section class="sezione sezione--domande" id="domande" aria-labelledby="t-dom">
+        <div class="contenitore domande">
+          <h2 id="t-dom">Domande</h2>
+          <div class="domande__lista">
+            <details>
+              <summary>JobExpress è già attivo?</summary>
+              <p>
+                No. Siamo nella fase di ascolto: raccogliamo contatti ed esigenze e verifichiamo come offrire il servizio nel
+                rispetto delle regole. Chi lascia i contatti viene avvisato all’apertura.
+              </p>
+            </details>
+            <details>
+              <summary>Quanto costa a chi lavora?</summary>
+              <p>Niente. Iscriversi e candidarsi sarà gratuito e JobExpress non tratterrà nulla dal compenso.</p>
+            </details>
+            <details>
+              <summary>Chi paga il compenso?</summary>
+              <p>L’attività, direttamente a chi ha lavorato, secondo quanto concordato e con gli adempimenti previsti.</p>
+            </details>
+            <details>
+              <summary>Con quale contratto si lavora?</summary>
+              <p>
+                Dipende dall’incarico. Le forme possibili non sono intercambiabili e un lavoro di un solo giorno non diventa per
+                questo autonomo occasionale. È uno dei punti che stiamo definendo con chi si occupa di diritto del lavoro.
+              </p>
+            </details>
+            <details>
+              <summary>Garantite che il turno venga coperto?</summary>
+              <p>
+                No, nessuno può garantirlo. Lavoriamo per aumentare la probabilità di trovare in fretta una persona che ha già
+                detto di essere disponibile.
+              </p>
+            </details>
+            <details>
+              <summary>Serve esperienza?</summary>
+              <p>Dipende dall’incarico: sarà l’attività a indicare i requisiti. Serve invece avere almeno 18 anni.</p>
+            </details>
+            <details>
+              <summary>Che fine fanno i miei dati?</summary>
+              <p>
+                Li usiamo solo per studiare il progetto e ricontattarti. Non li vendiamo e non li passiamo alle attività. Puoi
+                chiedere di cancellarli quando vuoi, come spiega l’<a href="privacy.html">informativa privacy</a>.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="piede">
+      <div class="contenitore piede__riga">
+        <div>
+          <p class="piede__motto">Trova. Candidati. Lavora.</p>
+          <p class="piede__legale">
+            JobExpress è un progetto in fase di validazione. Oggi non pubblica offerte, non seleziona personale e non svolge
+            attività di intermediazione di lavoro.
+          </p>
+        </div>
+        <nav class="piede__link" aria-label="Link a fondo pagina">
+          <a href="#come-funziona">Come funziona</a>
+          <a href="#costi">Quanto costa</a>
+          <a href="#contatti">Lascia i contatti</a>
+          <a href="privacy.html">Informativa privacy</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
