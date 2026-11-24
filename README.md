@@ -30,11 +30,10 @@ npm run build    # sito pronto in dist/
 Scroll fluido con [Lenis](https://github.com/darkroomengineering/lenis). Carattere Mona Sans, incluso nel sito: nessuna
 richiesta a servizi esterni tranne Supabase al momento dell'invio. Nessun cookie.
 
-## Collegare Supabase
+## Supabase
 
-1. Nel pannello del progetto, apri **SQL Editor** ed esegui il file in `supabase/migrations/`.
-2. Copia la **publishable key** da Project Settings, API Keys.
-3. Incollala in `src/config.js` (`SUPABASE_KEY`) oppure imposta `VITE_SUPABASE_PUBLISHABLE_KEY` (vedi `.env.example`).
+Il sito è collegato al progetto `lpwpigtknyarfiiqocfp` (Irlanda). La migrazione in `supabase/migrations/` è già stata
+eseguita. Per usare un altro progetto: esegui la migrazione nel suo SQL Editor e imposta le variabili di `.env.example`.
 
 La publishable key è pubblica per natura. La chiave `secret` o `service_role` non deve mai entrare in questo repository.
 
@@ -44,7 +43,7 @@ Supabase (Table Editor). La vista `riepilogo_validazione` mostra l'avanzamento v
 ## Prima di pubblicare
 
 - [ ] Compilare `TITOLARE` in `src/config.js`
-- [ ] Indicare in `privacy.html` la regione del database e gli eventuali trasferimenti fuori UE
+- [ ] Firmare il DPA di Supabase e completare in `privacy.html` la parte sugli accessi da fuori UE
 - [ ] Far rivedere informativa e testi a un legale
 - [ ] Cancellare periodicamente i contatti più vecchi di 12 mesi, come promesso nell'informativa:
 

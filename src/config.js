@@ -4,7 +4,8 @@
 // Non inserire mai qui la chiave "secret" o "service_role".
 export const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL || 'https://lpwpigtknyarfiiqocfp.supabase.co'
-export const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || ''
+export const SUPABASE_KEY =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_I9GQBZkvMPSB0NwAa86Z1w_OTO325DD'
 
 // Titolare del trattamento: compilare prima di pubblicare il sito.
 export const TITOLARE = {
