@@ -4,6 +4,8 @@ import {
   nuovaPassword, quandoCambiaUtente, recupera, registra, salvaProfilo, utente,
 } from './auth.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
+import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
+import { collegaCandidature, dataDi, dataIso, gestisciCalendario, pannelloCalendario, sovrapposizioni } from './calendario.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -191,7 +193,11 @@ export function candidati(a, quando) {
   const lista = leggiCand()
   const gia = lista.find((c) => c.id === a.id && c.stato !== 'ritirata')
   if (gia) return 'Ti sei già candidato a questo incarico. Lo trovi in «La mia area» → Attività.'
-  lista.unshift({ id: a.id, titolo: a.titolo, chi: a.chi, luogo: `${a.citta}, ${a.zona}`, quando, euroOra: a.euroOra, totale: a.totale, stato: 'inviata', il: Date.now() })
+  const altri = sovrapposizioni(a, a.id)
+  if (altri.length) return `Non puoi candidarti: si sovrappone a «${altri[0].titolo}», a cui ti sei già candidato. Se vuoi, ritira prima l’altra candidatura.`
+  const d = dataDi(a)
+  lista.unshift({ id: a.id, titolo: a.titolo, chi: a.chi, luogo: `${a.citta}, ${a.zona}`, quando, euroOra: a.euroOra, totale: a.totale, stato: 'inviata', il: Date.now(),
+    data: d ? dataIso(d) : null, inizio: a.inizio, fine: a.fine })
   scriviCand(lista)
   disegnaArea()
   return 'Candidatura inviata (simulata: in questa versione di prova non arriva a nessuno). La trovi in «La mia area» → Attività.'
@@ -204,6 +210,8 @@ const ESEMPIO_SVOLTI = [
   { sett: 3, ore: 2, euro: 27 }, { sett: 3, ore: 5, euro: 62.5 }, { sett: 1, ore: 6, euro: 72 }, { sett: 0, ore: 4.5, euro: 49.5 },
 ]
 let scheda = 'home'
+let modo = null // 'lavoro' oppure 'pubblico'
+let sottoAttivita = 'calendario'
 let esempio = false
 let area = null
 
@@ -335,12 +343,27 @@ function disegnaArea() {
   const u = utente()
   if (!area || area.hidden || !u) return
   const oggi = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })
-  const pann = { home: pannelloHome, attivita: pannelloAttivita, chat: pannelloChat, profilo: pannelloProfilo }[scheda] || pannelloHome
+  const pubblica = u.modalita?.some((m) => m === 'attivita' || m === 'privato') || haAnnunci()
+  const lavora = u.modalita?.includes('lavoro') || !pubblica
+  if (!modo || (modo === 'pubblico' && !pubblica) || (modo === 'lavoro' && !lavora)) modo = lavora ? 'lavoro' : 'pubblico'
+  const attivitaLavoro = () => `
+    <div class="scelta scelta--vista2 area__sotto" role="group" aria-label="Cosa vuoi vedere">
+      <button type="button" data-sotto="calendario" aria-pressed="${sottoAttivita === 'calendario'}">Calendario</button>
+      <button type="button" data-sotto="candidature" aria-pressed="${sottoAttivita === 'candidature'}">Candidature</button>
+    </div>${sottoAttivita === 'calendario' ? pannelloCalendario() : pannelloAttivita()}`
+  const pann = (modo === 'pubblico'
+    ? { home: pannelloPubblicatoreHome, attivita: pannelloAnnunci, chat: pannelloChat, profilo: pannelloProfilo }
+    : { home: pannelloHome, attivita: attivitaLavoro, chat: pannelloChat, profilo: pannelloProfilo })[scheda] || pannelloHome
+  const scambio = lavora && pubblica ? `
+    <div class="scelta area__modo" role="group" aria-label="Modalità">
+      <button type="button" data-modo-area="lavoro" aria-pressed="${modo === 'lavoro'}">Cerco lavoro</button>
+      <button type="button" data-modo-area="pubblico" aria-pressed="${modo === 'pubblico'}">Cerco personale</button>
+    </div>` : ''
   area.innerHTML = `
     <div class="area__interno">
       <header class="area__testa">
         <div><p class="area__data">${oggi}</p><h2>Ciao${u.nome ? `, ${esc(u.nome)}` : ''}</h2>
-          ${u.prova ? '<p class="finestra__nota">Account di prova: i dati restano solo su questo dispositivo.</p>' : ''}</div>
+          ${u.prova ? '<p class="finestra__nota">Account di prova: i dati restano solo su questo dispositivo.</p>' : ''}${scambio}</div>
         <button type="button" class="tasto tasto--chiaro" data-area-chiudi>Torna al sito</button>
       </header>
       <section class="area__pannello" aria-label="${SCHEDE.find((s) => s[0] === scheda)?.[1]}">${pann(u)}</section>
@@ -378,6 +401,11 @@ function esplora() {
 function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
+    if (gestisciCalendario(e) || gestisciPubblicatore(e)) return disegnaArea()
+    const m = t.closest('[data-modo-area]')
+    if (m) { modo = m.dataset.modoArea; scheda = 'home'; return disegnaArea() }
+    const so = t.closest('[data-sotto]')
+    if (so) { sottoAttivita = so.dataset.sotto; return disegnaArea() }
     const s = t.closest('[data-area-scheda]')
     if (s) {
       if (s.dataset.areaScheda === 'esplora') return esplora()
@@ -425,6 +453,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('change', (e) => {
+    if (gestisciCalendario(e)) return disegnaArea()
     if (e.target.matches('[data-esempio]')) {
       esempio = e.target.checked
       disegnaArea()
@@ -505,6 +534,8 @@ export async function avviaConto(strumenti) {
     const a = e.target.closest('[data-apri-area]')
     if (a) { e.preventDefault(); apriArea('home') }
   })
+  collegaCandidature(leggiCand)
+  avviaAnnunci({ apri, utente, apriAccesso, dopo: () => { modo = 'pubblico'; apriArea('attivita') } })
   quandoCambiaUtente(aggiornaSito)
   quandoCambia(disegnaArea)
   const entrato = await avviaAuth()

@@ -25,9 +25,9 @@ export const CATEGORIE = [
   ['commissioni', 'Piccole commissioni'],
   ['altro', 'Altri incarichi'],
 ]
-const NOME_CAT = Object.fromEntries(CATEGORIE)
+export const NOME_CAT = Object.fromEntries(CATEGORIE)
 
-const GIORNI = { oggi: 'Oggi', domani: 'Domani', giovedi: 'Giovedì', sabato: 'Sabato', domenica: 'Domenica' }
+export const GIORNI = { oggi: 'Oggi', domani: 'Domani', lunedi: 'Lunedì', martedi: 'Martedì', mercoledi: 'Mercoledì', giovedi: 'Giovedì', venerdi: 'Venerdì', sabato: 'Sabato', domenica: 'Domenica' }
 const ESPERIENZA = { nessuna: 'Nessuna esperienza richiesta', minima: 'Un po’ di esperienza', richiesta: 'Esperienza richiesta' }
 
 // [id, titolo, categoria, chi pubblica, tipo, città, zona, km, giorno, inizio, fine, €/ora, urgente, esperienza, requisiti, descrizione]
@@ -84,6 +84,19 @@ const scriviSalvati = (s) => {
   try { localStorage.setItem(SALVATI_CHIAVE, JSON.stringify([...s])) } catch { /* memoria del browser non disponibile */ }
 }
 
+// Altri incarichi oltre a quelli di esempio (per esempio quelli che pubblichi tu)
+let fonteExtra = () => []
+export function registraFonte(fn) {
+  fonteExtra = fn
+}
+export const tuttiIncarichi = () => [...fonteExtra(), ...INCARICHI_DEMO]
+
+// Il calendario personale, se compilato, ha la precedenza sulla fascia del tabellone
+let dalCalendario = () => null
+export function impostaCalendario(fn) {
+  dalCalendario = fn
+}
+
 // La fascia oraria scelta nel tabellone (giorno + orari), per la compatibilità
 let leggiFascia = () => null
 export function impostaFascia(fn) {
@@ -91,7 +104,9 @@ export function impostaFascia(fn) {
 }
 
 // Spiega in parole semplici se l'incarico rientra nella fascia scelta
-function compatibilita(a) {
+export function compatibilita(a) {
+  const c = dalCalendario(a)
+  if (c) return c
   const f = leggiFascia()
   if (!f) return null
   const giorni = f.giorno === 'weekend' ? ['sabato', 'domenica'] : [f.giorno]
@@ -112,7 +127,7 @@ export function scegliCategoria(cat) {
 }
 
 function filtra(salvati) {
-  const lista = INCARICHI_DEMO.filter((a) =>
+  const lista = tuttiIncarichi().filter((a) =>
     (filtri.cat === 'tutte' || a.cat === filtri.cat) &&
     (filtri.quando === 'tutti' || (filtri.quando === 'weekend' ? ['sabato', 'domenica'].includes(a.giorno) : a.giorno === filtri.quando)) &&
     (filtri.citta === 'tutte' || a.citta === filtri.citta) &&
@@ -128,7 +143,7 @@ function filtra(salvati) {
 
 // ---------- disegno ----------
 const opzioni = (lista, scelto) => lista.map(([v, t]) => `<option value="${v}"${String(v) === String(scelto) ? ' selected' : ''}>${t}</option>`).join('')
-const CITTA = [...new Set(INCARICHI_DEMO.map((a) => a.citta))].sort()
+const citta = () => [...new Set(tuttiIncarichi().map((a) => a.citta))].sort()
 
 function barraFiltri() {
   return `
@@ -140,7 +155,7 @@ function barraFiltri() {
     <summary>Altri filtri</summary>
     <div class="filtri__riga">
       <label>Quando<select data-f="quando">${opzioni([['tutti', 'Qualsiasi'], ['oggi', 'Oggi'], ['domani', 'Domani'], ['weekend', 'Nel weekend']], filtri.quando)}</select></label>
-      <label>Città<select data-f="citta">${opzioni([['tutte', 'Tutte'], ...CITTA.map((c) => [c, c])], filtri.citta)}</select></label>
+      <label>Città<select data-f="citta">${opzioni([['tutte', 'Tutte'], ...citta().map((c) => [c, c])], filtri.citta)}</select></label>
       <label>Distanza<select data-f="km">${opzioni([[0, 'Qualsiasi'], [5, 'Entro 5 km'], [10, 'Entro 10 km'], [25, 'Entro 25 km']], filtri.km)}</select></label>
       <label>Compenso<select data-f="minimo">${opzioni([[0, 'Qualsiasi'], [10.5, 'Da 10,50 €/ora'], [12, 'Da 12 €/ora'], [15, 'Da 15 €/ora']], filtri.minimo)}</select></label>
       <label>Chi pubblica<select data-f="chi">${opzioni([['tutti', 'Tutti'], ['azienda', 'Aziende'], ['privato', 'Privati']], filtri.chi)}</select></label>
@@ -165,12 +180,13 @@ function barraFiltri() {
   <p class="annunci__nota">Incarichi di esempio, non offerte reali. Il totale è una stima lorda: ore × compenso orario. Le tariffe sono esempi, non minimi di legge.</p>`
 }
 
-function scheda(a, salvato) {
+export function scheda(a, salvato) {
   return `
   <article class="scheda" data-id="${a.id}">
     <div class="scheda__alto">
       <span class="scheda__cat">${esc(NOME_CAT[a.cat])}</span>
       ${a.urgente ? '<span class="scheda__urgente">Urgente</span>' : ''}
+      ${a.mio ? '<span class="scheda__mio">Tuo annuncio</span>' : ''}
       <button type="button" class="scheda__cuore" data-salva="${a.id}" aria-pressed="${salvato}" aria-label="${salvato ? 'Togli dai salvati' : 'Salva'}: ${esc(a.titolo)}">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
       </button>
@@ -190,9 +206,9 @@ function scheda(a, salvato) {
 function dettaglio(a, strumenti, salvati, ridisegna) {
   const c = compatibilita(a)
   const privato = a.tipo === 'privato'
-  const formalizzazione = privato
+  const formalizzazione = a.forma || (privato
     ? 'Per gli incarichi dei privati si possono usare strumenti come il Libretto Famiglia o la prestazione occasionale: la forma giusta va verificata caso per caso.'
-    : 'L’azienda indica la forma del rapporto prima della conferma (per esempio lavoro intermittente o a chiamata). Un incarico breve non è per forza occasionale.'
+    : 'L’azienda indica la forma del rapporto prima della conferma (per esempio lavoro intermittente o a chiamata). Un incarico breve non è per forza occasionale.')
   strumenti.apri(`
     <p class="dettaglio__cat">${esc(NOME_CAT[a.cat])}${a.urgente ? ' · <span class="scheda__urgente">Urgente</span>' : ''}</p>
     <h2>${esc(a.titolo)}</h2>
@@ -209,21 +225,21 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
       <dt>Requisiti</dt><dd>${a.requisiti.map(esc).join(' · ')}</dd>
       <dt>Esperienza</dt><dd>${ESPERIENZA[a.esperienza]}</dd>
       <dt>Compenso</dt><dd>Importo lordo stimato (ore × compenso orario). Il netto dipende dalla forma del rapporto.</dd>
-      <dt>Pagamento</dt><dd>Lo paga direttamente chi pubblica. JobExpress non trattiene nulla dal compenso.</dd>
+      <dt>Pagamento</dt><dd>${a.pagamento ? esc(a.pagamento) + '. ' : ''}Lo paga direttamente chi pubblica. JobExpress non trattiene nulla dal compenso.</dd>${a.mansioni ? `<dt>Mansioni</dt><dd>${esc(a.mansioni)}</dd>` : ''}${a.rimborsi ? `<dt>Rimborsi</dt><dd>${esc(a.rimborsi)}</dd>` : ''}
       <dt>Forma del rapporto</dt><dd>${formalizzazione}</dd>
       <dt>Recensioni</dt><dd>Ancora nessuna recensione per chi pubblica.</dd>
     </dl>
     ${c ? `<p class="dettaglio__compat ${c.ok ? 'si' : 'no'}">${esc(c.testo)}</p>` : ''}
     <div class="finestra__azioni">
-      <button class="tasto" type="button" data-candidati>Candidati</button>
+      ${a.mio ? '' : '<button class="tasto" type="button" data-candidati>Candidati</button>'}
       <button class="tasto tasto--chiaro" type="button" data-d-salva aria-pressed="${salvati.has(a.id)}">${salvati.has(a.id) ? 'Salvato' : 'Salva'}</button>
       <button class="tasto tasto--chiaro" type="button" data-condividi>Condividi</button>
       <button class="tasto tasto--chiaro" type="button" data-segnala>Segnala</button>
     </div>
-    <p class="finestra__nota" data-d-esito aria-live="polite">Incarico di esempio, non reale.</p>`)
+    <p class="finestra__nota" data-d-esito aria-live="polite">${a.mio ? 'È un tuo annuncio: lo gestisci da «La mia area».' : 'Incarico di esempio, non reale.'}</p>`)
   const fin = document.querySelector('dialog.finestra')
   const esito = fin.querySelector('[data-d-esito]')
-  fin.querySelector('[data-candidati]').onclick = () => {
+  if (!a.mio) fin.querySelector('[data-candidati]').onclick = () => {
     if (!strumenti.candidati) return strumenti.accesso('Per candidarti, accedi')
     const msg = strumenti.candidati(a, `${GIORNI[a.giorno]}, ${orario(a.inizio)}–${orario(a.fine)}`)
     if (msg) esito.textContent = msg
@@ -294,6 +310,19 @@ function mappa(lista) {
 }
 
 // ---------- avvio ----------
+let ultimi = null
+
+// Ridisegna la bacheca (per esempio dopo aver pubblicato un annuncio)
+export function aggiornaBacheca() {
+  ultimi?.ridisegna()
+}
+
+// Apre il dettaglio di un incarico da fuori (per esempio dai suggerimenti del calendario)
+export function apriIncarico(id) {
+  const a = tuttiIncarichi().find((x) => String(x.id) === String(id))
+  if (a && ultimi) dettaglio(a, ultimi.strumenti, ultimi.salvati, ultimi.ridisegna)
+}
+
 export function mostraIncarichi(box, strumenti) {
   const salvati = leggiSalvati()
   box.innerHTML = barraFiltri()
@@ -333,13 +362,14 @@ export function mostraIncarichi(box, strumenti) {
     }
     const cuore = e.target.closest('[data-salva]')
     if (cuore) {
-      const id = Number(cuore.dataset.salva)
+      const grezzo = cuore.dataset.salva
+      const id = /^\d+$/.test(grezzo) ? Number(grezzo) : grezzo
       salvati.has(id) ? salvati.delete(id) : salvati.add(id)
       scriviSalvati(salvati)
       return ridisegna()
     }
     const apri = e.target.closest('[data-dettagli]')
-    if (apri) return dettaglio(INCARICHI_DEMO.find((a) => a.id === Number(apri.dataset.dettagli)), strumenti, salvati, ridisegna)
+    if (apri) return dettaglio(tuttiIncarichi().find((a) => String(a.id) === apri.dataset.dettagli), strumenti, salvati, ridisegna)
     if (e.target.closest('[data-azzera]')) {
       Object.assign(filtri, { cat: 'tutte', quando: 'tutti', citta: 'tutte', km: 0, minimo: 0, chi: 'tutti', urgenti: false, compatibili: false, salvati: false })
       mostraIncarichi(box, strumenti)
@@ -362,6 +392,7 @@ export function mostraIncarichi(box, strumenti) {
   // Su computer i filtri sono sempre aperti, sul telefono si aprono con un tocco
   const altri = box.querySelector('[data-altri]')
   if (altri && (matchMedia('(min-width: 701px)').matches || filtriAttivi())) altri.open = true
+  ultimi = { strumenti, salvati, ridisegna }
   ridisegna()
   box.querySelector(`[data-f-cat="${filtri.cat}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' })
 }
