@@ -223,7 +223,11 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
     <p class="finestra__nota" data-d-esito aria-live="polite">Incarico di esempio, non reale.</p>`)
   const fin = document.querySelector('dialog.finestra')
   const esito = fin.querySelector('[data-d-esito]')
-  fin.querySelector('[data-candidati]').onclick = () => strumenti.accesso('Per candidarti, accedi')
+  fin.querySelector('[data-candidati]').onclick = () => {
+    if (!strumenti.candidati) return strumenti.accesso('Per candidarti, accedi')
+    const msg = strumenti.candidati(a, `${GIORNI[a.giorno]}, ${orario(a.inizio)}–${orario(a.fine)}`)
+    if (msg) esito.textContent = msg
+  }
   fin.querySelector('[data-d-salva]').onclick = (e) => {
     salvati.has(a.id) ? salvati.delete(a.id) : salvati.add(a.id)
     scriviSalvati(salvati)

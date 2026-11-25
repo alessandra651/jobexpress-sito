@@ -1,4 +1,5 @@
 import { mostraIncarichi, scegliCategoria } from './incarichi.js'
+import { apriAccesso, avviaConto, candidati } from './conto.js'
 import { avviaDisponibile, leggiDisponibile, quandoCambia } from './disponibile.js'
 document.documentElement.classList.add('js')
 const testata=document.querySelector('.testata')
@@ -18,14 +19,14 @@ if(segno){segno.insertAdjacentHTML('afterbegin','<defs><linearGradient id="luce-
 const dlg=document.createElement('dialog');dlg.className='finestra';document.body.appendChild(dlg)
 dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()})
 const apri=(html)=>{dlg.innerHTML=`<button class="finestra__chiudi" type="button" aria-label="Chiudi">×</button>${html}`;dlg.querySelector('.finestra__chiudi').onclick=()=>dlg.close();dlg.showModal()}
-const accesso=(prima)=>{apri(`<h2>${prima||'Accedi o registrati'}</h2><p>Scegli come entrare. Per te cambia solo il pulsante, il profilo è uno solo.</p><div class="finestra__azioni"><button class="social" data-p="Google">Continua con Google</button><button class="social social--apple" data-p="Apple">Continua con Apple</button><button class="social social--mail" data-p="email">Usa l’email</button></div><p class="finestra__nota" data-esito>Versione di prova: l’accesso è simulato.</p>`);dlg.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{dlg.querySelector('[data-esito]').textContent=`Versione di prova: l’accesso con ${b.dataset.p} è simulato. Per ora registrati con il modulo in fondo alla pagina.`})}
-document.addEventListener('click',e=>{const t=e.target.closest('[data-accedi]');if(t){e.preventDefault();accesso()}})
+const accesso=(prima)=>apriAccesso(prima)
+document.addEventListener('click',e=>{const t=e.target.closest('[data-accedi]');if(t){e.preventDefault();accesso();const p=t.dataset.accedi;if(p==='google'||p==='apple')dlg.querySelector(`[data-provider=${p}]`)?.click()}})
 const ANN_PERSONE=[
 {t:'Marco, disponibile oggi',c:'Sala, bar',d:'Forlì, centro',q:'Oggi 18:00–23:00',e:'Automunito',x:'Qualche stagione di esperienza in bar e ristoranti.',r:['Disponibile subito']},
 {t:'Giulia, disponibile nel weekend',c:'Babysitting, ripetizioni',d:'Forlì, periferia',q:'Sabato e domenica',e:'Con referenze',x:'Studia all’università e ama stare con i bambini.',r:['Referenze disponibili']},
 {t:'Luca, disponibile domani',c:'Traslochi, eventi',d:'Cesena',q:'Domani 9:00–17:00',e:'Automunito',x:'Abituato a lavori di fatica e a squadre piccole.',r:['Si sposta anche a Forlì']}]
 const tab=document.querySelector('[data-tabellone]'),box=document.querySelector('[data-annunci]')
-const disegna=()=>{if(!tab||!box)return;const lav=tab.dataset.modo!=='personale',L=ANN_PERSONE;if(lav){mostraIncarichi(box,{apri,accesso});return}
+const disegna=()=>{if(!tab||!box)return;const lav=tab.dataset.modo!=='personale',L=ANN_PERSONE;if(lav){mostraIncarichi(box,{apri,accesso,candidati});return}
 const mia=leggiDisponibile()
 const tu=mia?`<div class="annuncio annuncio--tu"><h3>Tu, disponibile ora</h3><span class="annuncio__euro">fino alle ${new Date(mia.fino).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</span><p>Così ti vede chi cerca personale: zona di Forlì, entro ${mia.km} km. Mai la posizione esatta.</p></div>`:''
 box.innerHTML=tu+`<p class="annunci__nota">${lav?'Annunci di esempio, non offerte reali. Clicca per aprire.':'Persone di esempio, non reali. Clicca per aprire.'}</p>`+L.map((a,i)=>`<button type="button" class="annuncio" data-i="${i}"><h3>${a.t}</h3><span class="annuncio__euro">${a.e}</span><p>${a.c} · ${a.d} · ${a.q}</p></button>`).join('')
@@ -43,9 +44,12 @@ const c=document.querySelector('[data-gruppo=citta] [aria-pressed=true]');const 
 document.querySelectorAll('[data-categoria]').forEach(c=>c.addEventListener('click',()=>{scegliCategoria(c.dataset.categoria)
 document.querySelector('[data-modo-tasto=lavoro]')?.click()
 document.querySelector('[data-vista-tasto=annunci]')?.click()
-if(box&&tab)mostraIncarichi(box,{apri,accesso})
+if(box&&tab)mostraIncarichi(box,{apri,accesso,candidati})
 document.querySelector('.apertura .tabellone')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}))
 
 // ===== disponibile ora =====
 avviaDisponibile({apri})
 quandoCambia(()=>{if(tab&&box&&tab.dataset.modo==='personale')disegna()})
+
+// ===== account e area personale =====
+avviaConto({apri})
