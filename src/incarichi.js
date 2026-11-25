@@ -122,6 +122,9 @@ export function compatibilita(a) {
 let vista = 'elenco'
 let zona = 'citta'
 const filtri = { cat: 'tutte', quando: 'tutti', citta: 'tutte', km: 0, minimo: 0, chi: 'tutti', urgenti: false, compatibili: false, salvati: false, ordine: 'vicini' }
+export function soloCompatibili() {
+  filtri.compatibili = true
+}
 export function scegliCategoria(cat) {
   filtri.cat = cat
 }

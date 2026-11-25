@@ -4,6 +4,8 @@
 // In questa versione di prova tutto resta su questo dispositivo e le candidature
 // ricevute sono di esempio.
 import { CATEGORIE, NOME_CAT, aggiornaBacheca, registraFonte, scheda } from './incarichi.js'
+import { avviaConversazione } from './chat.js'
+import { notifica } from './notifiche.js'
 
 const CHIAVE = 'jobexpress-miei-annunci'
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -273,6 +275,7 @@ function concludi() {
   else if (DA_VERIFICARE.includes(b.cat)) b.stato = 'revisione'
   else if (come === 'programma') b.stato = 'programmato'
   else { b.stato = 'attivo'; b.candidati = b.candidati.length ? b.candidati : candidatiProva(b) }
+  if (b.stato === 'attivo') notifica('ricevuta', `${b.candidati.length} candidature di esempio per «${b.titolo}».`, { scheda: 'attivita', modo: 'pubblico' })
   const l = leggi().filter((x) => x.id !== b.id)
   l.unshift(b)
   scrivi(l)
@@ -415,7 +418,12 @@ export function gestisciPubblicatore(e) {
   if (k === 'chiudi') a.stato = 'chiuso'
   if (k === 'annulla') a.stato = 'bozza'
   if (k === 'duplica') l.unshift({ ...a, id: `m-${Date.now()}`, stato: 'bozza', candidati: [], titolo: `${a.titolo} (copia)`, data: a.data < oggiIso() ? oggiIso() : a.data })
-  if (k === 'seleziona') a.candidati[Number(b.dataset.paC)].stato = 'selezionato'
+  if (k === 'seleziona') {
+    const c = a.candidati[Number(b.dataset.paC)]
+    c.stato = 'selezionato'
+    avviaConversazione({ incaricoId: a.id, titolo: a.titolo, con: c.nome, lato: 'pubblico', sistema: `Hai selezionato ${c.nome}. Ora concordate i dettagli e formalizzate il rapporto prima di iniziare.` })
+    notifica('selezione', `Hai selezionato ${c.nome} per «${a.titolo}». Trovi la conversazione in Chat.`, { scheda: 'chat' })
+  }
   if (k === 'scarta') a.candidati[Number(b.dataset.paC)].stato = 'scartato'
   if (k !== 'elimina') scrivi(l)
   aggiornaBacheca()

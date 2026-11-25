@@ -1,4 +1,4 @@
-import { mostraIncarichi, scegliCategoria } from './incarichi.js'
+import { mostraIncarichi, scegliCategoria, soloCompatibili } from './incarichi.js'
 import { apriAccesso, avviaConto, candidati } from './conto.js'
 import { avviaDisponibile, leggiDisponibile, quandoCambia } from './disponibile.js'
 document.documentElement.classList.add('js')
@@ -53,3 +53,14 @@ quandoCambia(()=>{if(tab&&box&&tab.dataset.modo==='personale')disegna()})
 
 // ===== account e area personale =====
 avviaConto({apri})
+
+// ===== dal tabellone alla bacheca: incarichi dentro la fascia scelta =====
+const cercaOrari=document.querySelector('[data-cerca-orari]')
+const etichettaOrari=()=>{if(cercaOrari&&tab)cercaOrari.textContent=tab.dataset.modo==='personale'?'Pubblica un incarico in questi orari':'Vedi gli incarichi in questi orari'}
+if(tab)new MutationObserver(etichettaOrari).observe(tab,{attributes:true,attributeFilter:['data-modo']})
+etichettaOrari()
+cercaOrari?.addEventListener('click',()=>{if(tab?.dataset.modo==='personale'){document.querySelector('#per-chi [data-pubblica]')?.click();return}
+soloCompatibili()
+document.querySelector('[data-vista-tasto=annunci]')?.click()
+if(box)mostraIncarichi(box,{apri,accesso,candidati})
+tab?.scrollIntoView({block:'start'})})

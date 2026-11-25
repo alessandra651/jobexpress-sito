@@ -179,7 +179,7 @@ function conferma(modulo, tipo) {
   riquadro.className = 'ricevuto'
   riquadro.tabIndex = -1
   const titolo = document.createElement('h3')
-  titolo.textContent = 'Registrazione ricevuta'
+  titolo.textContent = tipo === 'partner' ? 'Messaggio ricevuto' : 'Registrazione ricevuta'
   const corpo = document.createElement('p')
   corpo.textContent = CONFERME[tipo]
   riquadro.append(titolo, corpo)
@@ -203,6 +203,7 @@ async function invia(modulo) {
   const dati = new FormData(modulo)
   if (testo(dati, 'sito_web')) return conferma(modulo, tipo) // compilato da un bot
 
+  const testoTasto = tasto.textContent
   tasto.disabled = true
   tasto.textContent = 'Invio in corso'
   try {
@@ -212,10 +213,10 @@ async function invia(modulo) {
     console.error(errore)
     esito.textContent =
       errore instanceof NonCollegato
-        ? 'Il modulo non è ancora collegato alla raccolta dati. I contatti non sono stati inviati.'
-        : 'I contatti non sono stati inviati. Controlla la connessione e riprova: quello che hai scritto è ancora qui.'
+        ? 'Il modulo non è collegato. Il messaggio non è stato inviato.'
+        : 'Il messaggio non è stato inviato. Controlla la connessione e riprova: quello che hai scritto è ancora qui.'
     tasto.disabled = false
-    tasto.textContent = 'Registrati gratuitamente'
+    tasto.textContent = testoTasto
   }
 }
 

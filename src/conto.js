@@ -5,6 +5,8 @@ import {
 } from './auth.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
+import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
+import { gestisciNotifiche, nonLette, notifica, pannelloNotifiche, quandoCambianoNotifiche } from './notifiche.js'
 import { collegaCandidature, dataDi, dataIso, gestisciCalendario, pannelloCalendario, sovrapposizioni } from './calendario.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -199,6 +201,8 @@ export function candidati(a, quando) {
   lista.unshift({ id: a.id, titolo: a.titolo, chi: a.chi, luogo: `${a.citta}, ${a.zona}`, quando, euroOra: a.euroOra, totale: a.totale, stato: 'inviata', il: Date.now(),
     data: d ? dataIso(d) : null, inizio: a.inizio, fine: a.fine })
   scriviCand(lista)
+  avviaConversazione({ incaricoId: a.id, titolo: a.titolo, con: a.chi, lato: 'lavoro', sistema: `Hai inviato la candidatura per «${a.titolo}», ${quando.charAt(0).toLowerCase() + quando.slice(1)}.` })
+  notifica('candidatura', `Candidatura inviata: ${a.titolo}.`, { scheda: 'attivita', sotto: 'candidature' })
   disegnaArea()
   return 'Candidatura inviata (simulata: in questa versione di prova non arriva a nessuno). La trovi in «La mia area» → Attività.'
 }
@@ -299,8 +303,6 @@ function pannelloAttivita() {
     <p class="finestra__nota">Versione di prova: le candidature restano su questo dispositivo e non arrivano a nessuno.</p>`
 }
 
-const pannelloChat = () => `<div class="vuoto"><strong>Nessun messaggio.</strong>
-  <p>Quando chi pubblica risponde a una tua candidatura, la conversazione compare qui. Numero di telefono ed email restano privati.</p></div>`
 
 function pannelloProfilo(u) {
   return `
@@ -352,8 +354,8 @@ function disegnaArea() {
       <button type="button" data-sotto="candidature" aria-pressed="${sottoAttivita === 'candidature'}">Candidature</button>
     </div>${sottoAttivita === 'calendario' ? pannelloCalendario() : pannelloAttivita()}`
   const pann = (modo === 'pubblico'
-    ? { home: pannelloPubblicatoreHome, attivita: pannelloAnnunci, chat: pannelloChat, profilo: pannelloProfilo }
-    : { home: pannelloHome, attivita: attivitaLavoro, chat: pannelloChat, profilo: pannelloProfilo })[scheda] || pannelloHome
+    ? { home: pannelloPubblicatoreHome, attivita: pannelloAnnunci, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche }
+    : { home: pannelloHome, attivita: attivitaLavoro, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche })[scheda] || pannelloHome
   const scambio = lavora && pubblica ? `
     <div class="scelta area__modo" role="group" aria-label="Modalità">
       <button type="button" data-modo-area="lavoro" aria-pressed="${modo === 'lavoro'}">Cerco lavoro</button>
@@ -364,13 +366,18 @@ function disegnaArea() {
       <header class="area__testa">
         <div><p class="area__data">${oggi}</p><h2>Ciao${u.nome ? `, ${esc(u.nome)}` : ''}</h2>
           ${u.prova ? '<p class="finestra__nota">Account di prova: i dati restano solo su questo dispositivo.</p>' : ''}${scambio}</div>
-        <button type="button" class="tasto tasto--chiaro" data-area-chiudi>Torna al sito</button>
+        <div class="area__azioni">
+          <button type="button" class="campanella${scheda === 'notifiche' ? ' attiva' : ''}" data-area-scheda="notifiche" aria-label="Notifiche${nonLette() ? `, ${nonLette()} nuove` : ''}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0"/></svg>${nonLette() ? `<span class="nav__badge">${nonLette()}</span>` : ''}
+          </button>
+          <button type="button" class="tasto tasto--chiaro" data-area-chiudi>Torna al sito</button>
+        </div>
       </header>
-      <section class="area__pannello" aria-label="${SCHEDE.find((s) => s[0] === scheda)?.[1]}">${pann(u)}</section>
+      <section class="area__pannello" aria-label="${SCHEDE.find((s) => s[0] === scheda)?.[1] || 'Notifiche'}">${pann(u)}</section>
     </div>
     <nav class="area__nav" aria-label="Navigazione dell’area personale">
       ${SCHEDE.map(([k, t]) => `<button type="button" data-area-scheda="${k}" ${k === scheda ? 'aria-current="page"' : ''}>
-        <svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg><span>${t}</span></button>`).join('')}
+        <svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg><span>${t}</span>${k === 'chat' && nonLetti() ? `<span class="nav__badge" aria-label="${nonLetti()} messaggi da leggere">${nonLetti()}</span>` : ''}</button>`).join('')}
     </nav>`
 }
 
@@ -403,6 +410,17 @@ function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
     if (gestisciCalendario(e) || gestisciPubblicatore(e)) return disegnaArea()
+    const n = gestisciNotifiche(e)
+    if (n && typeof n === 'object') {
+      scheda = n.scheda || 'home'
+      if (n.modo) modo = n.modo
+      if (n.sotto) sottoAttivita = n.sotto
+      if (n.chat) apriConversazione(n.chat)
+      return disegnaArea()
+    }
+    if (n) return disegnaArea()
+    const c = gestisciChat(e)
+    if (c) { disegnaArea(); return fineChat(c) }
     const m = t.closest('[data-modo-area]')
     if (m) { modo = m.dataset.modoArea; scheda = 'home'; return disegnaArea() }
     const so = t.closest('[data-sotto]')
@@ -454,11 +472,26 @@ function collegaArea() {
     }
   })
   area.addEventListener('change', (e) => {
-    if (gestisciCalendario(e)) return disegnaArea()
+    if (gestisciCalendario(e) || gestisciNotifiche(e)) return disegnaArea()
     if (e.target.matches('[data-esempio]')) {
       esempio = e.target.checked
       disegnaArea()
     }
+  })
+  area.addEventListener('input', (e) => {
+    const c = gestisciChat(e)
+    if (c) { disegnaArea(); fineChat(c) }
+  })
+  area.addEventListener('keydown', (e) => {
+    // Invio manda il messaggio, Maiusc+Invio va a capo
+    if (e.key === 'Enter' && !e.shiftKey && e.target.matches('#chat-testo')) {
+      e.preventDefault()
+      e.target.form.requestSubmit()
+    }
+  })
+  area.addEventListener('submit', (e) => {
+    const c = gestisciChat(e)
+    if (c) { disegnaArea(); fineChat(c) }
   })
   area.addEventListener('submit', async (e) => {
     const f = e.target.closest('[data-profilo]')
@@ -481,6 +514,17 @@ function collegaArea() {
   })
 }
 
+// Dopo un ridisegno della chat: rimette il cursore dove serve
+function fineChat(c) {
+  if (c === 'cerca') {
+    const i = area.querySelector('[data-chat-cerca]')
+    i?.focus(); i?.setSelectionRange(i.value.length, i.value.length)
+  }
+  const lista = area.querySelector('.chat__messaggi')
+  if (lista) area.scrollTop = area.scrollHeight
+  if (c === 'inviato' || (c === true && lista)) area.querySelector('#chat-testo')?.focus()
+}
+
 // Barra in basso anche sul sito, sul telefono, quando sei collegato
 let barraSito = null
 function disegnaBarraSito(u) {
@@ -499,7 +543,7 @@ function disegnaBarraSito(u) {
   }
   barraSito.hidden = !u
   barraSito.innerHTML = SCHEDE.map(([k, t]) => `<button type="button" data-sito-scheda="${k}" ${k === 'esplora' ? 'aria-current="page"' : ''}>
-    <svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg><span>${t}</span></button>`).join('')
+    <svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg><span>${t}</span>${k === 'chat' && nonLetti() ? `<span class="nav__badge">${nonLetti()}</span>` : ''}</button>`).join('')
   document.documentElement.classList.toggle('con-barra', !!u)
 }
 
@@ -539,6 +583,19 @@ export async function avviaConto(strumenti) {
     if (e.target.closest('[data-esplora]')) { e.preventDefault(); esplora() }
   })
   collegaCandidature(leggiCand)
+  const aggiornaTutto = () => {
+    const testo = area.querySelector('#chat-testo')
+    const scritto = testo?.value
+    const fuoco = document.activeElement === testo
+    disegnaArea()
+    disegnaBarraSito(utente())
+    const nuovo = area.querySelector('#chat-testo')
+    if (nuovo && scritto) nuovo.value = scritto
+    if (nuovo && fuoco) nuovo.focus()
+    if (area.querySelector('.chat__messaggi')) area.scrollTop = area.scrollHeight
+  }
+  quandoCambiaChat(aggiornaTutto)
+  quandoCambianoNotifiche(aggiornaTutto)
   avviaAnnunci({ apri, utente, apriAccesso, dopo: () => { modo = 'pubblico'; apriArea('attivita') } })
   quandoCambiaUtente(aggiornaSito)
   quandoCambia(disegnaArea)

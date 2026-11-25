@@ -2,6 +2,7 @@
 // Scade da sola. Agli altri si mostra solo la zona, mai la posizione esatta.
 // In questa versione di prova resta salvata solo in questo browser.
 import { CATEGORIE, INCARICHI_DEMO } from './incarichi.js'
+import { notifica } from './notifiche.js'
 
 const CHIAVE = 'jobexpress-disponibile'
 const NOME_CAT = Object.fromEntries(CATEGORIE)
@@ -156,6 +157,7 @@ export function avviaDisponibile(strumenti) {
   setInterval(() => {
     if (stato && stato.fino <= Date.now()) {
       messaggio = 'La tua disponibilità è scaduta. Riattivala quando vuoi.'
+      notifica('disponibilita', 'La tua disponibilità «Disponibile ora» è scaduta. Riattivala quando vuoi.', { scheda: 'home' })
       scrivi(null)
       disegna(radice)
     }
