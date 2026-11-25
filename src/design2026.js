@@ -1,5 +1,6 @@
 import { mostraIncarichi, scegliCategoria, soloCompatibili } from './incarichi.js'
 import { apriAccesso, avviaConto, candidati } from './conto.js'
+import { avviaPwa } from './pwa.js'
 import { avviaDisponibile, leggiDisponibile, quandoCambia } from './disponibile.js'
 document.documentElement.classList.add('js')
 const testata=document.querySelector('.testata')
@@ -64,3 +65,6 @@ soloCompatibili()
 document.querySelector('[data-vista-tasto=annunci]')?.click()
 if(box)mostraIncarichi(box,{apri,accesso,candidati})
 tab?.scrollIntoView({block:'start'})})
+
+// ===== app sul telefono =====
+avviaPwa({apri})

@@ -9,13 +9,13 @@ export const SUPABASE_KEY =
 
 // Titolare del trattamento: compilare prima di pubblicare il sito.
 export const TITOLARE = {
-  nome: '',
-  email: '',
+  nome: 'Alessandra Mihai',
+  email: 'alessandramihai59@gmail.com',
 }
 
 // Cambiare a ogni modifica sostanziale di privacy.html.
 // Viene salvata insieme a ogni contatto.
-export const VERSIONE_PRIVACY = '2026-11-24'
+export const VERSIONE_PRIVACY = '2026-11-25'
 
 export const COMMISSIONE = 0.12
 export const IVA = 0.22

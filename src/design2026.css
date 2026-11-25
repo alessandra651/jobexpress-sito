@@ -698,3 +698,25 @@ html.area-aperta .sito-nav{display:none}
 .friends__lista li{flex-wrap:nowrap}
 .friends__lista li > span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:600px){.friends__lista li{flex-wrap:wrap}.friends__lista li > span:nth-child(2){flex-basis:calc(100% - 3.5rem);order:0}}
+
+/* ===== Blocco 2: pagine di testo, app, avvisi ===== */
+.installa{margin-top:1rem;font:inherit;font-weight:700;font-size:.92rem;color:#263d35;background:#c4db94;border:0;border-radius:999px;padding:.6rem 1.1rem;min-height:2.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.installa::before{content:"";width:1rem;height:1rem;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3v12m0 0l-5-5m5 5l5-5M5 21h14' stroke='black' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3v12m0 0l-5-5m5 5l5-5M5 21h14' stroke='black' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.installa:hover{background:#fff}
+.installa[hidden]{display:none}
+.passi-installa{display:grid;gap:.5rem;padding-left:1.2rem}
+.avviso-versione{position:fixed;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;justify-content:center;max-width:min(560px,92vw);padding:.8rem 1rem;border-radius:20px;background:#263d35;color:#f3f3e8;box-shadow:0 20px 40px -18px rgba(0,0,0,.5)}
+.avviso-versione .tasto{background:#c4db94;color:#263d35;min-height:2.5rem}
+html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom))}
+.pagina-testo .testata{position:sticky;top:0}
+.pagina-testo main{padding-block:clamp(2rem,5vw,4rem)}
+.pagina-testo .testo{max-width:46rem}
+.pagina-testo .testo h1{font-size:clamp(2rem,5vw,3rem);line-height:1.05;margin:0 0 .6rem}
+.pagina-testo .testo h2{margin-top:2.2rem}
+.pagina-testo .testo li{margin-bottom:.4rem}
+.testo__data{color:#4d6a5e;font-size:.95rem}
+.testo__lead{font-size:1.25rem;line-height:1.5;color:#263d35}
+.avviso-bozza{padding:.9rem 1.1rem;border-radius:16px;background:#fff3d6;color:#5c4400;font-size:.95rem}
+.da-completare{background:#fff3d6;color:#5c4400;border-radius:6px;padding:0 .3rem}
+.valori{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.valori li{margin:0!important;padding:.45rem .9rem;border-radius:999px;background:#e8efd8;font-weight:700}
