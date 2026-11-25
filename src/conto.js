@@ -393,6 +393,7 @@ function chiudiArea() {
 
 function esplora() {
   chiudiArea()
+  document.querySelector('.menu--aperto') && document.querySelector('.menu-tasto')?.click()
   document.querySelector('[data-modo-tasto=lavoro]')?.click()
   document.querySelector('[data-vista-tasto=annunci]')?.click()
   document.querySelector('.apertura .tabellone')?.scrollIntoView({ block: 'start' })
@@ -505,9 +506,10 @@ function disegnaBarraSito(u) {
 // Pulsanti del sito che cambiano se sei collegato
 function aggiornaSito(u) {
   disegnaBarraSito(u)
+  document.querySelectorAll('[data-accedi-solo]').forEach((b) => { b.hidden = !!u })
   document.querySelectorAll('.testata [data-accedi], .testata [data-apri-area]').forEach((b) => {
     if (u) { b.removeAttribute('data-accedi'); b.setAttribute('data-apri-area', ''); b.textContent = 'La mia area' }
-    else { b.removeAttribute('data-apri-area'); b.setAttribute('data-accedi', 'email'); b.textContent = 'Accedi o registrati' }
+    else { b.removeAttribute('data-apri-area'); b.setAttribute('data-accedi', 'email'); b.textContent = 'Registrati gratis' }
   })
   const blocco = document.querySelector('.accesso')
   if (blocco) {
@@ -533,6 +535,8 @@ export async function avviaConto(strumenti) {
   document.addEventListener('click', (e) => {
     const a = e.target.closest('[data-apri-area]')
     if (a) { e.preventDefault(); apriArea('home') }
+    if (e.target.closest('[data-accedi-solo]')) { e.preventDefault(); apriAccesso('Bentornato', 'accedi') }
+    if (e.target.closest('[data-esplora]')) { e.preventDefault(); esplora() }
   })
   collegaCandidature(leggiCand)
   avviaAnnunci({ apri, utente, apriAccesso, dopo: () => { modo = 'pubblico'; apriArea('attivita') } })
