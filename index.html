@@ -17,6 +17,7 @@
       property="og:description"
       content="Dichiari gli orari in cui sei disponibile. Le attività che hanno un turno scoperto ti trovano. Si parte da Forlì."
     />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script type="module" src="/src/main.js"></script>
   </head>
@@ -55,8 +56,8 @@
         <div class="contenitore apertura__testa">
           <h1 id="titolo">Il lavoro,<br />quando serve.</h1>
           <p class="apertura__intro">
-            Tu dici in quali orari puoi lavorare. Chi ha un turno scoperto ti trova. Partiamo da Forlì, con ristoranti,
-            bar e hotel.
+            Tu dici in quali orari puoi lavorare. Chi ha un turno scoperto ti trova. Partiamo da Forlì, per aziende
+            e privati.
           </p>
         </div>
 
@@ -65,7 +66,7 @@
             <div class="tabellone__comandi">
               <div class="scelta" role="group" aria-label="Cosa cerchi">
                 <button type="button" data-modo-tasto="lavoro" aria-pressed="true">Cerco lavoro</button>
-                <button type="button" data-modo-tasto="personale" aria-pressed="false">Cerco personale</button>
+                <button type="button" data-modo-tasto="personale" aria-pressed="false">Offro lavoro</button>
               </div>
               <div class="scelta scelta--leggera" role="group" aria-label="Quando">
                 <button type="button" data-giorno-tasto="oggi" aria-pressed="true">Oggi</button>
@@ -114,6 +115,24 @@
       </section>
 
       <!-- COME FUNZIONA: corsie -->
+      <section class="sezione funzioni" id="funzioni" aria-labelledby="t-fun">
+        <div class="contenitore">
+          <div class="intro intro--stretta">
+            <h2 id="t-fun">Tutto in un posto, per chi cerca e per chi offre</h2>
+            <p>Pensato per chi ha tra i 18 e i 35 anni, a partire dagli universitari, e per chi ha bisogno di una mano.</p>
+          </div>
+          <div class="bento">
+            <article class="b b--grande"><span>Cerco lavoro · Offro lavoro</span><h3>Passi da una modalità all’altra quando vuoi</h3><p>Lo stesso account per candidarti e per pubblicare. Chi pubblica indica mansione, posizione, durata, compenso, urgenza e requisiti.</p></article>
+            <article class="b"><span>Disponibile ora</span><h3>Segnala che ci sei</h3><p>Un tocco e chi ha un turno scoperto ti trova.</p></article>
+            <article class="b"><span>Programma</span><h3>Scegli giorni e orari</h3><p>Il calendario delle tue disponibilità.</p></article>
+            <article class="b"><span>Vicino a te</span><h3>Opportunità nella tua zona</h3><p>Ricerca per categoria, durata e compenso.</p></article>
+            <article class="b b--chiara"><span>Le tue attività</span><h3>Incarichi e compensi</h3><p>Candidature, messaggi interni e storico in un posto solo.</p></article>
+            <article class="b b--larga"><span>Chi può pubblicare</span><h3>Aziende e privati, sempre gratis</h3><p>Bar e ristoranti, negozi, hotel, imprese, organizzatori di eventi. Ma anche famiglie, genitori e studenti che cercano aiuto occasionale.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- COME FUNZIONA -->
       <section class="sezione" id="come-funziona" aria-labelledby="t-come">
         <div class="contenitore">
           <div class="intro">
@@ -168,8 +187,8 @@
               </li>
               <li class="passo passo--jobexpress">
                 <span class="passo__chi">JobExpress</span>
-                <h3>Fattura la commissione</h3>
-                <p>All’attività, e solo per gli incarichi svolti.</p>
+                <h3>Resta gratuito</h3>
+                <p>Pubblicare e candidarsi non costa nulla. Gli abbonamenti sono facoltativi.</p>
               </li>
             </ol>
           </div>
@@ -197,17 +216,17 @@
         </div>
         <div class="per-chi__lato per-chi__lato--attivita">
           <div class="per-chi__testo">
-            <h2>Ti manca una persona in turno?</h2>
+            <h2>Ti serve una mano, in azienda o a casa?</h2>
             <p>
-              Un’assenza improvvisa, un evento, un weekend pieno. Invece di dieci telefonate, vedi subito chi ha detto di
+              Sei un’attività o un privato: un’assenza improvvisa, un evento, un weekend pieno, qualcuno per i bambini. Invece di dieci telefonate, vedi subito chi ha detto di
               essere disponibile in quegli orari.
             </p>
             <h3 class="elenco__titolo">Quando apriamo, potrai</h3>
             <ul class="elenco">
-              <li>pubblicare un incarico senza pagare nulla</li>
+              <li>pubblicare un incarico gratis, come azienda o come privato</li>
               <li>filtrare per esperienza e disponibilità</li>
               <li>gestire candidature e conferme in un posto solo</li>
-              <li>ritrovare richieste, commissioni e fatture</li>
+              <li>ritrovare richieste e incarichi svolti</li>
             </ul>
             <a class="tasto tasto--chiaro" href="#contatti" data-apri-modulo="attivita">Lascia i contatti dell’attività</a>
           </div>
@@ -218,39 +237,25 @@
       <section class="sezione" id="categorie" aria-labelledby="t-cat">
         <div class="contenitore categorie">
           <div class="intro intro--stretta">
-            <h2 id="t-cat">Prima la ristorazione, poi il resto</h2>
+            <h2 id="t-cat">Non solo ristorazione: ogni lavoro breve</h2>
             <p>
-              Meglio poche categorie con abbastanza persone e attività che venti categorie vuote. Ne apriremo una alla volta.
+              Ogni categoria si apre quando i requisiti legali, assicurativi e professionali sono a posto. Si parte dalla
+              ristorazione.
             </p>
           </div>
           <ul class="categorie__lista">
             <li class="categoria categoria--prima">
               <h3>Ristorazione</h3>
-              <p>Sala, aiuto cucina, lavapiatti, runner, personale per eventi. <strong>Si parte da qui.</strong></p>
+              <p>Sala, aiuto cucina, lavapiatti, runner, banco bar. <strong>Si parte da qui.</strong></p>
             </li>
-            <li class="categoria">
-              <h3>Bar e locali</h3>
-              <p>Banco bar e supporto nei momenti di punta.</p>
-            </li>
-            <li class="categoria">
-              <h3>Hotel e strutture ricettive</h3>
-              <p>Supporto operativo, riassetto, eventi.</p>
-            </li>
-            <li class="categoria">
-              <h3>Commercio</h3>
-              <p>Supporto alla vendita, inventario, riordino.</p>
-            </li>
-            <li class="categoria">
-              <h3>Eventi</h3>
-              <p>Allestimento, accoglienza, assistenza, organizzazione.</p>
-            </li>
-            <li class="categoria categoria--futura">
-              <h3>Più avanti</h3>
-              <p>
-                Pulizie, pet sitting, babysitting, assistenza domestica e piccole commissioni, ma solo dopo una verifica
-                giuridica dedicata.
-              </p>
-            </li>
+            <li class="categoria"><h3>Commercio</h3><p>Supporto alla vendita, inventario, riordino.</p></li>
+            <li class="categoria"><h3>Eventi</h3><p>Allestimento, accoglienza, assistenza, organizzazione.</p></li>
+            <li class="categoria"><h3>Babysitting e pet sitting</h3><p>Una mano per famiglie e animali, anche last minute.</p></li>
+            <li class="categoria"><h3>Pulizie e giardinaggio</h3><p>Casa, uffici, giardini e piccoli lavori.</p></li>
+            <li class="categoria"><h3>Ripetizioni</h3><p>Studenti che aiutano altri studenti.</p></li>
+            <li class="categoria"><h3>Traslochi</h3><p>Braccia in più per un giorno.</p></li>
+            <li class="categoria"><h3>Fotografia e servizi digitali</h3><p>Shooting, contenuti, supporto online.</p></li>
+            <li class="categoria categoria--futura"><h3>Altre attività</h3><p>Le attiviamo una alla volta, dopo le verifiche.</p></li>
           </ul>
         </div>
       </section>
@@ -259,43 +264,37 @@
       <section class="sezione sezione--menta" id="costi" aria-labelledby="t-costi">
         <div class="contenitore costi">
           <div class="intro intro--stretta">
-            <h2 id="t-costi">Chi lavora riceve tutto il compenso</h2>
+            <h2 id="t-costi">Pubblicare è gratuito. Il resto è facoltativo.</h2>
             <p>
-              JobExpress non trattiene nulla dalla paga. Chiede una commissione all’attività, solo quando l’incarico viene
-              svolto.
+              Nessuna commissione sul compenso: chi lavora riceve tutto, chi pubblica non paga. Gli abbonamenti aggiungono
+              strumenti in più, senza toccare la ricerca di lavoro e le candidature, che restano gratuite.
             </p>
             <p class="nota">
-              Il 12% è un’ipotesi che stiamo verificando con le attività, non una tariffa definitiva. Anche l’IVA è indicativa.
+              Piani e prezzi sono ipotesi in fase di validazione, anche giuridica. Nessun pagamento è attivo.
             </p>
           </div>
-
-          <div class="calcolo" data-calcolo>
-            <label class="calcolo__etichetta" for="compenso">Compenso lordo dell’incarico</label>
-            <output class="calcolo__valore" for="compenso" data-c-compenso>80 €</output>
-            <input id="compenso" type="range" min="40" max="200" step="5" value="80" />
-            <div class="barra" aria-hidden="true">
-              <span class="barra__lavoro">A chi lavora</span>
-              <span class="barra__commissione"></span>
-              <span class="barra__iva"></span>
-            </div>
-            <dl class="conto">
-              <div class="conto__riga conto__riga--lavoro">
-                <dt>A chi lavora, pagato direttamente dall’attività</dt>
-                <dd data-c-lavoro>80,00 €</dd>
-              </div>
-              <div class="conto__riga conto__riga--commissione">
-                <dt>Commissione JobExpress, 12%</dt>
-                <dd data-c-commissione>9,60 €</dd>
-              </div>
-              <div class="conto__riga conto__riga--iva">
-                <dt>IVA sulla commissione, 22% se applicabile</dt>
-                <dd data-c-iva>2,11 €</dd>
-              </div>
-              <div class="conto__riga conto__riga--totale">
-                <dt>Fattura JobExpress all’attività</dt>
-                <dd data-c-totale>11,71 €</dd>
-              </div>
-            </dl>
+          <div class="piani">
+            <article class="piano">
+              <h3>Free</h3>
+              <p class="piano__prezzo">0 €<small>/mese</small></p>
+              <ul><li>Registrazione e profilo</li><li>Ricerca e candidature</li><li>Pubblicazione annunci</li><li>Messaggistica interna</li></ul>
+            </article>
+            <article class="piano">
+              <h3>Plus</h3>
+              <p class="piano__prezzo">4,99 €<small>/mese</small></p>
+              <ul><li>Tutto di Free</li><li>Senza pubblicità</li><li>Statistiche e guadagni</li><li>Calendario avanzato</li></ul>
+            </article>
+            <article class="piano piano--friends">
+              <span class="piano__tag">Consigliato per gruppi</span>
+              <h3>Friends</h3>
+              <p class="piano__prezzo">9,99 €<small>/mese in tre</small></p>
+              <ul><li>Tre account indipendenti</li><li>Tutto di Plus per ognuno</li><li>Invito con link o codice</li><li>Un solo pagamento</li></ul>
+            </article>
+            <article class="piano piano--conto">
+              <p class="piano__tag">Il conto in tre</p>
+              <p class="piano__grande">3,33 €<small>a testa al mese</small></p>
+              <p>Tre Plus costerebbero 14,97 €. Con Friends risparmiate 4,98 € al mese, circa il 33%.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -350,8 +349,8 @@
                 <p>I primi incarichi, con le regole e i partner giusti già al loro posto.</p>
               </li>
               <li class="tappa">
-                <h3>Emilia-Romagna</h3>
-                <p>Comuni vicini, poi Cesena, Ravenna, Rimini e Bologna.</p>
+                <h3>Cesena e poi l’Italia</h3>
+                <p>Cesena è la seconda città, poi l’espansione progressiva nelle altre città italiane.</p>
               </li>
             </ol>
           </div>
@@ -550,7 +549,7 @@
                     </select>
                   </div>
                   <div class="campo">
-                    <label for="a-comm">Una commissione del 12% ti sembra accettabile</label>
+                    <label for="a-comm">Un abbonamento facoltativo per la tua attività ti sembra utile</label>
                     <select id="a-comm" name="opinione_commissione">
                       <option value="non_so">Non so ancora</option>
                       <option value="si">Sì</option>
