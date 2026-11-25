@@ -6,7 +6,14 @@ export default defineConfig({
   base: './',
   build: {
     rollupOptions: {
-      input: { index: 'index.html', privacy: 'privacy.html' },
+      input: {
+        index: 'index.html',
+        privacy: 'privacy.html',
+        cookie: 'cookie.html',
+        condizioni: 'condizioni.html',
+        sicurezza: 'sicurezza.html',
+        'chi-siamo': 'chi-siamo.html',
+      },
     },
   },
 })

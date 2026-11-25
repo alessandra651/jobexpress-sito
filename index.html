@@ -8,7 +8,7 @@
       name="description"
       content="Trova incarichi vicino a te, scegli quando lavorare e guadagna nel tuo tempo libero. Registrati gratuitamente: si parte da Forlì."
     />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#263d35" />
     <meta name="color-scheme" content="light" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
@@ -19,6 +19,11 @@
     />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Versione di prova: non indicizzare finché il sito non apre al pubblico (togliere al lancio) -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icone/icona-180.png" />
+    <meta name="apple-mobile-web-app-title" content="JobExpress" />
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
@@ -725,9 +730,49 @@
               <p>Dipende dall’incarico: chi pubblica indica i requisiti. Serve invece avere almeno 18 anni.</p>
             </details>
             <details>
+              <summary>Posso scegliere quando lavorare?</summary>
+              <p>Sì. Nel calendario indichi le ore in cui sei libero ogni settimana, blocchi i giorni che vuoi e aggiungi ore extra quando capita. Ti mostriamo gli incarichi che ci stanno dentro.</p>
+            </details>
+            <details>
+              <summary>Come funziona «Disponibile ora»?</summary>
+              <p>Accendi l’interruttore e scegli per quanto tempo ci sei, le categorie e la distanza. Chi cerca qualcuno vede che sei disponibile, ma solo la tua zona, mai la posizione esatta. Alla fine del tempo si spegne da solo.</p>
+            </details>
+            <details>
+              <summary>JobExpress trattiene una commissione sul mio compenso?</summary>
+              <p>No. Il compenso lo paga direttamente chi pubblica a chi lavora. JobExpress non riceve e non trattiene nulla.</p>
+            </details>
+            <details>
+              <summary>Posso pubblicare un incarico come privato?</summary>
+              <p>Sì. Famiglie e privati pubblicano come le aziende, sempre gratis. Per gli incarichi a casa tua si vede solo la zona: l’indirizzo lo riceve solo la persona che confermi.</p>
+            </details>
+            <details>
+              <summary>Qual è la differenza tra Free e Plus?</summary>
+              <p>Con Free cerchi, ti candidi, pubblichi e scrivi in chat, senza limiti. Plus aggiunge strumenti per organizzarti: statistiche dettagliate, report e calendario avanzato. Non dà più visibilità e non fa passare avanti nelle candidature.</p>
+            </details>
+            <details>
+              <summary>Come funziona Friends?</summary>
+              <p>È un abbonamento unico per tre persone, ognuna con il suo account. Chi lo attiva invita due amici con un link o un codice. Ognuno ha profilo, chat, calendario e guadagni suoi: nessuno vede i dati degli altri.</p>
+            </details>
+            <details>
+              <summary>Posso disdire l’abbonamento?</summary>
+              <p>Sì, quando vuoi, da «La mia area» → Profilo. Resta attivo fino alla fine del periodo già pagato. In questa versione di prova i pagamenti sono simulati.</p>
+            </details>
+            <details>
+              <summary>Come vengono gestite le recensioni?</summary>
+              <p>Si possono lasciare solo dopo un incarico completato, e solo tra le persone che vi hanno partecipato. Se una recensione ti sembra ingiusta puoi contestarla: la moderazione la verifica.</p>
+            </details>
+            <details>
+              <summary>Come posso segnalare un utente o un annuncio?</summary>
+              <p>Da ogni annuncio, dal pulsante «Segnala», e da ogni chat, dal menu ···. Puoi anche bloccare una persona. Ogni segnalazione viene esaminata.</p>
+            </details>
+            <details>
+              <summary>Come posso eliminare il mio account?</summary>
+              <p>Da «La mia area» → Profilo → «Elimina il mio account». Account e profilo vengono cancellati subito.</p>
+            </details>
+            <details>
               <summary>Che fine fanno i miei dati?</summary>
               <p>
-                Li usiamo solo per farti funzionare il servizio e ricontattarti. Non li vendiamo e non li passiamo alle attività. Puoi
+                Li usiamo solo per farti funzionare il servizio. Non li vendiamo e non li usiamo per pubblicità. Puoi
                 chiedere di cancellarli quando vuoi, come spiega l’<a href="privacy.html">informativa privacy</a>.
               </p>
             </details>
@@ -744,9 +789,11 @@
             Versione di prova. In questa fase JobExpress non svolge attività di intermediazione di lavoro e non gestisce
             pagamenti.
           </p>
+          <button type="button" class="installa" data-installa>Installa l’app sul telefono</button>
         </div>
         <nav class="piede__col" aria-label="JobExpress">
           <h2>JobExpress</h2>
+          <a href="chi-siamo.html">Chi siamo</a>
           <a href="#come-funziona">Come funziona</a>
           <a href="#funzioni">Perché JobExpress</a>
           <a href="#territorio">Dove siamo</a>
@@ -756,18 +803,25 @@
           <a href="#inizio" data-esplora>Esplora gli incarichi</a>
           <a href="#" data-accedi="email">Crea un profilo</a>
           <a href="#costi">Abbonamenti</a>
+          <a href="sicurezza.html">Sicurezza</a>
         </nav>
         <nav class="piede__col" aria-label="Per aziende e privati">
           <h2>Per aziende e privati</h2>
           <a href="#" data-pubblica>Pubblica un incarico</a>
           <a href="#per-chi">Trova personale</a>
-          <a href="#impegni">Regole e garanzie</a>
+          <a href="condizioni.html">Regole di pubblicazione</a>
         </nav>
         <nav class="piede__col" aria-label="Supporto e informazioni legali">
           <h2>Supporto</h2>
           <a href="#domande">Domande frequenti</a>
           <a href="#contatti">Contattaci</a>
-          <a href="privacy.html">Informativa privacy</a>
+          <a href="sicurezza.html">Segnalazioni e sicurezza</a>
+        </nav>
+        <nav class="piede__col" aria-label="Informazioni legali">
+          <h2>Informazioni legali</h2>
+          <a href="privacy.html">Privacy</a>
+          <a href="cookie.html">Cookie policy</a>
+          <a href="condizioni.html">Condizioni del servizio</a>
         </nav>
       </div>
     </footer>

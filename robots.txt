@@ -1,2 +1,4 @@
+# Versione di prova: il sito non va indicizzato finché non apre al pubblico.
+# Al lancio sostituire con:  User-agent: *  /  Allow: /
 User-agent: *
-Allow: /
+Disallow: /
