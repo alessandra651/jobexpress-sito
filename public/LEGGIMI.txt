@@ -1,0 +1,7 @@
+Logo JobExpress
+
+attuale-icona.svg          = il logo di adesso (non modificato).
+proposta-*.svg             = versioni armonizzate con la palette (verde foresta, lime, emerald).
+                             Sono PROPOSTE: si usano solo dopo l'approvazione di Alessandra.
+
+Le icone dell'app (cartella icone/) per ora usano il logo attuale.

@@ -1,0 +1,44 @@
+{
+  "name": "JobExpress",
+  "short_name": "JobExpress",
+  "description": "Hai qualche ora libera? Falla valere. Trova incarichi vicino a te o trova personale.",
+  "lang": "it",
+  "start_url": "./index.html?app=1",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3F3E8",
+  "theme_color": "#263D35",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icone/icona-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icone/icona-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icone/icona-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Esplora gli incarichi",
+      "url": "./index.html#inizio"
+    },
+    {
+      "name": "La mia area",
+      "url": "./index.html#area"
+    }
+  ]
+}
