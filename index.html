@@ -119,7 +119,7 @@
             <div class="tabellone__esito">
               <p class="tabellone__conto" data-conto aria-live="polite"></p>
               <p class="tabellone__nota">Trascina i bordi della fascia. I dati qui sopra sono esempi, non offerte reali.</p>
-              <a class="tasto" href="#contatti" data-usa-orari>Registrati con questi orari</a>
+              <button type="button" class="tasto" data-cerca-orari>Vedi gli incarichi in questi orari</button>
             </div>
           </div>
         </div>
@@ -207,7 +207,7 @@
               <li>candidarti in pochi tocchi</li>
               <li>ritrovare gli incarichi svolti e le valutazioni ricevute</li>
             </ul>
-            <a class="tasto" href="#contatti" data-apri-modulo="lavoro">Registrati gratuitamente</a>
+            <button type="button" class="tasto" data-accedi="email">Registrati gratuitamente</button>
           </div>
         </div>
         <div class="per-chi__lato per-chi__lato--attivita">
@@ -402,21 +402,30 @@
         <div class="contenitore contatti">
           <div class="intro intro--stretta">
             <h2 id="t-contatti">Inizia ora</h2>
-            <p>
-              Registrati gratuitamente e raccontaci di cosa hai bisogno: ti scriviamo appena ci sono incarichi nella tua zona.
-            </p>
-            <p class="nota">Versione di prova: l’iscrizione non è ancora una candidatura né un’offerta di lavoro.</p>
+            <p>Un account solo, per lavorare e per cercare personale. Gratis, senza scadenza.</p>
+            <div class="inizia">
+              <button type="button" class="inizia__scelta" data-accedi="email">
+                <strong>Voglio lavorare</strong><span>Crea il profilo, imposta la disponibilità e candidati.</span><i aria-hidden="true">→</i>
+              </button>
+              <button type="button" class="inizia__scelta inizia__scelta--scura" data-pubblica>
+                <strong>Cerco personale</strong><span>Pubblica un incarico gratis, come attività o come privato.</span><i aria-hidden="true">→</i>
+              </button>
+            </div>
+            <h3 class="contatti__titolo">Collabora con noi</h3>
+            <p>Sei un’associazione, un’università, un consulente o un’agenzia? Scrivici con il modulo qui accanto.</p>
           </div>
 
           <div class="moduli" data-moduli>
-            <div class="scelta scelta--piena" role="tablist" aria-label="Chi sei">
+            <!-- Moduli "Cerco lavoro" e "Ho un'attività" sostituiti dalla registrazione (25/11/2026).
+                 Restano qui nascosti: per riattivarli togliere "hidden" da questa riga e da pan-lavoro. -->
+            <div class="scelta scelta--piena" role="tablist" aria-label="Chi sei" hidden>
               <button type="button" role="tab" id="tab-lavoro" aria-controls="pan-lavoro" aria-selected="true">Cerco lavoro</button>
               <button type="button" role="tab" id="tab-attivita" aria-controls="pan-attivita" aria-selected="false" tabindex="-1">Ho un’attività</button>
               <button type="button" role="tab" id="tab-partner" aria-controls="pan-partner" aria-selected="false" tabindex="-1">Voglio collaborare</button>
             </div>
 
             <!-- LAVORO -->
-            <div role="tabpanel" id="pan-lavoro" aria-labelledby="tab-lavoro">
+            <div role="tabpanel" id="pan-lavoro" aria-labelledby="tab-lavoro" hidden>
               <form class="modulo" data-modulo="lavoro" novalidate>
                 <div class="campi">
                   <div class="campo">
@@ -623,7 +632,7 @@
             </div>
 
             <!-- PARTNER -->
-            <div role="tabpanel" id="pan-partner" aria-labelledby="tab-partner" hidden>
+            <div role="tabpanel" id="pan-partner" aria-labelledby="tab-partner">
               <form class="modulo" data-modulo="partner" novalidate>
                 <div class="campi">
                   <div class="campo">
@@ -665,7 +674,7 @@
                   <label>Non compilare <input name="sito_web" tabindex="-1" autocomplete="off" /></label>
                 </div>
                 <div class="modulo__fine">
-                  <button class="tasto" type="submit">Registrati gratuitamente</button>
+                  <button class="tasto" type="submit">Invia il messaggio</button>
                   <p class="modulo__esito" role="alert"></p>
                 </div>
               </form>
