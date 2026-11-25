@@ -1,4 +1,5 @@
 import { mostraIncarichi, scegliCategoria } from './incarichi.js'
+import { avviaDisponibile, leggiDisponibile, quandoCambia } from './disponibile.js'
 document.documentElement.classList.add('js')
 const testata=document.querySelector('.testata')
 addEventListener('scroll',()=>testata?.classList.toggle('scesa',scrollY>12),{passive:true})
@@ -25,7 +26,9 @@ const ANN_PERSONE=[
 {t:'Luca, disponibile domani',c:'Traslochi, eventi',d:'Cesena',q:'Domani 9:00–17:00',e:'Automunito',x:'Abituato a lavori di fatica e a squadre piccole.',r:['Si sposta anche a Forlì']}]
 const tab=document.querySelector('[data-tabellone]'),box=document.querySelector('[data-annunci]')
 const disegna=()=>{if(!tab||!box)return;const lav=tab.dataset.modo!=='personale',L=ANN_PERSONE;if(lav){mostraIncarichi(box,{apri,accesso});return}
-box.innerHTML=`<p class="annunci__nota">${lav?'Annunci di esempio, non offerte reali. Clicca per aprire.':'Persone di esempio, non reali. Clicca per aprire.'}</p>`+L.map((a,i)=>`<button type="button" class="annuncio" data-i="${i}"><h3>${a.t}</h3><span class="annuncio__euro">${a.e}</span><p>${a.c} · ${a.d} · ${a.q}</p></button>`).join('')
+const mia=leggiDisponibile()
+const tu=mia?`<div class="annuncio annuncio--tu"><h3>Tu, disponibile ora</h3><span class="annuncio__euro">fino alle ${new Date(mia.fino).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</span><p>Così ti vede chi cerca personale: zona di Forlì, entro ${mia.km} km. Mai la posizione esatta.</p></div>`:''
+box.innerHTML=tu+`<p class="annunci__nota">${lav?'Annunci di esempio, non offerte reali. Clicca per aprire.':'Persone di esempio, non reali. Clicca per aprire.'}</p>`+L.map((a,i)=>`<button type="button" class="annuncio" data-i="${i}"><h3>${a.t}</h3><span class="annuncio__euro">${a.e}</span><p>${a.c} · ${a.d} · ${a.q}</p></button>`).join('')
 box.querySelectorAll('.annuncio').forEach(b=>b.onclick=()=>{const a=L[b.dataset.i];apri(`<h2>${a.t}</h2><p><strong>${a.c}</strong><br>${a.d} · ${a.q}</p><div class="etichette"><span>${a.e}</span>${a.r.map(x=>`<span>${x}</span>`).join('')}</div><p>${a.x}</p><div class="finestra__azioni"><button class="tasto" type="button" data-cand>${lav?'Candidati':'Contatta'}</button><button class="tasto tasto--chiaro" type="button" data-ch>Chiudi</button></div><p class="finestra__nota">Esempio dimostrativo.</p>`);dlg.querySelector('[data-ch]').onclick=()=>dlg.close();dlg.querySelector('[data-cand]').onclick=()=>accesso(lav?'Per candidarti, accedi':'Per contattare, accedi')})}
 let ultimoModo=null
 if(tab&&box){new MutationObserver(()=>{if(tab.dataset.modo!==ultimoModo){ultimoModo=tab.dataset.modo
@@ -42,3 +45,7 @@ document.querySelector('[data-modo-tasto=lavoro]')?.click()
 document.querySelector('[data-vista-tasto=annunci]')?.click()
 if(box&&tab)mostraIncarichi(box,{apri,accesso})
 document.querySelector('.apertura .tabellone')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}))
+
+// ===== disponibile ora =====
+avviaDisponibile({apri})
+quandoCambia(()=>{if(tab&&box&&tab.dataset.modo==='personale')disegna()})

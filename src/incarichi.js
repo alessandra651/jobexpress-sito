@@ -52,9 +52,17 @@ const DATI = [
   [18, 'Servizio in sala per un matrimonio', 'ristorazione', 'Catering', 'azienda', 'Castrocaro Terme', 'villa per eventi', 11, 'sabato', 11, 18, 12, false, 'minima', ['Camicia bianca e pantaloni neri'], 'Servizio ai tavoli durante il pranzo di nozze, in una squadra di otto persone.'],
 ]
 
+// Posizione indicativa sulla mappa (10 unità ≈ 1 km, Forlì centro = 0,0).
+// Per i privati è solo il centro di una zona larga, mai un indirizzo.
+const POSIZIONE = {
+  1: [8, -8], 2: [6, -19], 3: [33, 10], 4: [157, 97], 5: [-6, 29], 6: [73, 35], 7: [-34, -22], 8: [-10, 10], 9: [-5, -39],
+  10: [75, 82], 11: [5, 6], 12: [164, 90], 13: [-14, -12], 14: [18, 107], 15: [-4, -6], 16: [15, 12], 17: [-29, 4], 18: [-73, 53],
+}
+
 export const INCARICHI_DEMO = DATI.map(([id, titolo, cat, chi, tipo, citta, zona, km, giorno, inizio, fine, euroOra, urgente, esperienza, requisiti, descrizione]) => ({
   id, titolo, cat, chi, tipo, citta, zona, km, giorno, inizio, fine, euroOra, urgente, esperienza, requisiti, descrizione,
   ore: fine - inizio,
+  pos: POSIZIONE[id],
   totale: Math.round(euroOra * (fine - inizio) * 100) / 100,
 }))
 
@@ -96,6 +104,8 @@ function compatibilita(a) {
 }
 
 // ---------- stato dei filtri ----------
+let vista = 'elenco'
+let zona = 'citta'
 const filtri = { cat: 'tutte', quando: 'tutti', citta: 'tutte', km: 0, minimo: 0, chi: 'tutti', urgenti: false, compatibili: false, salvati: false, ordine: 'vicini' }
 export function scegliCategoria(cat) {
   filtri.cat = cat
@@ -143,8 +153,15 @@ function barraFiltri() {
     </div>
     </details>
   </div>
-  <p class="filtri__conto" data-conto-incarichi aria-live="polite"></p>
-  <div class="schede" data-schede></div>
+  <div class="bacheca__barra">
+    <p class="filtri__conto" data-conto-incarichi aria-live="polite"></p>
+    <div class="scelta scelta--vista2" role="group" aria-label="Come vedi gli incarichi">
+      <button type="button" data-vista2="elenco" aria-pressed="${vista === 'elenco'}">Elenco</button>
+      <button type="button" data-vista2="mappa" aria-pressed="${vista === 'mappa'}">Mappa</button>
+    </div>
+  </div>
+  <div class="schede" data-schede${vista === 'mappa' ? ' hidden' : ''}></div>
+  <div class="mappa-inc" data-mappa-inc${vista === 'elenco' ? ' hidden' : ''}></div>
   <p class="annunci__nota">Incarichi di esempio, non offerte reali. Il totale è una stima lorda: ore × compenso orario. Le tariffe sono esempi, non minimi di legge.</p>`
 }
 
@@ -230,16 +247,60 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
 
 const filtriAttivi = () => filtri.quando !== 'tutti' || filtri.citta !== 'tutte' || filtri.km || filtri.minimo || filtri.chi !== 'tutti' || filtri.urgenti || filtri.compatibili || filtri.salvati
 
+// ---------- mappa ----------
+const LUOGHI = [
+  ['Forlimpopoli', 69, 38], ['Bertinoro', 75, 82], ['Meldola', 18, 107], ['Castrocaro', -73, 53], ['Cesena', 161, 93], ['Predappio', -50, 132],
+]
+
+function mappa(lista) {
+  const citta = zona === 'citta'
+  const vb = citta ? '-50 -50 100 100' : '-110 -62 300 212'
+  const k = citta ? 0.33 : 1 // dimensione dei segni in base allo zoom
+  const visibili = lista.filter((a) => {
+    const [x, y] = a.pos
+    return citta ? Math.abs(x) <= 48 && Math.abs(y) <= 48 : true
+  })
+  const fuori = lista.length - visibili.length
+  const sfondo = citta
+    ? `<circle class="mi__anello" r="20"/><circle class="mi__anello" r="40"/>
+       <text class="mi__zona" x="0" y="1.1" text-anchor="middle" font-size="3.2">Centro</text>`
+    : `<polyline class="mi__via" points="-215,-121 -125,-70 0,0 69,38 161,93 235,137"/>
+       ${LUOGHI.map(([n, x, y]) => `<circle class="mi__paese" cx="${x}" cy="${y}" r="4"/><text class="mi__nome" x="${x}" y="${y - 9}" text-anchor="middle">${n}</text>`).join('')}
+       <circle class="mi__paese" r="7"/><text class="mi__nome mi__nome--forte" x="0" y="-49" text-anchor="middle">Forlì</text>`
+  const segni = visibili.map((a) => {
+    const [x, y] = a.pos
+    const r = 5.5 * k
+    const etichetta = `${a.titolo}, ${luogo(a)}, ${GIORNI[a.giorno]} ${orario(a.inizio)}–${orario(a.fine)}, ${euro.format(a.euroOra)} all’ora`
+    const zonaPriv = a.tipo === 'privato' ? `<circle class="mi__zonapriv" cx="${x}" cy="${y}" r="${citta ? 9 : 10}"/>` : ''
+    const prezzo = citta ? `<text class="mi__prezzo" x="${x}" y="${y - r - 1}" text-anchor="middle" font-size="2.8">${String(a.euroOra).replace('.', ',')} €/h</text>` : ''
+    return `<g class="mi__segno${a.urgente ? ' urgente' : ''}" role="button" tabindex="0" data-dettagli="${a.id}" aria-label="${esc(etichetta)}">
+      ${zonaPriv}<circle class="mi__punto" cx="${x}" cy="${y}" r="${r}"/>${prezzo}<title>${esc(etichetta)}</title></g>`
+  }).join('')
+  return `
+    <div class="mi__comandi">
+      <div class="scelta scelta--vista2" role="group" aria-label="Zona della mappa">
+        <button type="button" data-zona="citta" aria-pressed="${citta}">Forlì città</button>
+        <button type="button" data-zona="dintorni" aria-pressed="${!citta}">Dintorni</button>
+      </div>
+      <p class="mi__legenda"><span><i class="mi__l-punto"></i>Attività</span><span><i class="mi__l-zona"></i>Privato: solo la zona, mai l’indirizzo</span>${citta ? '<span>Anelli a 2 e 4 km dal centro</span>' : ''}</p>
+    </div>
+    <svg class="mi__svg" viewBox="${vb}" role="group" aria-label="Mappa degli incarichi: tocca un punto per aprire l’incarico">${sfondo}${segni}</svg>
+    ${fuori ? `<p class="mi__fuori">${fuori} ${fuori === 1 ? 'incarico è' : 'incarichi sono'} fuori città: guarda «Dintorni».</p>` : ''}
+    ${!lista.length ? '<p class="mi__fuori">Nessun incarico con questi filtri.</p>' : ''}`
+}
+
 // ---------- avvio ----------
 export function mostraIncarichi(box, strumenti) {
   const salvati = leggiSalvati()
   box.innerHTML = barraFiltri()
   const schede = box.querySelector('[data-schede]')
   const conto = box.querySelector('[data-conto-incarichi]')
+  const scatola = box.querySelector('[data-mappa-inc]')
 
   const ridisegna = () => {
     const lista = filtra(salvati)
     conto.textContent = `${lista.length} ${lista.length === 1 ? 'incarico' : 'incarichi'}`
+    if (vista === 'mappa') scatola.innerHTML = mappa(lista)
     schede.innerHTML = lista.length
       ? lista.map((a) => scheda(a, salvati.has(a.id))).join('')
       : `<div class="vuoto"><strong>Non ci sono incarichi compatibili con questi filtri.</strong><p>Prova ad ampliare il raggio di ricerca o modificare la disponibilità.</p><button type="button" class="tasto tasto--chiaro" data-azzera>Togli i filtri</button></div>`
@@ -251,6 +312,19 @@ export function mostraIncarichi(box, strumenti) {
     if (cat) {
       filtri.cat = cat.dataset.fCat
       box.querySelectorAll('[data-f-cat]').forEach((b) => b.setAttribute('aria-pressed', b === cat))
+      return ridisegna()
+    }
+    const v = e.target.closest('[data-vista2]')
+    if (v) {
+      vista = v.dataset.vista2
+      box.querySelectorAll('[data-vista2]').forEach((b) => b.setAttribute('aria-pressed', b === v))
+      schede.hidden = vista !== 'elenco'
+      scatola.hidden = vista !== 'mappa'
+      return ridisegna()
+    }
+    const z = e.target.closest('[data-zona]')
+    if (z) {
+      zona = z.dataset.zona
       return ridisegna()
     }
     const cuore = e.target.closest('[data-salva]')
@@ -265,6 +339,13 @@ export function mostraIncarichi(box, strumenti) {
     if (e.target.closest('[data-azzera]')) {
       Object.assign(filtri, { cat: 'tutte', quando: 'tutti', citta: 'tutte', km: 0, minimo: 0, chi: 'tutti', urgenti: false, compatibili: false, salvati: false })
       mostraIncarichi(box, strumenti)
+    }
+  }
+  box.onkeydown = (e) => {
+    const segno = e.target.closest('.mi__segno')
+    if (segno && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault()
+      segno.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     }
   }
   box.onchange = (e) => {
