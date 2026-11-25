@@ -179,7 +179,7 @@ function conferma(modulo, tipo) {
   riquadro.className = 'ricevuto'
   riquadro.tabIndex = -1
   const titolo = document.createElement('h3')
-  titolo.textContent = 'Contatti ricevuti'
+  titolo.textContent = 'Registrazione ricevuta'
   const corpo = document.createElement('p')
   corpo.textContent = CONFERME[tipo]
   riquadro.append(titolo, corpo)
@@ -215,7 +215,7 @@ async function invia(modulo) {
         ? 'Il modulo non è ancora collegato alla raccolta dati. I contatti non sono stati inviati.'
         : 'I contatti non sono stati inviati. Controlla la connessione e riprova: quello che hai scritto è ancora qui.'
     tasto.disabled = false
-    tasto.textContent = 'Lascia i contatti'
+    tasto.textContent = 'Registrati gratuitamente'
   }
 }
 

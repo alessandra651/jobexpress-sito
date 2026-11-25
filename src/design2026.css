@@ -97,3 +97,59 @@ h1,h2,h3,.marchio,.piano__prezzo,.piano__grande{font-family:'Manrope','DM Sans',
 .b--larga{grid-column:span 2;background:#e8efd8}
 @media(max-width:900px){.bento{grid-template-columns:1fr 1fr}.b--grande{grid-column:span 2;grid-row:auto}}
 @media(max-width:560px){.bento{grid-template-columns:1fr}.b--grande,.b--larga{grid-column:auto}}
+/* ===== logo e scritta luminosi ===== */
+.marchio__segno{filter:drop-shadow(0 0 6px rgba(196,219,148,.95)) drop-shadow(0 0 16px rgba(71,131,91,.65));animation:respira 3.6s ease-in-out infinite}
+.marchio__segno rect{fill:url(#luce-logo)}
+.marchio span{background:linear-gradient(100deg,#263d35 15%,#47835b 55%,#9bc45a 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:scorri 7s ease-in-out infinite alternate;filter:drop-shadow(0 0 10px rgba(196,219,148,.85))}
+@keyframes respira{50%{filter:drop-shadow(0 0 10px rgba(196,219,148,1)) drop-shadow(0 0 26px rgba(71,131,91,.85))}}
+@media (prefers-reduced-motion:reduce){.marchio__segno,.marchio span{animation:none}}
+/* ===== versione 2: titolo, accesso, annunci, esempi, piani, dove ===== */
+.apertura h1{font-size:clamp(2rem,4.6vw,3.6rem)!important;line-height:1.02}
+.testata .tasto--piccolo{white-space:nowrap}
+.accesso{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;margin-top:1.4rem}
+.accesso__titolo{font-weight:800;color:#263d35;margin-right:.4rem}
+.social{display:inline-flex;align-items:center;gap:.6rem;padding:.8rem 1.2rem;border-radius:999px;border:1.5px solid #263d35;background:#fff;color:#263d35;font:inherit;font-weight:700;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.social:hover{transform:translateY(-2px);box-shadow:0 12px 26px -12px rgba(38,61,53,.55)}
+.social svg{width:1.25rem;height:1.25rem}
+.social--apple{background:#263d35;color:#fff}.social--mail{border-style:dashed}
+.tabellone__comandi{flex-wrap:wrap;gap:.8rem}
+.tabellone__comandi .scelta:first-child{background:#263d35;padding:.35rem;box-shadow:0 14px 34px -14px rgba(38,61,53,.7)}
+.tabellone__comandi .scelta:first-child button{font-size:1.15rem;font-weight:800;padding:.85rem 1.7rem;color:#c4db94;background:transparent}
+.tabellone__comandi .scelta:first-child button[aria-pressed=true]{background:#c4db94;color:#263d35}
+[data-vista=annunci] .scelta--leggera,[data-vista=annunci] [data-frase],[data-vista=annunci] .griglia,[data-vista=annunci] .tabellone__esito{display:none!important}
+.annunci{display:grid;gap:.8rem;margin-top:1rem}.annunci[hidden]{display:none}
+.annuncio{display:grid;grid-template-columns:1fr auto;gap:.3rem 1rem;text-align:left;padding:1.1rem 1.3rem;border-radius:20px;border:1px solid var(--linea);background:#fff;color:#263d35;font:inherit;cursor:pointer;transition:transform .35s var(--morbido),box-shadow .35s,border-color .35s}
+.annuncio:hover{transform:translateY(-3px);border-color:#47835b;box-shadow:0 18px 36px -20px rgba(38,61,53,.55)}
+.annuncio h3{margin:0;font-size:1.1rem}.annuncio p{margin:0;color:#4d6a5e;font-size:.92rem}
+.annuncio__euro{grid-row:span 2;align-self:center;font-weight:800;font-size:1.15rem;background:#c4db94;border-radius:999px;padding:.4rem .9rem;white-space:nowrap}
+.etichette{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0}.etichette span{font-size:.78rem;font-weight:700;padding:.25rem .65rem;border-radius:999px;background:#e8efd8;color:#263d35}
+dialog.finestra{border:0;border-radius:28px;padding:2rem;max-width:min(520px,92vw);width:100%;background:#fbfbf3;color:#263d35;box-shadow:0 40px 90px -30px rgba(38,61,53,.7)}
+dialog.finestra::backdrop{background:rgba(38,61,53,.55);backdrop-filter:blur(6px)}
+dialog.finestra h2{margin:0 0 .4rem;font-size:1.6rem}.finestra__azioni{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.2rem}
+.finestra .social{width:100%;justify-content:center}.finestra__nota{font-size:.85rem;color:#4d6a5e}
+.finestra__chiudi{position:absolute;top:.8rem;right:1rem;border:0;background:none;font-size:1.6rem;cursor:pointer;color:#263d35}
+/* esempi uguali in caselle verdi */
+.esempi{list-style:none;margin:2rem 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.9rem}
+.esempio{display:flex;align-items:center;justify-content:center;text-align:center;min-height:86px;padding:1rem;border-radius:22px;background:#47835b;color:#fff;font-weight:800;font-size:1.05rem;transition:transform .4s var(--morbido),background .4s}
+.esempio:hover{transform:translateY(-4px);background:#263d35}
+/* piani */
+.piano__annuale{margin:.6rem 0 0!important;font-size:.82rem;opacity:.8}
+/* di dove sei */
+.dove__etichetta{margin:1.3rem 0 .5rem;font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chips button{font:inherit;font-weight:600;padding:.6rem 1.1rem;border-radius:999px;border:1.5px solid #47835b;background:#fff;color:#263d35;cursor:pointer;transition:background .25s,color .25s,transform .25s}
+.chips button:hover{transform:translateY(-2px)}.chips button[aria-pressed=true]{background:#263d35;border-color:#263d35;color:#c4db94}
+.dove__nota{font-size:.9rem;color:#47835b;font-weight:600}
+.annunci__nota{margin:0;font-size:.85rem;color:#4d6a5e;order:-1}
+.b--larga{grid-column:1/-1!important}
+.finestra .tasto--chiaro{background:#fff;color:#263d35;border:1.5px solid #263d35}
+
+/* Interruttore Mensile / Annuale degli abbonamenti */
+.scelta--periodo{margin-top:1.2rem;background:#263d35;padding:.3rem}
+.scelta--periodo button{color:#c4db94;font-weight:700;border-radius:999px}
+.scelta--periodo button:hover{background:rgba(196,219,148,.15)}
+.scelta--periodo button[aria-pressed=true]{background:#c4db94;color:#263d35}
+.risparmio{font-size:.75rem;margin-left:.3rem;padding:.1rem .45rem;border-radius:999px;background:#47835b;color:#fff}
+.piano__prezzo,.piano__grande{transition:opacity .2s}
+.piano__prezzo.cambia,.piano__grande.cambia{opacity:0}
+@media (prefers-reduced-motion:reduce){.piano__prezzo,.piano__grande{transition:none}}
