@@ -3,7 +3,7 @@
 // Regole: si salvano solo i file pubblici del sito (pagine, stili, script, icone).
 // Mai i dati personali: le chiamate a Supabase e agli altri siti non passano da qui.
 const VERSIONE = 'jobexpress-2026-11-25'
-const BASE = ['./offline.html', './manifest.webmanifest', './icone/icona-192.png', './icone/icona-512.png', './favicon.svg']
+const BASE = ['./offline.html', './manifest.webmanifest', './icona-192.png', './icona-512.png', './favicon.svg']
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSIONE).then((c) => c.addAll(BASE)))
