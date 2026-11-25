@@ -11,6 +11,9 @@ export const TIPI = {
   selezione: 'Selezioni e conferme',
   disponibilita: 'Disponibilità in scadenza',
   annuncio: 'I tuoi annunci',
+  recensione: 'Recensioni',
+  ricerca: 'Ricerche salvate',
+  abbonamento: 'Abbonamento e Friends',
 }
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const leggi = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') ?? d } catch { return d } }

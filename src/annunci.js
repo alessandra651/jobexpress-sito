@@ -6,6 +6,7 @@
 import { CATEGORIE, NOME_CAT, aggiornaBacheca, registraFonte, scheda } from './incarichi.js'
 import { avviaConversazione } from './chat.js'
 import { notifica } from './notifiche.js'
+import { apriRecensione, controllaRicerche } from './lavori.js'
 
 const CHIAVE = 'jobexpress-miei-annunci'
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -280,6 +281,7 @@ function concludi() {
   l.unshift(b)
   scrivi(l)
   aggiornaBacheca()
+  controllaRicerche()
   const testi = {
     attivo: 'È visibile nella bacheca. Le candidature arrivano nella tua area.',
     bozza: 'La trovi in «La mia area» → Attività, quando vuoi finirla.',
@@ -294,6 +296,20 @@ function concludi() {
 }
 
 export const haAnnunci = () => leggi().length > 0
+export const tuttiIMieiAnnunci = () => aggiornaStati()
+
+// Moderazione dall'area Admin: approva o rifiuta un annuncio in revisione
+export function moderaAnnuncio(id, approvato) {
+  const l = leggi()
+  const a = l.find((x) => x.id === id)
+  if (!a) return null
+  a.stato = approvato ? 'attivo' : 'bozza'
+  if (approvato && !a.candidati.length) a.candidati = candidatiProva(a)
+  scrivi(l)
+  aggiornaBacheca()
+  notifica('annuncio', approvato ? `«${a.titolo}» è stato approvato ed è visibile.` : `«${a.titolo}» non è stato approvato: lo trovi tra le bozze per correggerlo.`, { scheda: 'attivita', modo: 'pubblico' })
+  return a
+}
 
 export function apriProcedura(id) {
   const u = s.utente()
@@ -388,7 +404,9 @@ function rigaAnnuncio(a) {
             <span class="avatar avatar--piccolo" aria-hidden="true">${esc(c.nome[0])}</span>
             <div><strong>${esc(c.nome)}</strong> <span class="etichetta-esempio">esempio</span><p>${esc(c.info)}</p></div>
             ${c.stato === 'nuova' ? `<div class="pa-azioni-riga"><button type="button" class="tasto" data-pa="seleziona" data-pa-id="${a.id}" data-pa-c="${i}">Seleziona</button><button type="button" class="tasto tasto--chiaro" data-pa="scarta" data-pa-id="${a.id}" data-pa-c="${i}">Non selezionare</button></div>`
-              : `<span class="stato stato--${c.stato}">${c.stato === 'selezionato' ? 'Da confermare' : 'Non selezionato'}</span>`}
+              : c.stato === 'selezionato' ? `<span class="stato stato--selezionato">Selezionato</span><button type="button" class="tasto tasto--chiaro" data-pa="completa" data-pa-id="${a.id}" data-pa-c="${i}">Segna come completato</button>`
+              : c.stato === 'completato' ? `<span class="stato">Completato</span>${c.recensito ? '' : `<button type="button" class="tasto tasto--chiaro" data-pa="recensisci" data-pa-id="${a.id}" data-pa-c="${i}">Lascia una recensione</button>`}`
+              : '<span class="stato stato--scartato">Non selezionato</span>'}
           </li>`).join('')}</ul>
           <p class="finestra__nota">Selezionare qualcuno non è ancora un contratto: prima di iniziare va formalizzato il rapporto.</p>
         </details>` : ''}
@@ -425,6 +443,14 @@ export function gestisciPubblicatore(e) {
     notifica('selezione', `Hai selezionato ${c.nome} per «${a.titolo}». Trovi la conversazione in Chat.`, { scheda: 'chat' })
   }
   if (k === 'scarta') a.candidati[Number(b.dataset.paC)].stato = 'scartato'
+  if (k === 'completa' || k === 'recensisci') {
+    const c = a.candidati[Number(b.dataset.paC)]
+    if (k === 'completa') c.stato = 'completato'
+    const pos = Number(b.dataset.paC)
+    scrivi(l)
+    apriRecensione({ a: c.nome, incaricoId: a.id, titolo: a.titolo, lato: 'pubblico', dopo: () => { const l2 = leggi(); const x = l2.find((y) => y.id === a.id); if (x) { x.candidati[pos].recensito = true; scrivi(l2) } } })
+    return true
+  }
   if (k !== 'elimina') scrivi(l)
   aggiornaBacheca()
   return true

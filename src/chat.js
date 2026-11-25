@@ -4,6 +4,7 @@
 // e le risposte dell'altra persona sono di esempio.
 import { apriIncarico } from './incarichi.js'
 import { notifica } from './notifiche.js'
+import { segnala } from './segnalazioni.js'
 
 const CHIAVE = 'jobexpress-chat'
 const MAX = 1000
@@ -107,7 +108,7 @@ function conversazione(c) {
           ? `<li class="msg msg--sistema">${esc(m.testo)}</li>`
           : `<li class="msg msg--${m.da}"><span>${esc(m.testo)}</span><small>${ora(m.il)}${m.da === 'io' ? (m.letto ? ' · Letto' : ' · Inviato') : ''}${m.esempio ? ' · risposta di esempio' : ''}</small></li>`).join('')}
       </ol>
-      ${c.segnalata ? '<p class="finestra__nota">Segnalazione inviata (simulata): nella versione completa la vede il team di moderazione.</p>' : ''}
+      ${c.segnalata ? '<p class="finestra__nota">Segnalazione inviata alla moderazione. Versione di prova: resta su questo dispositivo.</p>' : ''}
       ${c.bloccata ? '<p class="chat__bloccata">Hai bloccato questa persona: non può più scriverti. Puoi sbloccarla dal menu ···</p>' : `
       <form class="chat__scrivi" data-chat-form>
         <label class="sr" for="chat-testo">Scrivi un messaggio</label>
@@ -160,7 +161,7 @@ export function gestisciChat(e) {
     const c = conv.find((x) => x.id === aperta)
     if (az === 'archivia') { c.archiviata = !c.archiviata; aperta = null }
     if (az === 'blocca') c.bloccata = !c.bloccata
-    if (az === 'segnala') c.segnalata = true
+    if (az === 'segnala') { c.segnalata = true; segnala({ tipo: 'persona', riferimento: c.id, titolo: `${c.con} · chat per «${c.titolo}»`, motivo: 'Comportamento scorretto' }) }
     salva()
     avvisa()
     return true

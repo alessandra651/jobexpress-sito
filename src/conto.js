@@ -1,8 +1,12 @@
 // Finestre di accesso/registrazione e "La mia area" (area personale del lavoratore).
 import {
   PROVIDER_ATTIVI, SenzaRete, accedi, avviaAuth, conProvider, eliminaAccount, entraInProva, esci, inRecupero,
-  nuovaPassword, quandoCambiaUtente, recupera, registra, salvaProfilo, utente,
+  nuovaPassword, quandoCambiaUtente, recupera, registra, salvaProfilo, tokenValido, utente,
 } from './auth.js'
+import { STATI, avviaLavori, datiGuadagni, gestisciLavori, leggiCand, pannelloCandidature, pannelloSalvati, riquadroObiettivo, riquadroPlus, riquadroRecensioni, salvaRicercaCorrente, scriviCand, statistiche } from './lavori.js'
+import { avviaAbbonamenti, gestisciAbbonamento, pannelloAbbonamento, quandoCambiaAbbonamento } from './abbonamenti.js'
+import { apriAdmin, avviaAdmin, puoAmministrare } from './admin.js'
+import { impostaSalvaRicerca } from './incarichi.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
 import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
@@ -181,11 +185,6 @@ function messaggioCampo(c) {
 }
 
 // ================= CANDIDATURE (simulate, su questo dispositivo) =================
-const CHIAVE_CAND = 'jobexpress-candidature'
-const leggiCand = () => { try { return JSON.parse(localStorage.getItem(CHIAVE_CAND) || '[]') } catch { return [] } }
-const scriviCand = (l) => { try { localStorage.setItem(CHIAVE_CAND, JSON.stringify(l)) } catch { /* non disponibile */ } }
-const STATI = { inviata: 'Candidatura inviata', valutazione: 'In valutazione', ritirata: 'Candidatura ritirata' }
-
 // Restituisce un testo da mostrare, oppure null se serve prima accedere
 export function candidati(a, quando) {
   if (!utente()) {
@@ -193,12 +192,12 @@ export function candidati(a, quando) {
     return null
   }
   const lista = leggiCand()
-  const gia = lista.find((c) => c.id === a.id && c.stato !== 'ritirata')
+  const gia = lista.find((c) => c.id === a.id && !['ritirata', 'rifiutata', 'non_selezionato', 'annullato'].includes(c.stato))
   if (gia) return 'Ti sei già candidato a questo incarico. Lo trovi in «La mia area» → Attività.'
   const altri = sovrapposizioni(a, a.id)
   if (altri.length) return `Non puoi candidarti: si sovrappone a «${altri[0].titolo}», a cui ti sei già candidato. Se vuoi, ritira prima l’altra candidatura.`
   const d = dataDi(a)
-  lista.unshift({ id: a.id, titolo: a.titolo, chi: a.chi, luogo: `${a.citta}, ${a.zona}`, quando, euroOra: a.euroOra, totale: a.totale, stato: 'inviata', il: Date.now(),
+  lista.unshift({ id: a.id, cat: a.cat, titolo: a.titolo, chi: a.chi, luogo: `${a.citta}, ${a.zona}`, quando, euroOra: a.euroOra, totale: a.totale, stato: 'inviata', il: Date.now(),
     data: d ? dataIso(d) : null, inizio: a.inizio, fine: a.fine })
   scriviCand(lista)
   avviaConversazione({ incaricoId: a.id, titolo: a.titolo, con: a.chi, lato: 'lavoro', sistema: `Hai inviato la candidatura per «${a.titolo}», ${quando.charAt(0).toLowerCase() + quando.slice(1)}.` })
@@ -208,39 +207,18 @@ export function candidati(a, quando) {
 }
 
 // ================= LA MIA AREA =================
-// Incarichi svolti DI ESEMPIO, solo per far vedere grafici e statistiche
-const ESEMPIO_SVOLTI = [
-  { sett: 5, ore: 4.5, euro: 49.5 }, { sett: 5, ore: 3, euro: 30 }, { sett: 4, ore: 4, euro: 60 },
-  { sett: 3, ore: 2, euro: 27 }, { sett: 3, ore: 5, euro: 62.5 }, { sett: 1, ore: 6, euro: 72 }, { sett: 0, ore: 4.5, euro: 49.5 },
-]
 let scheda = 'home'
 let modo = null // 'lavoro' oppure 'pubblico'
 let sottoAttivita = 'calendario'
 let esempio = false
 let area = null
 
-function datiGuadagni() {
-  const svolti = esempio ? ESEMPIO_SVOLTI : []
-  const somma = (l, k) => l.reduce((t, x) => t + x[k], 0)
-  const settimane = [5, 4, 3, 2, 1, 0].map((s) => somma(svolti.filter((x) => x.sett === s), 'euro'))
-  const ore = somma(svolti, 'ore')
-  const totale = somma(svolti, 'euro')
-  return {
-    settimane, ore, totale,
-    settimana: settimane[5],
-    mese: settimane.slice(2).reduce((a, b) => a + b, 0),
-    media: ore ? totale / ore : 0,
-    svolti: svolti.length,
-  }
-}
-
 function pannelloHome(u) {
-  const g = datiGuadagni()
-  const obiettivo = 300
-  const perc = Math.min(100, Math.round((g.mese / obiettivo) * 100))
+  const g = datiGuadagni(esempio)
+  const st = statistiche()
   const max = Math.max(...g.settimane, 1)
-  const cand = leggiCand().filter((c) => c.stato !== 'ritirata')
-  const prossimo = cand[0]
+  const ordine = ['confermato', 'selezionato', 'inviata']
+  const prossimo = leggiCand().filter((c) => ordine.includes(c.stato)).sort((a, b) => ordine.indexOf(a.stato) - ordine.indexOf(b.stato))[0]
   const d = leggiDisponibile()
   return `
     <div class="area__griglia">
@@ -252,56 +230,41 @@ function pannelloHome(u) {
       </article>
       <article class="riquadro">
         <h3>Prossimo incarico</h3>
-        ${prossimo ? `<p class="grande">${esc(prossimo.titolo)}</p><p>${esc(prossimo.quando)} · ${esc(prossimo.luogo)}</p><p><span class="stato">${STATI[prossimo.stato]}</span> · ${euro.format(prossimo.euroOra)}/ora</p>
-          <button type="button" class="tasto tasto--chiaro" data-area-scheda="attivita">Vedi le attività</button>`
+        ${prossimo ? `<p class="grande">${esc(prossimo.titolo)}</p><p>${esc(prossimo.quando)} · ${esc(prossimo.luogo)}</p><p><span class="stato stato--${prossimo.stato}">${STATI[prossimo.stato]}</span> · ${euro.format(prossimo.euroOra)}/ora</p>
+          <div class="pa-azioni-riga"><button type="button" class="tasto tasto--chiaro" data-area-scheda="attivita" data-sotto-vai="candidature">Vedi le attività</button><button type="button" class="tasto tasto--chiaro" data-area-scheda="chat">Messaggi</button></div>`
           : `<p>Nessun incarico in programma.</p><button type="button" class="tasto" data-area-vai="esplora">Esplora gli incarichi</button>`}
       </article>
       <article class="riquadro riquadro--guadagni">
         <div class="riquadro__testa"><h3>Guadagni dichiarati</h3>
           <label class="interruttore"><input type="checkbox" data-esempio ${esempio ? 'checked' : ''}/> Dati di esempio</label></div>
-        ${g.svolti ? '' : '<p class="finestra__nota">Qui vedrai quanto hai guadagnato con gli incarichi completati, come lo dichiari tu. Accendi «Dati di esempio» per vedere come apparirà.</p>'}
+        ${g.svolti ? '' : '<p class="finestra__nota">Qui vedrai quanto hai guadagnato, come lo dichiari tu quando completi un incarico. Accendi «Dati di esempio» per vedere come apparirà.</p>'}
         <div class="cifre">
-          <div><span>Questo mese</span><strong>${euro.format(g.mese)}</strong></div>
+          <div><span>Ultime 4 settimane</span><strong>${euro.format(g.mese)}</strong></div>
           <div><span>Questa settimana</span><strong>${euro.format(g.settimana)}</strong></div>
           <div><span>Ore lavorate in tutto</span><strong>${String(g.ore).replace('.', ',')}</strong></div>
           <div><span>Media all’ora</span><strong>${g.ore ? euro.format(g.media) : '—'}</strong></div>
         </div>
         <div class="barre" role="img" aria-label="Guadagni delle ultime sei settimane: ${g.settimane.map((x) => euro.format(x)).join(', ')}">
-          ${g.settimane.map((x, i) => `<div class="barra"><span class="barra__val">${x ? Math.round(x) + ' €' : ''}</span><i style="height:${(x / max) * 100}%"></i><span class="barra__nome">${i === 5 ? 'Ora' : `−${5 - i}`}</span></div>`).join('')}
+          ${g.settimane.map((x, i) => `<div class="barra"><span class="barra__val">${x ? Math.round(x) + ' €' : ''}</span><i style="height:${(x / max) * 100}%"></i><span class="barra__nome">${i === 5 ? 'Questa' : `${5 - i} sett. fa`}</span></div>`).join('')}
         </div>
-        <div class="obiettivo">
-          <div class="obiettivo__testo"><span>Obiettivo del mese</span><strong>${euro.format(g.mese)} di ${euro.format(obiettivo)}</strong></div>
-          <div class="obiettivo__barra"><i style="width:${perc}%"></i></div>
-          <p class="finestra__nota">${perc}% raggiunto. È una stima: dipende dagli incarichi che trovi e accetti.</p>
-        </div>
+        <p class="finestra__nota">Dichiarati: quanto hai registrato tu dopo ogni incarico.${g.stimati && !esempio ? ` Stimati dagli incarichi confermati: circa ${euro.format(g.stimati)}.` : ''} Non sono soldi custoditi da JobExpress.</p>
         ${esempio ? '<p class="etichetta-esempio">Dati di esempio, non reali</p>' : ''}
       </article>
+      ${riquadroObiettivo()}
       <article class="riquadro">
         <h3>Le tue statistiche</h3>
         <ul class="stat">
-          <li><strong>${g.svolti}</strong><span>Incarichi svolti</span></li>
-          <li><strong>${leggiCand().length}</strong><span>Candidature inviate</span></li>
-          <li><strong>0</strong><span>Incarichi confermati</span></li>
-          <li><strong>0</strong><span>Recensioni</span></li>
+          <li><strong>${st.completati}</strong><span>Incarichi svolti</span></li>
+          <li><strong>${st.candidature}</strong><span>Candidature inviate</span></li>
+          <li><strong>${st.confermati}</strong><span>Incarichi confermati</span></li>
+          <li><strong>${st.recensioni}</strong><span>Recensioni${st.recensioni ? ` · media ${String(Math.round(st.media * 10) / 10).replace('.', ',')}` : ''}</span></li>
         </ul>
       </article>
+      ${riquadroPlus(esempio)}
     </div>`
 }
 
-function pannelloAttivita() {
-  const l = leggiCand()
-  if (!l.length) {
-    return `<div class="vuoto"><strong>Nessuna candidatura.</strong><p>Quando ti candidi a un incarico, qui segui lo stato passo per passo.</p>
-      <button type="button" class="tasto" data-area-vai="esplora">Esplora gli incarichi</button></div>`
-  }
-  return `<ul class="candidature">${l.map((c, i) => `
-    <li class="candidatura">
-      <div><strong>${esc(c.titolo)}</strong><p>${esc(c.chi)} · ${esc(c.luogo)}</p><p>${esc(c.quando)} · ${euro.format(c.euroOra)}/ora · circa ${euro.format(c.totale)}</p></div>
-      <div class="candidatura__lato"><span class="stato stato--${c.stato}">${STATI[c.stato]}</span>
-        ${c.stato !== 'ritirata' ? `<button type="button" class="tasto tasto--chiaro" data-ritira="${i}">Ritira</button>` : ''}</div>
-    </li>`).join('')}</ul>
-    <p class="finestra__nota">Versione di prova: le candidature restano su questo dispositivo e non arrivano a nessuno.</p>`
-}
+const pannelloAttivita = () => pannelloCandidature()
 
 
 function pannelloProfilo(u) {
@@ -325,6 +288,9 @@ function pannelloProfilo(u) {
         <button class="tasto tasto--chiaro" type="button" data-esci>Esci</button>
       </div>
     </form>
+    <section class="profilo-blocco"><h3>Il tuo abbonamento</h3>${pannelloAbbonamento()}</section>
+    <section class="profilo-blocco">${riquadroRecensioni()}</section>
+    <div class="profilo-blocco" data-admin-posto></div>
     <div class="zona-rischio">
       <h3>Elimina l’account</h3>
       <p>Cancella per sempre il tuo account e il tuo profilo.</p>
@@ -344,6 +310,12 @@ const ICONE = {
 function disegnaArea() {
   const u = utente()
   if (!area || area.hidden || !u) return
+  queueMicrotask(async () => {
+    const posto = area.querySelector('[data-admin-posto]')
+    if (posto && (await puoAmministrare())) {
+      posto.innerHTML = `<h3>Amministrazione</h3><p>Moderazione, segnalazioni e statistiche della piattaforma.</p><button type="button" class="tasto" data-apri-admin>Apri l’area Admin${u.prova ? ' (prova)' : ''}</button>`
+    }
+  })
   const oggi = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })
   const pubblica = u.modalita?.some((m) => m === 'attivita' || m === 'privato') || haAnnunci()
   const lavora = u.modalita?.includes('lavoro') || !pubblica
@@ -352,7 +324,8 @@ function disegnaArea() {
     <div class="scelta scelta--vista2 area__sotto" role="group" aria-label="Cosa vuoi vedere">
       <button type="button" data-sotto="calendario" aria-pressed="${sottoAttivita === 'calendario'}">Calendario</button>
       <button type="button" data-sotto="candidature" aria-pressed="${sottoAttivita === 'candidature'}">Candidature</button>
-    </div>${sottoAttivita === 'calendario' ? pannelloCalendario() : pannelloAttivita()}`
+      <button type="button" data-sotto="salvati" aria-pressed="${sottoAttivita === 'salvati'}">Salvati</button>
+    </div>${sottoAttivita === 'calendario' ? pannelloCalendario() : sottoAttivita === 'salvati' ? pannelloSalvati() : pannelloAttivita()}`
   const pann = (modo === 'pubblico'
     ? { home: pannelloPubblicatoreHome, attivita: pannelloAnnunci, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche }
     : { home: pannelloHome, attivita: attivitaLavoro, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche })[scheda] || pannelloHome
@@ -409,7 +382,13 @@ function esplora() {
 function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
-    if (gestisciCalendario(e) || gestisciPubblicatore(e)) return disegnaArea()
+    if (gestisciCalendario(e) || gestisciPubblicatore(e) || gestisciAbbonamento(e)) return disegnaArea()
+    const lv = gestisciLavori(e)
+    if (lv === 'esplora') return esplora()
+    if (lv) return disegnaArea()
+    if (t.closest('[data-apri-admin]')) return apriAdmin()
+    const sv = t.closest('[data-sotto-vai]')
+    if (sv) sottoAttivita = sv.dataset.sottoVai
     const n = gestisciNotifiche(e)
     if (n && typeof n === 'object') {
       scheda = n.scheda || 'home'
@@ -472,7 +451,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('change', (e) => {
-    if (gestisciCalendario(e) || gestisciNotifiche(e)) return disegnaArea()
+    if (gestisciCalendario(e) || gestisciNotifiche(e) || gestisciLavori(e)) return disegnaArea()
     if (e.target.matches('[data-esempio]')) {
       esempio = e.target.checked
       disegnaArea()
@@ -490,6 +469,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('submit', (e) => {
+    if (gestisciAbbonamento(e)) return disegnaArea()
     const c = gestisciChat(e)
     if (c) { disegnaArea(); fineChat(c) }
   })
@@ -595,6 +575,16 @@ export async function avviaConto(strumenti) {
     if (area.querySelector('.chat__messaggi')) area.scrollTop = area.scrollHeight
   }
   quandoCambiaChat(aggiornaTutto)
+  quandoCambiaAbbonamento(aggiornaTutto)
+  avviaLavori({ apri, ridisegna: aggiornaTutto })
+  avviaAbbonamenti({ apri, utente, apriAccesso, dopo: () => apriArea('profilo') })
+  avviaAdmin({ utente, token: tokenValido })
+  impostaSalvaRicerca(() => {
+    if (!utente()) { apriAccesso('Per salvare le ricerche, registrati o accedi'); return '' }
+    const m = salvaRicercaCorrente()
+    aggiornaTutto()
+    return m
+  })
   quandoCambianoNotifiche(aggiornaTutto)
   avviaAnnunci({ apri, utente, apriAccesso, dopo: () => { modo = 'pubblico'; apriArea('attivita') } })
   quandoCambiaUtente(aggiornaSito)

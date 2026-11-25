@@ -110,6 +110,9 @@ async function token() {
   return sessione?.access_token
 }
 
+// Token valido (rinnovato se serve), per le chiamate protette come l'area Admin
+export const tokenValido = () => token()
+
 async function caricaProfilo() {
   if (!sessione) return
   const righe = await chiama(`/rest/v1/profili?select=*&id=eq.${sessione.user.id}`, { metodo: 'GET', token: await token() })

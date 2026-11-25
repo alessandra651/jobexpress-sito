@@ -1,3 +1,5 @@
+import { MOTIVI, segnala } from './segnalazioni.js'
+
 // Bacheca degli incarichi: schede, filtri, dettaglio, preferiti.
 // I dati qui sotto sono SOLO DIMOSTRATIVI: nessuna offerta reale,
 // nessuna attività reale. Le tariffe non sono minimi di legge.
@@ -129,17 +131,44 @@ export function scegliCategoria(cat) {
   filtri.cat = cat
 }
 
+// Un incarico corrisponde a questi filtri? (usata anche dalle ricerche salvate)
+export function corrisponde(a, f, salvati = new Set()) {
+  return (f.cat === 'tutte' || a.cat === f.cat) &&
+    (f.quando === 'tutti' || (f.quando === 'weekend' ? ['sabato', 'domenica'].includes(a.giorno) : a.giorno === f.quando)) &&
+    (f.citta === 'tutte' || a.citta === f.citta) &&
+    (!f.km || a.km <= f.km) &&
+    (!f.minimo || a.euroOra >= f.minimo) &&
+    (f.chi === 'tutti' || a.tipo === f.chi) &&
+    (!f.urgenti || a.urgente) &&
+    (!f.salvati || salvati.has(a.id)) &&
+    (!f.compatibili || compatibilita(a)?.ok)
+}
+export const leggiFiltri = () => ({ ...filtri, salvati: false })
+export function impostaFiltri(f) {
+  Object.assign(filtri, f)
+}
+export function descriviFiltri(f) {
+  const parti = [f.cat === 'tutte' ? 'Tutte le categorie' : NOME_CAT[f.cat]]
+  if (f.quando !== 'tutti') parti.push({ oggi: 'oggi', domani: 'domani', weekend: 'nel weekend' }[f.quando] || f.quando)
+  if (f.citta !== 'tutte') parti.push(f.citta)
+  if (f.km) parti.push(`entro ${f.km} km`)
+  if (f.minimo) parti.push(`da ${String(f.minimo).replace('.', ',')} €/ora`)
+  if (f.chi !== 'tutti') parti.push(f.chi === 'azienda' ? 'aziende' : 'privati')
+  if (f.urgenti) parti.push('urgenti')
+  if (f.compatibili) parti.push('compatibili con i miei orari')
+  return parti.join(' · ')
+}
+let salvaRicerca = null
+export function impostaSalvaRicerca(fn) {
+  salvaRicerca = fn
+}
+let dopoRidisegno = () => {}
+export function quandoCambiaBacheca(fn) {
+  dopoRidisegno = fn
+}
+
 function filtra(salvati) {
-  const lista = tuttiIncarichi().filter((a) =>
-    (filtri.cat === 'tutte' || a.cat === filtri.cat) &&
-    (filtri.quando === 'tutti' || (filtri.quando === 'weekend' ? ['sabato', 'domenica'].includes(a.giorno) : a.giorno === filtri.quando)) &&
-    (filtri.citta === 'tutte' || a.citta === filtri.citta) &&
-    (!filtri.km || a.km <= filtri.km) &&
-    (!filtri.minimo || a.euroOra >= filtri.minimo) &&
-    (filtri.chi === 'tutti' || a.tipo === filtri.chi) &&
-    (!filtri.urgenti || a.urgente) &&
-    (!filtri.salvati || salvati.has(a.id)) &&
-    (!filtri.compatibili || compatibilita(a)?.ok))
+  const lista = tuttiIncarichi().filter((a) => corrisponde(a, filtri, salvati))
   const per = { vicini: (a, b) => a.km - b.km, ora: (a, b) => b.euroOra - a.euroOra, totale: (a, b) => b.totale - a.totale, urgenti: (a, b) => b.urgente - a.urgente || a.km - b.km }
   return lista.sort(per[filtri.ordine])
 }
@@ -173,6 +202,8 @@ function barraFiltri() {
   </div>
   <div class="bacheca__barra">
     <p class="filtri__conto" data-conto-incarichi aria-live="polite"></p>
+    <button type="button" class="salva-ricerca" data-salva-ricerca>Salva questa ricerca</button>
+    <p class="salva-ricerca__esito" data-esito-ricerca role="status"></p>
     <div class="scelta scelta--vista2" role="group" aria-label="Come vedi gli incarichi">
       <button type="button" data-vista2="elenco" aria-pressed="${vista === 'elenco'}">Elenco</button>
       <button type="button" data-vista2="mappa" aria-pressed="${vista === 'mappa'}">Mappa</button>
@@ -264,7 +295,13 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
     }
   }
   fin.querySelector('[data-segnala]').onclick = () => {
-    esito.textContent = 'Segnalazione simulata: nella versione completa arriva al team di moderazione.'
+    esito.innerHTML = `<span class="segnala-mini">Perché lo segnali?
+      <select data-motivo aria-label="Motivo della segnalazione">${MOTIVI.map((m) => `<option>${m}</option>`).join('')}</select>
+      <button type="button" class="tasto tasto--chiaro" data-invia-segnala>Invia</button></span>`
+    esito.querySelector('[data-invia-segnala]').onclick = () => {
+      segnala({ tipo: 'annuncio', riferimento: a.id, titolo: a.titolo, motivo: esito.querySelector('[data-motivo]').value })
+      esito.textContent = 'Grazie: la segnalazione è arrivata alla moderazione. Versione di prova: resta su questo dispositivo.'
+    }
   }
 }
 
@@ -349,6 +386,12 @@ export function mostraIncarichi(box, strumenti) {
       filtri.cat = cat.dataset.fCat
       box.querySelectorAll('[data-f-cat]').forEach((b) => b.setAttribute('aria-pressed', b === cat))
       return ridisegna()
+    }
+    if (e.target.closest('[data-salva-ricerca]')) {
+      const msg = salvaRicerca ? salvaRicerca() : 'Accedi per salvare le ricerche.'
+      const n = box.querySelector('[data-esito-ricerca]')
+      if (n) n.textContent = msg
+      return
     }
     const v = e.target.closest('[data-vista2]')
     if (v) {
