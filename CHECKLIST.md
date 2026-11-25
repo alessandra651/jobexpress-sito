@@ -7,7 +7,7 @@ Legenda: ✅ fatto e collaudato · 🧪 funziona in prova (dati sul dispositivo 
 - ✅ Bacheca incarichi con filtri, ordinamento, mappa (elenco / mappa), categorie, dettaglio
 - ✅ Menu, piè di pagina completo, domande frequenti, pagine Chi siamo, Sicurezza, Privacy, Cookie, Condizioni
 - ✅ Versione telefono e computer, barra in basso, accessibilità di base (nomi dei pulsanti, etichette, movimento ridotto)
-- ⏳ Logo: le proposte armonizzate sono in `public/logo/` e aspettano l’approvazione
+- ⏳ Logo: le proposte armonizzate sono in `public/` (file proposta-*.svg) e aspettano l’approvazione
 
 ## Account (Supabase)
 - ✅ Registrazione, accesso, recupero password, uscita, eliminazione account, profilo (tabella `profili` con RLS)
