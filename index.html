@@ -40,12 +40,12 @@
         </button>
 
         <nav class="menu" id="menu" aria-label="Principale">
+          <a href="#inizio" data-esplora>Esplora</a>
           <a href="#come-funziona">Come funziona</a>
-          <a href="#per-chi">Per chi è</a>
-          <a href="#costi">Quanto costa</a>
-          <a href="#territorio">Di dove sei</a>
+          <a href="#costi">Abbonamenti</a>
           <a href="#domande">Domande</a>
-          <button class="tasto tasto--piccolo" type="button" data-accedi="email">Accedi o registrati</button>
+          <button class="menu__accedi" type="button" data-accedi-solo>Accedi</button>
+          <button class="tasto tasto--piccolo" type="button" data-accedi="email">Registrati gratis</button>
         </nav>
       </div>
     </header>
@@ -134,7 +134,7 @@
           <div class="intro">
             <h2 id="t-come">Dal turno scoperto al turno coperto</h2>
             <p>
-              Così funzionerà JobExpress: otto passaggi, tre ruoli. Il rapporto di lavoro resta sempre fra chi assume e chi
+              Ecco come funziona JobExpress: otto passaggi, tre ruoli. Il rapporto di lavoro resta sempre fra chi assume e chi
               lavora.
             </p>
           </div>
@@ -351,7 +351,7 @@
                 <text x="0" y="-26" text-anchor="middle">Forlì</text>
               </g>
             </svg>
-            <figcaption>In verde l’area del pilota, circa 15 km intorno a Forlì. La linea è la via Emilia.</figcaption>
+            <figcaption>In verde la zona di partenza, circa 15 km intorno a Forlì. La linea è la via Emilia.</figcaption>
           </figure>
 
           <div class="territorio__testo">
@@ -377,20 +377,21 @@
     </section>
 
       <!-- IMPEGNI -->
-      <section class="impegni" aria-labelledby="t-imp">
+      <section class="impegni" id="impegni" aria-labelledby="t-imp">
         <div class="contenitore impegni__riga">
           <h2 id="t-imp">Veloci sugli orari, non sulle regole</h2>
           <div class="impegni__testi">
             <p>
-              Un turno di un giorno è comunque lavoro. JobExpress partirà solo dopo le verifiche con un consulente del lavoro e,
-              se necessario, insieme a un’agenzia autorizzata.
+              Un turno di un giorno è comunque lavoro. Ogni incarico dice come verrà formalizzato, e ogni passaggio viene
+              verificato con un consulente del lavoro prima dell’apertura al pubblico.
             </p>
             <p>
-              Per ogni incarico sarà chiaro chi è il datore di lavoro, chi fa le comunicazioni obbligatorie e chi si occupa di
+              In ogni incarico è chiaro chi è il datore di lavoro, chi fa le comunicazioni obbligatorie e chi si occupa di
               assicurazione e sicurezza.
             </p>
             <p>
-              Chi usa la piattaforma saprà con quali criteri vengono proposti gli incarichi e quali dati vengono usati per farlo.
+              Ogni incarico suggerito ti dice perché: giorno, orari, distanza. Nessun criterio nascosto, e chi ha un abbonamento
+              non ottiene più visibilità.
             </p>
           </div>
         </div>
@@ -724,18 +725,36 @@
     </main>
 
     <footer class="piede">
-      <div class="contenitore piede__riga">
-        <div>
-          <p class="piede__motto">Trova. Candidati. Lavora.</p>
+      <div class="contenitore piede__griglia">
+        <div class="piede__marchio">
+          <p class="piede__motto">Il tempo è tuo.<br />Le opportunità anche.</p>
           <p class="piede__legale">
             Versione di prova. In questa fase JobExpress non svolge attività di intermediazione di lavoro e non gestisce
             pagamenti.
           </p>
         </div>
-        <nav class="piede__link" aria-label="Link a fondo pagina">
+        <nav class="piede__col" aria-label="JobExpress">
+          <h2>JobExpress</h2>
           <a href="#come-funziona">Come funziona</a>
-          <a href="#costi">Quanto costa</a>
-          <a href="#contatti">Registrati gratuitamente</a>
+          <a href="#funzioni">Perché JobExpress</a>
+          <a href="#territorio">Dove siamo</a>
+        </nav>
+        <nav class="piede__col" aria-label="Per chi lavora">
+          <h2>Per chi lavora</h2>
+          <a href="#inizio" data-esplora>Esplora gli incarichi</a>
+          <a href="#" data-accedi="email">Crea un profilo</a>
+          <a href="#costi">Abbonamenti</a>
+        </nav>
+        <nav class="piede__col" aria-label="Per aziende e privati">
+          <h2>Per aziende e privati</h2>
+          <a href="#" data-pubblica>Pubblica un incarico</a>
+          <a href="#per-chi">Trova personale</a>
+          <a href="#impegni">Regole e garanzie</a>
+        </nav>
+        <nav class="piede__col" aria-label="Supporto e informazioni legali">
+          <h2>Supporto</h2>
+          <a href="#domande">Domande frequenti</a>
+          <a href="#contatti">Contattaci</a>
           <a href="privacy.html">Informativa privacy</a>
         </nav>
       </div>
