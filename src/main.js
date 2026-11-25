@@ -9,6 +9,7 @@ import { TITOLARE } from './config.js'
 import { avviaModuli } from './moduli.js'
 import { avviaTabellone } from './tabellone.js'
 import { avviaPrezzi } from './prezzi.js'
+import { impostaFascia } from './incarichi.js'
 
 new Lenis({
   autoRaf: true,
@@ -43,6 +44,7 @@ for (const el of document.querySelectorAll('[data-titolare]')) {
 }
 
 const tabellone = avviaTabellone()
+impostaFascia(() => tabellone?.leggi())
 avviaCalcolo()
 avviaPrezzi()
 avviaModuli({ leggiTabellone: () => tabellone?.leggi() })
