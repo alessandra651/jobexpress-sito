@@ -2,9 +2,9 @@
 
 Testo da usare durante l’esposizione (circa 20–25 minuti). Una sezione per slide, nell’ordine della presentazione.
 
-## 1. Every hour builds your future.
+## 1. Il tuo tempo.
 
-Apertura (30 secondi). Presentati con calma: «Sono Alessandra Mihai, fondatrice e ideatrice di JobExpress, un progetto nato a Forlì». Leggi lo slogan in italiano: «Ogni ora costruisce il tuo futuro». Spiega che nei prossimi venti minuti racconterai da dove nasce l’idea, che cosa fa oggi il prototipo, come potrebbe sostenersi economicamente, quali rischi hai individuato e dove vuoi portarlo. Anticipa la promessa di onestà: «Vi mostrerò cosa funziona già, cosa è solo simulato e cosa è ancora un’idea da verificare». Collegamento: «Partiamo dal quadro in una pagina».
+Apertura (30 secondi). Presentati con calma: «Sono Alessandra Mihai, fondatrice e ideatrice di JobExpress, un progetto nato a Forlì». Leggi il titolo lentamente: «Il tuo tempo. Le tue opportunità.»: in sei parole dice che cosa fa JobExpress. Spiega che nei prossimi venti minuti racconterai da dove nasce l’idea, che cosa fa oggi il prototipo, come potrebbe sostenersi economicamente, quali rischi hai individuato e dove vuoi portarlo. Anticipa la promessa di onestà: «Vi mostrerò cosa funziona già, cosa è solo simulato e cosa è ancora un’idea da verificare». Collegamento: «Partiamo dal quadro in una pagina».
 
 ## 2. Una piattaforma per trasformare le ore libere in lavoro vicino a casa.
 
@@ -104,7 +104,7 @@ Breve termine: completare il prototipo (sito online, email di conferma, accesso 
 
 ## 26. chiusura
 
-Chiusura emozionale e breve. Lascia qualche secondo di silenzio sul logo. Ripeti la frase guida: «Every hour builds your future. Ogni ora costruisce il tuo futuro». Ringrazia, ricorda che il progetto è un prototipo concreto con una visione ambiziosa e invita alle domande. Se vuoi lasciare un contatto, usa l’email di JobExpress quando avrai un indirizzo dedicato. Domande frequenti e risposte rapide: «Quanto vale l’azienda?» — Non ho fatto una valutazione e non voglio inventarla. «Quanto vi serve?» — Prima di parlare di cifre devo validare il modello e ottenere il parere legale; oggi cerco competenze e collaborazioni. «Perché un utente dovrebbe pagare?» — Per strumenti che fanno risparmiare tempo e denaro e, in futuro, per una reputazione spendibile; il lavoro resta gratuito.
+Chiusura emozionale e breve. Lascia qualche secondo di silenzio sul logo. Ripeti la frase guida: «Il tuo tempo. Le tue opportunità.». Ringrazia, ricorda che il progetto è un prototipo concreto con una visione ambiziosa e invita alle domande. Se vuoi lasciare un contatto, usa l’email di JobExpress quando avrai un indirizzo dedicato. Domande frequenti e risposte rapide: «Quanto vale l’azienda?» — Non ho fatto una valutazione e non voglio inventarla. «Quanto vi serve?» — Prima di parlare di cifre devo validare il modello e ottenere il parere legale; oggi cerco competenze e collaborazioni. «Perché un utente dovrebbe pagare?» — Per strumenti che fanno risparmiare tempo e denaro e, in futuro, per una reputazione spendibile; il lavoro resta gratuito.
 
 ## 27. app-ipotesi
 
