@@ -2,7 +2,7 @@
 // anche con una connessione debole.
 // Regole: si salvano solo i file pubblici del sito (pagine, stili, script, icone).
 // Mai i dati personali: le chiamate a Supabase e agli altri siti non passano da qui.
-const VERSIONE = 'jobexpress-2026-11-25'
+const VERSIONE = 'jobexpress-2026-11-26'
 const BASE = ['./offline.html', './manifest.webmanifest', './icona-192.png', './icona-512.png', './favicon.svg']
 
 self.addEventListener('install', (e) => {

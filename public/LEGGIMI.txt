@@ -1,7 +1,8 @@
 Logo JobExpress
 
-attuale-icona.svg          = il logo di adesso (non modificato).
+attuale-icona.svg          = il logo di adesso: JX (scelto da Alessandra il 26 nov 2026).
 proposta-*.svg             = versioni armonizzate con la palette (verde foresta, lime, emerald).
                              Sono PROPOSTE: si usano solo dopo l'approvazione di Alessandra.
 
-Le icone dell'app (file icona-*.png) per ora usano il logo attuale.
+Le icone dell'app (file icona-*.png), favicon.svg e offline.html usano il logo JX.
+icona-180.png (Apple) e icona-maskable-512.png sono a quadrato pieno: il telefono arrotonda da solo.
