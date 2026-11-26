@@ -1,0 +1,1324 @@
+{
+ "ipotesi": {
+  "iva": 1.22,
+  "prezzi": {
+   "plus_m": 4.99,
+   "plus_a": 39.99,
+   "fr_m": 9.99,
+   "fr_a": 79.99
+  },
+  "mix": {
+   "plus_m": 0.45,
+   "plus_a": 0.25,
+   "fr_m": 0.2,
+   "fr_a": 0.1
+  },
+  "incasso_medio_account_mese_ivato": 3.967,
+  "netto_iva": 3.251,
+  "commissioni_pagamento_mese": 0.195,
+  "ricavo_netto_account_mese": 3.057,
+  "fissi_mese": {
+   "commercialista": 150,
+   "assicurazione_rc": 40,
+   "dominio_email": 10,
+   "assistenza_strumenti": 20
+  },
+  "legale_anno": [
+   3000,
+   1000,
+   1000
+  ]
+ },
+ "scenari": {
+  "Prudente": {
+   "ipotesi": {
+    "utenti": [
+     0,
+     1500,
+     4000,
+     8000
+    ],
+    "conv": 0.02,
+    "mkt": 150,
+    "tech": [
+     40,
+     60,
+     120
+    ]
+   },
+   "mese_pareggio_mensile": null,
+   "paganti_per_pareggio_anno1": 216,
+   "mesi": {
+    "12": {
+     "utenti": 1500,
+     "paganti": 30,
+     "incasso": 119,
+     "ricavo": 92,
+     "costi": 660,
+     "utile": -568,
+     "cumulato": -7324
+    },
+    "24": {
+     "utenti": 4000,
+     "paganti": 80,
+     "incasso": 317,
+     "ricavo": 245,
+     "costi": 513,
+     "utile": -269,
+     "cumulato": -11390
+    },
+    "36": {
+     "utenti": 8000,
+     "paganti": 160,
+     "incasso": 635,
+     "ricavo": 489,
+     "costi": 573,
+     "utile": -84,
+     "cumulato": -13746
+    }
+   },
+   "anni": {
+    "1": {
+     "incasso": 774,
+     "ricavo": 596,
+     "costi": 7920,
+     "utile": -7324
+    },
+    "2": {
+     "incasso": 2718,
+     "ricavo": 2094,
+     "costi": 6156,
+     "utile": -4062
+    },
+    "3": {
+     "incasso": 5871,
+     "ricavo": 4524,
+     "costi": 6876,
+     "utile": -2352
+    }
+   },
+   "righe": [
+    {
+     "mese": 1,
+     "utenti": 125,
+     "paganti": 2,
+     "incasso": 10,
+     "ricavo": 8,
+     "costi": 660,
+     "utile": -652,
+     "cumulato": -652
+    },
+    {
+     "mese": 2,
+     "utenti": 250,
+     "paganti": 5,
+     "incasso": 20,
+     "ricavo": 15,
+     "costi": 660,
+     "utile": -645,
+     "cumulato": -1297
+    },
+    {
+     "mese": 3,
+     "utenti": 375,
+     "paganti": 8,
+     "incasso": 30,
+     "ricavo": 23,
+     "costi": 660,
+     "utile": -637,
+     "cumulato": -1934
+    },
+    {
+     "mese": 4,
+     "utenti": 500,
+     "paganti": 10,
+     "incasso": 40,
+     "ricavo": 31,
+     "costi": 660,
+     "utile": -629,
+     "cumulato": -2564
+    },
+    {
+     "mese": 5,
+     "utenti": 625,
+     "paganti": 12,
+     "incasso": 50,
+     "ricavo": 38,
+     "costi": 660,
+     "utile": -622,
+     "cumulato": -3185
+    },
+    {
+     "mese": 6,
+     "utenti": 750,
+     "paganti": 15,
+     "incasso": 60,
+     "ricavo": 46,
+     "costi": 660,
+     "utile": -614,
+     "cumulato": -3800
+    },
+    {
+     "mese": 7,
+     "utenti": 875,
+     "paganti": 18,
+     "incasso": 69,
+     "ricavo": 53,
+     "costi": 660,
+     "utile": -607,
+     "cumulato": -4406
+    },
+    {
+     "mese": 8,
+     "utenti": 1000,
+     "paganti": 20,
+     "incasso": 79,
+     "ricavo": 61,
+     "costi": 660,
+     "utile": -599,
+     "cumulato": -5005
+    },
+    {
+     "mese": 9,
+     "utenti": 1125,
+     "paganti": 22,
+     "incasso": 89,
+     "ricavo": 69,
+     "costi": 660,
+     "utile": -591,
+     "cumulato": -5596
+    },
+    {
+     "mese": 10,
+     "utenti": 1250,
+     "paganti": 25,
+     "incasso": 99,
+     "ricavo": 76,
+     "costi": 660,
+     "utile": -584,
+     "cumulato": -6180
+    },
+    {
+     "mese": 11,
+     "utenti": 1375,
+     "paganti": 28,
+     "incasso": 109,
+     "ricavo": 84,
+     "costi": 660,
+     "utile": -576,
+     "cumulato": -6756
+    },
+    {
+     "mese": 12,
+     "utenti": 1500,
+     "paganti": 30,
+     "incasso": 119,
+     "ricavo": 92,
+     "costi": 660,
+     "utile": -568,
+     "cumulato": -7324
+    },
+    {
+     "mese": 13,
+     "utenti": 1708,
+     "paganti": 34,
+     "incasso": 136,
+     "ricavo": 104,
+     "costi": 513,
+     "utile": -409,
+     "cumulato": -7733
+    },
+    {
+     "mese": 14,
+     "utenti": 1917,
+     "paganti": 38,
+     "incasso": 152,
+     "ricavo": 117,
+     "costi": 513,
+     "utile": -396,
+     "cumulato": -8129
+    },
+    {
+     "mese": 15,
+     "utenti": 2125,
+     "paganti": 42,
+     "incasso": 169,
+     "ricavo": 130,
+     "costi": 513,
+     "utile": -383,
+     "cumulato": -8512
+    },
+    {
+     "mese": 16,
+     "utenti": 2333,
+     "paganti": 47,
+     "incasso": 185,
+     "ricavo": 143,
+     "costi": 513,
+     "utile": -371,
+     "cumulato": -8883
+    },
+    {
+     "mese": 17,
+     "utenti": 2542,
+     "paganti": 51,
+     "incasso": 202,
+     "ricavo": 155,
+     "costi": 513,
+     "utile": -358,
+     "cumulato": -9241
+    },
+    {
+     "mese": 18,
+     "utenti": 2750,
+     "paganti": 55,
+     "incasso": 218,
+     "ricavo": 168,
+     "costi": 513,
+     "utile": -345,
+     "cumulato": -9586
+    },
+    {
+     "mese": 19,
+     "utenti": 2958,
+     "paganti": 59,
+     "incasso": 235,
+     "ricavo": 181,
+     "costi": 513,
+     "utile": -332,
+     "cumulato": -9919
+    },
+    {
+     "mese": 20,
+     "utenti": 3167,
+     "paganti": 63,
+     "incasso": 251,
+     "ricavo": 194,
+     "costi": 513,
+     "utile": -320,
+     "cumulato": -10238
+    },
+    {
+     "mese": 21,
+     "utenti": 3375,
+     "paganti": 68,
+     "incasso": 268,
+     "ricavo": 206,
+     "costi": 513,
+     "utile": -307,
+     "cumulato": -10545
+    },
+    {
+     "mese": 22,
+     "utenti": 3583,
+     "paganti": 72,
+     "incasso": 284,
+     "ricavo": 219,
+     "costi": 513,
+     "utile": -294,
+     "cumulato": -10840
+    },
+    {
+     "mese": 23,
+     "utenti": 3792,
+     "paganti": 76,
+     "incasso": 301,
+     "ricavo": 232,
+     "costi": 513,
+     "utile": -282,
+     "cumulato": -11121
+    },
+    {
+     "mese": 24,
+     "utenti": 4000,
+     "paganti": 80,
+     "incasso": 317,
+     "ricavo": 245,
+     "costi": 513,
+     "utile": -269,
+     "cumulato": -11390
+    },
+    {
+     "mese": 25,
+     "utenti": 4333,
+     "paganti": 87,
+     "incasso": 344,
+     "ricavo": 265,
+     "costi": 573,
+     "utile": -308,
+     "cumulato": -11698
+    },
+    {
+     "mese": 26,
+     "utenti": 4667,
+     "paganti": 93,
+     "incasso": 370,
+     "ricavo": 285,
+     "costi": 573,
+     "utile": -288,
+     "cumulato": -11986
+    },
+    {
+     "mese": 27,
+     "utenti": 5000,
+     "paganti": 100,
+     "incasso": 397,
+     "ricavo": 306,
+     "costi": 573,
+     "utile": -268,
+     "cumulato": -12254
+    },
+    {
+     "mese": 28,
+     "utenti": 5333,
+     "paganti": 107,
+     "incasso": 423,
+     "ricavo": 326,
+     "costi": 573,
+     "utile": -247,
+     "cumulato": -12501
+    },
+    {
+     "mese": 29,
+     "utenti": 5667,
+     "paganti": 113,
+     "incasso": 450,
+     "ricavo": 346,
+     "costi": 573,
+     "utile": -227,
+     "cumulato": -12728
+    },
+    {
+     "mese": 30,
+     "utenti": 6000,
+     "paganti": 120,
+     "incasso": 476,
+     "ricavo": 367,
+     "costi": 573,
+     "utile": -207,
+     "cumulato": -12935
+    },
+    {
+     "mese": 31,
+     "utenti": 6333,
+     "paganti": 127,
+     "incasso": 502,
+     "ricavo": 387,
+     "costi": 573,
+     "utile": -186,
+     "cumulato": -13121
+    },
+    {
+     "mese": 32,
+     "utenti": 6667,
+     "paganti": 133,
+     "incasso": 529,
+     "ricavo": 408,
+     "costi": 573,
+     "utile": -166,
+     "cumulato": -13286
+    },
+    {
+     "mese": 33,
+     "utenti": 7000,
+     "paganti": 140,
+     "incasso": 555,
+     "ricavo": 428,
+     "costi": 573,
+     "utile": -145,
+     "cumulato": -13432
+    },
+    {
+     "mese": 34,
+     "utenti": 7333,
+     "paganti": 147,
+     "incasso": 582,
+     "ricavo": 448,
+     "costi": 573,
+     "utile": -125,
+     "cumulato": -13557
+    },
+    {
+     "mese": 35,
+     "utenti": 7667,
+     "paganti": 153,
+     "incasso": 608,
+     "ricavo": 469,
+     "costi": 573,
+     "utile": -105,
+     "cumulato": -13661
+    },
+    {
+     "mese": 36,
+     "utenti": 8000,
+     "paganti": 160,
+     "incasso": 635,
+     "ricavo": 489,
+     "costi": 573,
+     "utile": -84,
+     "cumulato": -13746
+    }
+   ]
+  },
+  "Intermedio": {
+   "ipotesi": {
+    "utenti": [
+     0,
+     3000,
+     10000,
+     25000
+    ],
+    "conv": 0.035,
+    "mkt": 400,
+    "tech": [
+     40,
+     90,
+     220
+    ]
+   },
+   "mese_pareggio_mensile": 20,
+   "paganti_per_pareggio_anno1": 298,
+   "mesi": {
+    "12": {
+     "utenti": 3000,
+     "paganti": 105,
+     "incasso": 417,
+     "ricavo": 321,
+     "costi": 910,
+     "utile": -589,
+     "cumulato": -8834
+    },
+    "24": {
+     "utenti": 10000,
+     "paganti": 350,
+     "incasso": 1388,
+     "ricavo": 1070,
+     "costi": 793,
+     "utile": 277,
+     "cumulato": -9634
+    },
+    "36": {
+     "utenti": 25000,
+     "paganti": 875,
+     "incasso": 3471,
+     "ricavo": 2675,
+     "costi": 923,
+     "utile": 1751,
+     "cumulato": 2557
+    }
+   },
+   "anni": {
+    "1": {
+     "incasso": 2708,
+     "ricavo": 2085,
+     "costi": 10920,
+     "utile": -8835
+    },
+    "2": {
+     "incasso": 11311,
+     "ricavo": 8720,
+     "costi": 9516,
+     "utile": -796
+    },
+    "3": {
+     "incasso": 30197,
+     "ricavo": 23271,
+     "costi": 11076,
+     "utile": 12195
+    }
+   },
+   "righe": [
+    {
+     "mese": 1,
+     "utenti": 250,
+     "paganti": 9,
+     "incasso": 35,
+     "ricavo": 27,
+     "costi": 910,
+     "utile": -883,
+     "cumulato": -883
+    },
+    {
+     "mese": 2,
+     "utenti": 500,
+     "paganti": 18,
+     "incasso": 69,
+     "ricavo": 53,
+     "costi": 910,
+     "utile": -857,
+     "cumulato": -1740
+    },
+    {
+     "mese": 3,
+     "utenti": 750,
+     "paganti": 26,
+     "incasso": 104,
+     "ricavo": 80,
+     "costi": 910,
+     "utile": -830,
+     "cumulato": -2570
+    },
+    {
+     "mese": 4,
+     "utenti": 1000,
+     "paganti": 35,
+     "incasso": 139,
+     "ricavo": 107,
+     "costi": 910,
+     "utile": -803,
+     "cumulato": -3373
+    },
+    {
+     "mese": 5,
+     "utenti": 1250,
+     "paganti": 44,
+     "incasso": 174,
+     "ricavo": 134,
+     "costi": 910,
+     "utile": -776,
+     "cumulato": -4149
+    },
+    {
+     "mese": 6,
+     "utenti": 1500,
+     "paganti": 53,
+     "incasso": 208,
+     "ricavo": 160,
+     "costi": 910,
+     "utile": -750,
+     "cumulato": -4898
+    },
+    {
+     "mese": 7,
+     "utenti": 1750,
+     "paganti": 61,
+     "incasso": 243,
+     "ricavo": 187,
+     "costi": 910,
+     "utile": -723,
+     "cumulato": -5621
+    },
+    {
+     "mese": 8,
+     "utenti": 2000,
+     "paganti": 70,
+     "incasso": 278,
+     "ricavo": 214,
+     "costi": 910,
+     "utile": -696,
+     "cumulato": -6317
+    },
+    {
+     "mese": 9,
+     "utenti": 2250,
+     "paganti": 79,
+     "incasso": 312,
+     "ricavo": 241,
+     "costi": 910,
+     "utile": -669,
+     "cumulato": -6986
+    },
+    {
+     "mese": 10,
+     "utenti": 2500,
+     "paganti": 88,
+     "incasso": 347,
+     "ricavo": 267,
+     "costi": 910,
+     "utile": -643,
+     "cumulato": -7629
+    },
+    {
+     "mese": 11,
+     "utenti": 2750,
+     "paganti": 96,
+     "incasso": 382,
+     "ricavo": 294,
+     "costi": 910,
+     "utile": -616,
+     "cumulato": -8245
+    },
+    {
+     "mese": 12,
+     "utenti": 3000,
+     "paganti": 105,
+     "incasso": 417,
+     "ricavo": 321,
+     "costi": 910,
+     "utile": -589,
+     "cumulato": -8834
+    },
+    {
+     "mese": 13,
+     "utenti": 3583,
+     "paganti": 125,
+     "incasso": 498,
+     "ricavo": 383,
+     "costi": 793,
+     "utile": -410,
+     "cumulato": -9244
+    },
+    {
+     "mese": 14,
+     "utenti": 4167,
+     "paganti": 146,
+     "incasso": 578,
+     "ricavo": 446,
+     "costi": 793,
+     "utile": -348,
+     "cumulato": -9591
+    },
+    {
+     "mese": 15,
+     "utenti": 4750,
+     "paganti": 166,
+     "incasso": 659,
+     "ricavo": 508,
+     "costi": 793,
+     "utile": -285,
+     "cumulato": -9876
+    },
+    {
+     "mese": 16,
+     "utenti": 5333,
+     "paganti": 187,
+     "incasso": 740,
+     "ricavo": 571,
+     "costi": 793,
+     "utile": -223,
+     "cumulato": -10099
+    },
+    {
+     "mese": 17,
+     "utenti": 5917,
+     "paganti": 207,
+     "incasso": 821,
+     "ricavo": 633,
+     "costi": 793,
+     "utile": -160,
+     "cumulato": -10259
+    },
+    {
+     "mese": 18,
+     "utenti": 6500,
+     "paganti": 228,
+     "incasso": 902,
+     "ricavo": 695,
+     "costi": 793,
+     "utile": -98,
+     "cumulato": -10357
+    },
+    {
+     "mese": 19,
+     "utenti": 7083,
+     "paganti": 248,
+     "incasso": 983,
+     "ricavo": 758,
+     "costi": 793,
+     "utile": -35,
+     "cumulato": -10393
+    },
+    {
+     "mese": 20,
+     "utenti": 7667,
+     "paganti": 268,
+     "incasso": 1064,
+     "ricavo": 820,
+     "costi": 793,
+     "utile": 27,
+     "cumulato": -10366
+    },
+    {
+     "mese": 21,
+     "utenti": 8250,
+     "paganti": 289,
+     "incasso": 1145,
+     "ricavo": 883,
+     "costi": 793,
+     "utile": 89,
+     "cumulato": -10276
+    },
+    {
+     "mese": 22,
+     "utenti": 8833,
+     "paganti": 309,
+     "incasso": 1226,
+     "ricavo": 945,
+     "costi": 793,
+     "utile": 152,
+     "cumulato": -10125
+    },
+    {
+     "mese": 23,
+     "utenti": 9417,
+     "paganti": 330,
+     "incasso": 1307,
+     "ricavo": 1008,
+     "costi": 793,
+     "utile": 214,
+     "cumulato": -9910
+    },
+    {
+     "mese": 24,
+     "utenti": 10000,
+     "paganti": 350,
+     "incasso": 1388,
+     "ricavo": 1070,
+     "costi": 793,
+     "utile": 277,
+     "cumulato": -9634
+    },
+    {
+     "mese": 25,
+     "utenti": 11250,
+     "paganti": 394,
+     "incasso": 1562,
+     "ricavo": 1204,
+     "costi": 923,
+     "utile": 280,
+     "cumulato": -9353
+    },
+    {
+     "mese": 26,
+     "utenti": 12500,
+     "paganti": 438,
+     "incasso": 1735,
+     "ricavo": 1337,
+     "costi": 923,
+     "utile": 414,
+     "cumulato": -8939
+    },
+    {
+     "mese": 27,
+     "utenti": 13750,
+     "paganti": 481,
+     "incasso": 1909,
+     "ricavo": 1471,
+     "costi": 923,
+     "utile": 548,
+     "cumulato": -8392
+    },
+    {
+     "mese": 28,
+     "utenti": 15000,
+     "paganti": 525,
+     "incasso": 2083,
+     "ricavo": 1605,
+     "costi": 923,
+     "utile": 682,
+     "cumulato": -7710
+    },
+    {
+     "mese": 29,
+     "utenti": 16250,
+     "paganti": 569,
+     "incasso": 2256,
+     "ricavo": 1739,
+     "costi": 923,
+     "utile": 815,
+     "cumulato": -6895
+    },
+    {
+     "mese": 30,
+     "utenti": 17500,
+     "paganti": 613,
+     "incasso": 2430,
+     "ricavo": 1872,
+     "costi": 923,
+     "utile": 949,
+     "cumulato": -5946
+    },
+    {
+     "mese": 31,
+     "utenti": 18750,
+     "paganti": 656,
+     "incasso": 2603,
+     "ricavo": 2006,
+     "costi": 923,
+     "utile": 1083,
+     "cumulato": -4863
+    },
+    {
+     "mese": 32,
+     "utenti": 20000,
+     "paganti": 700,
+     "incasso": 2777,
+     "ricavo": 2140,
+     "costi": 923,
+     "utile": 1217,
+     "cumulato": -3646
+    },
+    {
+     "mese": 33,
+     "utenti": 21250,
+     "paganti": 744,
+     "incasso": 2950,
+     "ricavo": 2274,
+     "costi": 923,
+     "utile": 1350,
+     "cumulato": -2296
+    },
+    {
+     "mese": 34,
+     "utenti": 22500,
+     "paganti": 788,
+     "incasso": 3124,
+     "ricavo": 2407,
+     "costi": 923,
+     "utile": 1484,
+     "cumulato": -812
+    },
+    {
+     "mese": 35,
+     "utenti": 23750,
+     "paganti": 831,
+     "incasso": 3297,
+     "ricavo": 2541,
+     "costi": 923,
+     "utile": 1618,
+     "cumulato": 806
+    },
+    {
+     "mese": 36,
+     "utenti": 25000,
+     "paganti": 875,
+     "incasso": 3471,
+     "ricavo": 2675,
+     "costi": 923,
+     "utile": 1751,
+     "cumulato": 2557
+    }
+   ]
+  },
+  "Espansivo": {
+   "ipotesi": {
+    "utenti": [
+     0,
+     6000,
+     25000,
+     70000
+    ],
+    "conv": 0.05,
+    "mkt": 1200,
+    "tech": [
+     60,
+     150,
+     450
+    ]
+   },
+   "mese_pareggio_mensile": 16,
+   "paganti_per_pareggio_anno1": 566,
+   "mesi": {
+    "12": {
+     "utenti": 6000,
+     "paganti": 300,
+     "incasso": 1190,
+     "ricavo": 917,
+     "costi": 1730,
+     "utile": -813,
+     "cumulato": -14799
+    },
+    "24": {
+     "utenti": 25000,
+     "paganti": 1250,
+     "incasso": 4959,
+     "ricavo": 3821,
+     "costi": 1653,
+     "utile": 2168,
+     "cumulato": -4758
+    },
+    "36": {
+     "utenti": 70000,
+     "paganti": 3500,
+     "incasso": 13884,
+     "ricavo": 10699,
+     "costi": 1953,
+     "utile": 8746,
+     "cumulato": 62364
+    }
+   },
+   "anni": {
+    "1": {
+     "incasso": 7736,
+     "ricavo": 5961,
+     "costi": 20760,
+     "utile": -14799
+    },
+    "2": {
+     "incasso": 38773,
+     "ricavo": 29880,
+     "costi": 19836,
+     "utile": 10044
+    },
+    "3": {
+     "incasso": 117517,
+     "ricavo": 90561,
+     "costi": 23436,
+     "utile": 67125
+    }
+   },
+   "righe": [
+    {
+     "mese": 1,
+     "utenti": 500,
+     "paganti": 25,
+     "incasso": 99,
+     "ricavo": 76,
+     "costi": 1730,
+     "utile": -1654,
+     "cumulato": -1654
+    },
+    {
+     "mese": 2,
+     "utenti": 1000,
+     "paganti": 50,
+     "incasso": 198,
+     "ricavo": 153,
+     "costi": 1730,
+     "utile": -1577,
+     "cumulato": -3231
+    },
+    {
+     "mese": 3,
+     "utenti": 1500,
+     "paganti": 75,
+     "incasso": 298,
+     "ricavo": 229,
+     "costi": 1730,
+     "utile": -1501,
+     "cumulato": -4731
+    },
+    {
+     "mese": 4,
+     "utenti": 2000,
+     "paganti": 100,
+     "incasso": 397,
+     "ricavo": 306,
+     "costi": 1730,
+     "utile": -1424,
+     "cumulato": -6156
+    },
+    {
+     "mese": 5,
+     "utenti": 2500,
+     "paganti": 125,
+     "incasso": 496,
+     "ricavo": 382,
+     "costi": 1730,
+     "utile": -1348,
+     "cumulato": -7504
+    },
+    {
+     "mese": 6,
+     "utenti": 3000,
+     "paganti": 150,
+     "incasso": 595,
+     "ricavo": 459,
+     "costi": 1730,
+     "utile": -1271,
+     "cumulato": -8775
+    },
+    {
+     "mese": 7,
+     "utenti": 3500,
+     "paganti": 175,
+     "incasso": 694,
+     "ricavo": 535,
+     "costi": 1730,
+     "utile": -1195,
+     "cumulato": -9970
+    },
+    {
+     "mese": 8,
+     "utenti": 4000,
+     "paganti": 200,
+     "incasso": 793,
+     "ricavo": 611,
+     "costi": 1730,
+     "utile": -1119,
+     "cumulato": -11089
+    },
+    {
+     "mese": 9,
+     "utenti": 4500,
+     "paganti": 225,
+     "incasso": 893,
+     "ricavo": 688,
+     "costi": 1730,
+     "utile": -1042,
+     "cumulato": -12131
+    },
+    {
+     "mese": 10,
+     "utenti": 5000,
+     "paganti": 250,
+     "incasso": 992,
+     "ricavo": 764,
+     "costi": 1730,
+     "utile": -966,
+     "cumulato": -13097
+    },
+    {
+     "mese": 11,
+     "utenti": 5500,
+     "paganti": 275,
+     "incasso": 1091,
+     "ricavo": 841,
+     "costi": 1730,
+     "utile": -889,
+     "cumulato": -13986
+    },
+    {
+     "mese": 12,
+     "utenti": 6000,
+     "paganti": 300,
+     "incasso": 1190,
+     "ricavo": 917,
+     "costi": 1730,
+     "utile": -813,
+     "cumulato": -14799
+    },
+    {
+     "mese": 13,
+     "utenti": 7583,
+     "paganti": 379,
+     "incasso": 1504,
+     "ricavo": 1159,
+     "costi": 1653,
+     "utile": -494,
+     "cumulato": -15293
+    },
+    {
+     "mese": 14,
+     "utenti": 9167,
+     "paganti": 458,
+     "incasso": 1818,
+     "ricavo": 1401,
+     "costi": 1653,
+     "utile": -252,
+     "cumulato": -15546
+    },
+    {
+     "mese": 15,
+     "utenti": 10750,
+     "paganti": 538,
+     "incasso": 2132,
+     "ricavo": 1643,
+     "costi": 1653,
+     "utile": -10,
+     "cumulato": -15556
+    },
+    {
+     "mese": 16,
+     "utenti": 12333,
+     "paganti": 617,
+     "incasso": 2446,
+     "ricavo": 1885,
+     "costi": 1653,
+     "utile": 232,
+     "cumulato": -15324
+    },
+    {
+     "mese": 17,
+     "utenti": 13917,
+     "paganti": 696,
+     "incasso": 2760,
+     "ricavo": 2127,
+     "costi": 1653,
+     "utile": 474,
+     "cumulato": -14850
+    },
+    {
+     "mese": 18,
+     "utenti": 15500,
+     "paganti": 775,
+     "incasso": 3074,
+     "ricavo": 2369,
+     "costi": 1653,
+     "utile": 716,
+     "cumulato": -14134
+    },
+    {
+     "mese": 19,
+     "utenti": 17083,
+     "paganti": 854,
+     "incasso": 3388,
+     "ricavo": 2611,
+     "costi": 1653,
+     "utile": 958,
+     "cumulato": -13177
+    },
+    {
+     "mese": 20,
+     "utenti": 18667,
+     "paganti": 933,
+     "incasso": 3702,
+     "ricavo": 2853,
+     "costi": 1653,
+     "utile": 1200,
+     "cumulato": -11977
+    },
+    {
+     "mese": 21,
+     "utenti": 20250,
+     "paganti": 1012,
+     "incasso": 4016,
+     "ricavo": 3095,
+     "costi": 1653,
+     "utile": 1442,
+     "cumulato": -10535
+    },
+    {
+     "mese": 22,
+     "utenti": 21833,
+     "paganti": 1092,
+     "incasso": 4330,
+     "ricavo": 3337,
+     "costi": 1653,
+     "utile": 1684,
+     "cumulato": -8851
+    },
+    {
+     "mese": 23,
+     "utenti": 23417,
+     "paganti": 1171,
+     "incasso": 4644,
+     "ricavo": 3579,
+     "costi": 1653,
+     "utile": 1926,
+     "cumulato": -6925
+    },
+    {
+     "mese": 24,
+     "utenti": 25000,
+     "paganti": 1250,
+     "incasso": 4959,
+     "ricavo": 3821,
+     "costi": 1653,
+     "utile": 2168,
+     "cumulato": -4758
+    },
+    {
+     "mese": 25,
+     "utenti": 28750,
+     "paganti": 1438,
+     "incasso": 5702,
+     "ricavo": 4394,
+     "costi": 1953,
+     "utile": 2441,
+     "cumulato": -2317
+    },
+    {
+     "mese": 26,
+     "utenti": 32500,
+     "paganti": 1625,
+     "incasso": 6446,
+     "ricavo": 4967,
+     "costi": 1953,
+     "utile": 3014,
+     "cumulato": 698
+    },
+    {
+     "mese": 27,
+     "utenti": 36250,
+     "paganti": 1812,
+     "incasso": 7190,
+     "ricavo": 5541,
+     "costi": 1953,
+     "utile": 3587,
+     "cumulato": 4285
+    },
+    {
+     "mese": 28,
+     "utenti": 40000,
+     "paganti": 2000,
+     "incasso": 7934,
+     "ricavo": 6114,
+     "costi": 1953,
+     "utile": 4161,
+     "cumulato": 8445
+    },
+    {
+     "mese": 29,
+     "utenti": 43750,
+     "paganti": 2188,
+     "incasso": 8677,
+     "ricavo": 6687,
+     "costi": 1953,
+     "utile": 4734,
+     "cumulato": 13179
+    },
+    {
+     "mese": 30,
+     "utenti": 47500,
+     "paganti": 2375,
+     "incasso": 9421,
+     "ricavo": 7260,
+     "costi": 1953,
+     "utile": 5307,
+     "cumulato": 18486
+    },
+    {
+     "mese": 31,
+     "utenti": 51250,
+     "paganti": 2562,
+     "incasso": 10165,
+     "ricavo": 7833,
+     "costi": 1953,
+     "utile": 5880,
+     "cumulato": 24366
+    },
+    {
+     "mese": 32,
+     "utenti": 55000,
+     "paganti": 2750,
+     "incasso": 10909,
+     "ricavo": 8407,
+     "costi": 1953,
+     "utile": 6453,
+     "cumulato": 30819
+    },
+    {
+     "mese": 33,
+     "utenti": 58750,
+     "paganti": 2938,
+     "incasso": 11653,
+     "ricavo": 8980,
+     "costi": 1953,
+     "utile": 7026,
+     "cumulato": 37845
+    },
+    {
+     "mese": 34,
+     "utenti": 62500,
+     "paganti": 3125,
+     "incasso": 12396,
+     "ricavo": 9553,
+     "costi": 1953,
+     "utile": 7600,
+     "cumulato": 45445
+    },
+    {
+     "mese": 35,
+     "utenti": 66250,
+     "paganti": 3312,
+     "incasso": 13140,
+     "ricavo": 10126,
+     "costi": 1953,
+     "utile": 8173,
+     "cumulato": 53618
+    },
+    {
+     "mese": 36,
+     "utenti": 70000,
+     "paganti": 3500,
+     "incasso": 13884,
+     "ricavo": 10699,
+     "costi": 1953,
+     "utile": 8746,
+     "cumulato": 62364
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,12 @@
+<section id="app-tecnica" class="scuro" data-transition="fade">
+<p class="occhiello a">Appendice B · Architettura tecnologica</p>
+<h2 class="a" style="--i:1;color:#F3F3E8">Un sito leggero, salvato su GitHub e Supabase.</h2>
+<div class="riga" style="gap:20px;align-items:stretch">
+<div class="carta a" style="--i:2;flex:1"><x-icon name="Globe" style="width:56px;height:56px;color:#C4DB94"></x-icon><h3 style="color:#F3F3E8">Sito e app</h3><p class="piccolo">Vite, JavaScript e CSS. App installabile (PWA) con pagina offline.</p></div>
+<div class="carta a" style="--i:3;flex:1"><x-icon name="Database" style="width:56px;height:56px;color:#C4DB94"></x-icon><h3 style="color:#F3F3E8">Supabase</h3><p class="piccolo">Account, tabella profili e area Admin con regole di sicurezza (RLS).</p></div>
+<div class="carta a" style="--i:4;flex:1"><x-icon name="Code" style="width:56px;height:56px;color:#C4DB94"></x-icon><h3 style="color:#F3F3E8">GitHub</h3><p class="piccolo">Tutto il codice e le migrazioni del database, con lo storico delle modifiche.</p></div>
+<div class="carta a" style="--i:5;flex:1"><x-icon name="Cloud" style="width:56px;height:56px;color:#C4DB94"></x-icon><h3 style="color:#F3F3E8">Hosting</h3><p class="piccolo">Non ancora online. Ipotesi: Vercel o simili, con https.</p></div>
+</div>
+<div class="carta-lime a" style="--i:6;padding:26px 34px"><p style="font-size:26px"><b>Da fare per il lancio:</b> email transazionali (SMTP) · accesso Google e Apple · candidature, annunci, chat e recensioni su Supabase · caratteri ospitati sul sito · Stripe solo dopo il parere legale</p></div>
+<aside>Il prototipo è un sito costruito con Vite, senza framework pesanti. Supabase gestisce autenticazione e database: oggi ci sono le tabelle profili e amministratori, le funzioni per l’area Admin e le regole di sicurezza a livello di riga (RLS), con le migrazioni salvate nel repository. Il service worker dell’app non salva mai dati personali. Il codice è su GitHub (demediouni-oss/JobExpress). Il sito non è ancora pubblicato: servirà un hosting con https, per esempio Vercel. Il prototipo è stato sviluppato con l’aiuto di strumenti di intelligenza artificiale: è un punto di forza per la velocità e un rischio da gestire, quindi servirà una revisione tecnica e di sicurezza da parte di uno sviluppatore.</aside>
+</section>

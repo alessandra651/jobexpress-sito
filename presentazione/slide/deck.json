@@ -1,0 +1,90 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-26T06:40:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "JobExpress — Presentazione ufficiale del progetto",
+ "cover": "copertina",
+ "order": [
+  "copertina",
+  "sintesi",
+  "idea",
+  "problema",
+  "soluzione",
+  "mercato",
+  "categorie",
+  "home",
+  "lavoratore",
+  "calendario",
+  "committenti",
+  "fiducia",
+  "modello",
+  "piani",
+  "conversione",
+  "business-plan",
+  "lancio",
+  "reputazione",
+  "visione",
+  "ecosistema",
+  "concorrenti",
+  "swot",
+  "rischi",
+  "legale",
+  "roadmap",
+  "chiusura",
+  "app-ipotesi",
+  "app-tecnica",
+  "app-stato",
+  "app-kpi",
+  "app-fonti"
+ ],
+ "sections": {
+  "s1": {
+   "description": "L’origine: la fondatrice, l’idea, il problema e la soluzione.",
+   "start": "copertina"
+  },
+  "s2": {
+   "description": "Il prodotto: mercato, categorie e la piattaforma mostrata con schermate reali.",
+   "start": "mercato"
+  },
+  "s3": {
+   "description": "Il business: modello freemium, piani, conversione, business plan e lancio.",
+   "start": "modello"
+  },
+  "s4": {
+   "description": "La visione: reputazione professionale, Passport ed ecosistema futuro.",
+   "start": "reputazione"
+  },
+  "s5": {
+   "description": "La fattibilità: concorrenti, SWOT, rischi e limiti giuridici.",
+   "start": "concorrenti"
+  },
+  "s6": {
+   "description": "Il futuro: roadmap, risorse necessarie e chiusura.",
+   "start": "roadmap"
+  },
+  "s7": {
+   "description": "Appendice tecnica ed economica per chi vuole approfondire.",
+   "start": "app-ipotesi"
+  }
+ },
+ "faces": {
+  "manrope": {
+   "family": "Manrope",
+   "href": "https://fonts.googleapis.com/css2?family=Manrope:wght@500..800&display=swap"
+  },
+  "dm-sans": {
+   "family": "DM Sans",
+   "href": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&display=swap"
+  }
+ },
+ "designSystems": []
+}
