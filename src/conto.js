@@ -7,6 +7,7 @@ import { STATI, avviaLavori, datiGuadagni, gestisciLavori, leggiCand, pannelloCa
 import { avviaAbbonamenti, gestisciAbbonamento, pannelloAbbonamento, quandoCambiaAbbonamento } from './abbonamenti.js'
 import { apriAdmin, avviaAdmin, puoAmministrare } from './admin.js'
 import { impostaSalvaRicerca } from './incarichi.js'
+import { gestisciReputazione, riquadroReputazione } from './reputazione.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
 import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
@@ -288,6 +289,7 @@ function pannelloProfilo(u) {
         <button class="tasto tasto--chiaro" type="button" data-esci>Esci</button>
       </div>
     </form>
+    <section class="profilo-blocco profilo-blocco--reputazione">${riquadroReputazione()}</section>
     <section class="profilo-blocco"><h3>Il tuo abbonamento</h3>${pannelloAbbonamento()}</section>
     <section class="profilo-blocco">${riquadroRecensioni()}</section>
     <div class="profilo-blocco" data-admin-posto></div>
@@ -386,6 +388,7 @@ function collegaArea() {
     const lv = gestisciLavori(e)
     if (lv === 'esplora') return esplora()
     if (lv) return disegnaArea()
+    if (t.closest('[data-apri-passport]')) return gestisciReputazione(e, apri, utente())
     if (t.closest('[data-apri-admin]')) return apriAdmin()
     const sv = t.closest('[data-sotto-vai]')
     if (sv) sottoAttivita = sv.dataset.sottoVai
@@ -451,6 +454,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('change', (e) => {
+    if (gestisciReputazione(e, apri, utente())) return disegnaArea()
     if (gestisciCalendario(e) || gestisciNotifiche(e) || gestisciLavori(e)) return disegnaArea()
     if (e.target.matches('[data-esempio]')) {
       esempio = e.target.checked

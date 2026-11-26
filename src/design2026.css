@@ -720,3 +720,64 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .da-completare{background:#fff3d6;color:#5c4400;border-radius:6px;padding:0 .3rem}
 .valori{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
 .valori li{margin:0!important;padding:.45rem .9rem;border-radius:999px;background:#e8efd8;font-weight:700}
+/* ===== Reputazione: livelli, badge, Professional Passport ===== */
+.reputazione{position:relative;overflow:hidden;border-radius:28px;padding:clamp(1.2rem,3vw,2rem);background:radial-gradient(70% 90% at 100% 0%,rgba(196,219,148,.45),transparent 60%),radial-gradient(60% 80% at 0% 100%,#47835b 0,transparent 70%),var(--ink);color:#f3f3e8;box-shadow:0 24px 60px -24px rgba(38,61,53,.6)}
+.reputazione::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.12) 45%,transparent 60%);transform:translateX(-100%);animation:lucicchio 6s ease-in-out infinite}
+@keyframes lucicchio{40%,100%{transform:translateX(100%)}}
+.reputazione .riquadro__testa{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.reputazione .interruttore{color:#f3f3e8}
+.reputazione__sopra{margin:0;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);font-weight:700}
+.reputazione__nome{margin:.3rem 0 0;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;letter-spacing:-.04em;color:#fff}
+.reputazione__frase{margin:.4rem 0 1.2rem;opacity:.85}
+.reputazione__cifre{list-style:none;margin:0 0 1.2rem;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.reputazione__cifre li{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:.8rem}
+.reputazione__cifre span{display:block;font-size:.8rem;opacity:.8}
+.reputazione__cifre strong{font-family:'Manrope',sans-serif;font-size:1.6rem;color:#fff}
+.reputazione__cifre small{font-size:.8rem;opacity:.7;margin-left:.1rem}
+.reputazione__prossimo{background:rgba(243,243,232,.96);color:var(--ink);border-radius:20px;padding:1rem 1.1rem}
+.reputazione__prossimo p{margin:.5rem 0 0}
+.reputazione__riga{display:flex;justify-content:space-between;gap:1rem}
+.reputazione__barra{height:10px;border-radius:999px;background:rgba(38,61,53,.12);margin-top:.6rem;overflow:hidden}
+.reputazione__barra i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#47835b,var(--lime))}
+.reputazione__requisiti{margin-top:.6rem}.reputazione__requisiti summary{cursor:pointer;font-weight:700;color:#47835b}
+.reputazione__requisiti ul{list-style:none;padding:0;margin:.5rem 0 0;display:grid;gap:.35rem}
+.reputazione__requisiti li{display:flex;gap:.5rem;align-items:baseline}.reputazione__requisiti em{margin-left:auto;font-style:normal;opacity:.75}
+.reputazione__requisiti li.fatto span{color:#47835b;font-weight:700}
+.reputazione__sottotitolo{margin:1.4rem 0 .7rem;color:#fff;display:flex;justify-content:space-between;font-size:1.05rem}
+.reputazione__sottotitolo span{font-weight:500;opacity:.75;font-size:.9rem}
+.badge-griglia{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,8.5rem),1fr));gap:.6rem}
+.badge{border-radius:18px;padding:.8rem;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.22);opacity:.7}
+.badge strong{display:block;color:#fff;font-size:.95rem;margin-top:.4rem}
+.badge small{display:block;font-size:.75rem;line-height:1.3;opacity:.8}
+.badge__segno{display:inline-grid;place-items:center;min-width:2.2rem;height:2.2rem;padding:0 .4rem;border-radius:999px;background:rgba(255,255,255,.1);font-weight:800;font-size:.85rem}
+.badge--preso{opacity:1;border-style:solid;border-color:rgba(196,219,148,.55);background:rgba(196,219,148,.14)}
+.badge--preso .badge__segno{background:var(--lime);color:var(--ink);box-shadow:0 0 18px rgba(196,219,148,.6)}
+.reputazione__passport{margin-top:1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-radius:20px;padding:1rem 1.1rem;background:rgba(196,219,148,.16);border:1px solid rgba(196,219,148,.4)}
+.reputazione__passport strong{color:#fff}.reputazione__passport p{margin:.2rem 0 0;opacity:.85}
+.reputazione .tasto{background:var(--lime);color:var(--ink)}
+.reputazione .finestra__nota{color:rgba(243,243,232,.8);margin-top:1rem}
+@media (max-width:560px){.reputazione__cifre,.badge-griglia{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){.reputazione::after{animation:none}}
+/* Passport */
+.passport{border-radius:24px;padding:clamp(1.2rem,3vw,1.8rem);background:radial-gradient(80% 100% at 100% 0%,rgba(196,219,148,.55),transparent 60%),#f3f3e8;color:var(--ink);border:1px solid rgba(38,61,53,.15);box-shadow:0 20px 50px -24px rgba(38,61,53,.5)}
+.passport__testa{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#47835b}
+.passport__marchio{font-family:'Manrope',sans-serif;font-size:1.25rem;letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+.passport__nome{margin:1.2rem 0 .2rem;font-size:clamp(1.8rem,5vw,2.6rem);letter-spacing:-.04em}
+.passport__livello{margin:0 0 1.1rem;font-weight:700;color:#47835b}
+.passport__cifre{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin:0}
+.passport__cifre div{background:#fff;border-radius:16px;padding:.75rem .9rem}
+.passport__cifre dt{font-size:.8rem;opacity:.75}.passport__cifre dd{margin:0;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.5rem}
+.passport__settori,.passport__badge{display:flex;flex-wrap:wrap;gap:.4rem;margin:.9rem 0 0}
+.passport__settori span,.passport__badge span{border-radius:999px;padding:.25rem .7rem;font-size:.8rem;background:rgba(38,61,53,.08)}
+.passport__badge span{background:var(--ink);color:var(--lime);font-weight:700}
+.passport__verifica{display:flex;gap:1rem;align-items:center;margin-top:1.1rem;padding-top:1rem;border-top:1px solid rgba(38,61,53,.15)}
+.passport__verifica p{margin:.15rem 0;font-family:ui-monospace,monospace}.passport__verifica small{opacity:.7}
+.passport__qr{flex:none;width:4.5rem;height:4.5rem;border-radius:12px;display:grid;place-items:center;border:2px dashed rgba(38,61,53,.35);font-weight:800;opacity:.6}
+.passport__nota{font-size:.75rem;opacity:.7;margin:.9rem 0 0}
+@media print{
+  body.stampa-passport>*:not(dialog.finestra){display:none!important}
+  body.stampa-passport::after{display:none}
+  body.stampa-passport dialog.finestra{position:static;box-shadow:none;border:0;max-width:none;width:100%;padding:0;background:#fff}
+  body.stampa-passport dialog.finestra>*:not(.passport){display:none!important}
+  body.stampa-passport .passport{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}

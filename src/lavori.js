@@ -224,6 +224,7 @@ export function riquadroObiettivo() {
 
 // ================= RECENSIONI =================
 const recensioni = () => leggi(K.rec, { date: [], ricevute: [] })
+export const leggiRecensioni = recensioni
 const CRITERI = {
   lavoro: [['chiarezza', 'Chiarezza delle informazioni'], ['accordi', 'Rispetto degli accordi'], ['comunicazione', 'Comunicazione']],
   pubblico: [['puntualita', 'Puntualità'], ['professionalita', 'Professionalità'], ['comunicazione', 'Comunicazione']],
@@ -258,7 +259,9 @@ export function apriRecensione({ i, a, incaricoId, titolo, lato, dopo }) {
     setTimeout(() => {
       const r2 = recensioni()
       const voto = 4 + (titolo.length % 2)
-      r2.ricevute.unshift({ da: a, titolo, media: voto, commento: RICEVUTE_ESEMPIO[titolo.length % 3], il: Date.now(), esempio: true, lato })
+      // Chi pubblica valuta anche la puntualità (serve per livelli e badge)
+      const puntuale = titolo.length % 7 !== 0
+      r2.ricevute.unshift({ da: a, titolo, media: voto, voti: { puntualita: puntuale ? 5 : 3, professionalita: voto, comunicazione: voto }, puntuale, commento: RICEVUTE_ESEMPIO[titolo.length % 3], il: Date.now(), esempio: true, lato })
       scrivi(K.rec, r2)
       notifica('recensione', `${a} ti ha lasciato una recensione: ${voto} su 5 (esempio).`, { scheda: 'profilo' })
       s.ridisegna()
