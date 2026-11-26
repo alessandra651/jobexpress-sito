@@ -19,3 +19,10 @@ export const VERSIONE_PRIVACY = '2026-11-25'
 
 export const COMMISSIONE = 0.12
 export const IVA = 0.22
+
+// Funzioni pronte ma non ancora mostrate sul sito.
+// Per lanciarne una basta cambiare false in true.
+export const FUNZIONI = {
+  // Livelli, badge e Professional Passport (src/reputazione.js): aggiornamento futuro
+  reputazione: false,
+}

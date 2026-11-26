@@ -8,6 +8,7 @@ import { avviaAbbonamenti, gestisciAbbonamento, pannelloAbbonamento, quandoCambi
 import { apriAdmin, avviaAdmin, puoAmministrare } from './admin.js'
 import { impostaSalvaRicerca } from './incarichi.js'
 import { gestisciReputazione, riquadroReputazione } from './reputazione.js'
+import { FUNZIONI } from './config.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
 import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
@@ -289,7 +290,7 @@ function pannelloProfilo(u) {
         <button class="tasto tasto--chiaro" type="button" data-esci>Esci</button>
       </div>
     </form>
-    <section class="profilo-blocco profilo-blocco--reputazione">${riquadroReputazione()}</section>
+    ${FUNZIONI.reputazione ? `<section class="profilo-blocco profilo-blocco--reputazione">${riquadroReputazione()}</section>` : ''}
     <section class="profilo-blocco"><h3>Il tuo abbonamento</h3>${pannelloAbbonamento()}</section>
     <section class="profilo-blocco">${riquadroRecensioni()}</section>
     <div class="profilo-blocco" data-admin-posto></div>
