@@ -29,12 +29,14 @@ let apri = () => {}
 const finestra = () => document.querySelector('dialog.finestra')
 
 // ================= ACCESSO E REGISTRAZIONE =================
-const social = () => `
+// Accesso con Google e Apple: spento per scelta (27/11/2026). I pulsanti compaiono
+// solo se il fornitore è in PROVIDER_ATTIVI (src/auth.js), dopo averlo configurato su Supabase.
+const social = () => PROVIDER_ATTIVI.length ? `
   <div class="finestra__azioni">
-    <button class="social" type="button" data-provider="google">Continua con Google</button>
-    <button class="social social--apple" type="button" data-provider="apple">Continua con Apple</button>
+    ${PROVIDER_ATTIVI.includes('google') ? '<button class="social" type="button" data-provider="google">Continua con Google</button>' : ''}
+    ${PROVIDER_ATTIVI.includes('apple') ? '<button class="social social--apple" type="button" data-provider="apple">Continua con Apple</button>' : ''}
   </div>
-  <p class="oppure"><span>oppure con l’email</span></p>`
+  <p class="oppure"><span>oppure con l’email</span></p>` : ''
 
 function schedaAccedi() {
   return `
@@ -614,6 +616,7 @@ export async function avviaConto(strumenti) {
   quandoCambianoNotifiche(aggiornaTutto)
   avviaAnnunci({ apri, utente, apriAccesso, dopo: () => { modo = 'pubblico'; apriArea('attivita') } })
   quandoCambiaUtente(aggiornaSito)
+  document.querySelectorAll('[data-provider-sito]').forEach((b) => { b.hidden = !PROVIDER_ATTIVI.includes(b.dataset.providerSito) })
   quandoCambia(disegnaArea)
   const entrato = await avviaAuth()
   if (inRecupero()) {
