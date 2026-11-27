@@ -1097,3 +1097,4 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .ai-consenso{font-size:.85rem}
 .ai-consenso input{width:20px;height:20px;accent-color:#263d35;flex:none;margin-top:.1rem}
 .ai-storico{border:0;background:none;font:inherit;text-align:left;color:#263d35;cursor:pointer;flex:1;min-height:40px}
+.piano li small.in-arrivo{display:inline-block;width:auto;margin:0 0 0 .2rem}

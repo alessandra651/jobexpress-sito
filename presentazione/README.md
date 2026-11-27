@@ -9,3 +9,5 @@ Cartella separata dal sito: non viene usata dal sito e non lo modifica.
 - `FONTI.md` — da dove vengono i numeri.
 - `business-plan/modello.py` — il calcolo dei tre scenari (si può cambiare e rieseguire con `python3 modello.py`); `risultati.json` è il risultato.
 - `screenshot/` — schermate reali del prototipo, fatte con account e dati dimostrativi (26 novembre 2026). I file `c-*` sono concept del sistema reputazionale, che nel sito è spento.
+- `AGGIORNAMENTO-2026-11-27.md` — nuovo modello: abbonamenti, conferma reciproca, 3 candidature per fascia, limite sperimentale, criticità legali, costi AI, evoluzione.
+- `screenshot/2026-11-27/` — 14 schermate JPEG ad alta risoluzione delle nuove funzioni (schermate vere del sito, con account di prova e dati di esempio; nessun mockup).
