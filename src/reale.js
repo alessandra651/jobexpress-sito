@@ -9,6 +9,7 @@ import { SUPABASE_KEY, SUPABASE_URL } from './config.js'
 import { NOME_CAT, aggiornaBacheca, registraFonte } from './incarichi.js'
 import { adesso, restante } from './regole.js'
 import { importaNotifiche } from './notifiche.js'
+import { pulsantiMappe } from './mappe.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -148,6 +149,7 @@ export function pannelloLavoratoreReale() {
     const az = []
     if (['inviata', 'in_valutazione'].includes(c.stato)) az.push(['ritira', 'Ritira', true])
     if (p) az.push(['conferma', 'Conferma', false], ['rifiuta', 'Rifiuta', true])
+    if (i && ['programmato', 'contestato'].includes(i.stato) && !finito(c.turni)) az.push(['mappe', 'Indicazioni', false])
     if (i?.stato === 'programmato' && !iniziato(c.turni)) az.push(['annulla', 'Annulla', true])
     if (i?.stato === 'programmato' && finito(c.turni)) az.push(['completa', 'Segna come completato', false])
     if (i && ['programmato', 'completato'].includes(i.stato) && iniziato(c.turni)) az.push(['contesta', 'Apri una contestazione', true])
@@ -160,7 +162,7 @@ export function pannelloLavoratoreReale() {
           <div class="pa-azioni-riga"><button type="button" class="tasto" data-re="orari-si" data-id="${esc(m.id)}">Accetto</button><button type="button" class="tasto tasto--chiaro" data-re="orari-no" data-id="${esc(m.id)}">Non posso</button></div>
           <p class="finestra__nota">Se non puoi, l’incarico si annulla senza penalità e non conta nel limite del mese.</p></div>` : ''}</div>
       <div class="candidatura__lato"><span class="stato stato--${i ? i.stato : c.stato}">${esc(statoTesto)}</span></div>
-      ${az.length ? `<div class="pa-azioni-riga">${az.map(([k, t, chiaro]) => `<button type="button" class="tasto ${chiaro ? 'tasto--chiaro' : ''}" data-re="${k}" data-id="${esc(k === 'conferma' || k === 'rifiuta' ? p.id : ['annulla', 'completa', 'contesta'].includes(k) ? i.id : c.candidatura_id)}" data-annuncio="${esc(a.id)}">${t}</button>`).join('')}</div>` : ''}
+      ${az.length ? `<div class="pa-azioni-riga">${az.map(([k, t, chiaro]) => `<button type="button" class="tasto ${chiaro ? 'tasto--chiaro' : ''}" data-re="${k}" data-id="${esc(k === 'conferma' || k === 'rifiuta' ? p.id : ['annulla', 'completa', 'contesta', 'mappe'].includes(k) ? i.id : c.candidatura_id)}" data-annuncio="${esc(a.id)}">${t}</button>`).join('')}</div>` : ''}
     </li>`
   }).join('')}</ul>`
 }
@@ -198,6 +200,12 @@ export function pannelloCommittenteReale() {
 // ---------- pubblicare un annuncio vero ----------
 export async function pubblicaReale(b) {
   if (!reale()) return null
+  const id = await pubblicaSolo(b)
+  // l'indirizzo preciso va in una tabella a parte: lo vede solo chi ha l'incarico confermato
+  if (id && b.indirizzo) await rpc('imposta_indirizzo', { p_annuncio: id, p_indirizzo: b.indirizzo }).catch(() => {})
+  return id
+}
+async function pubblicaSolo(b) {
   const inizio = new Date(`${b.data}T00:00:00`); inizio.setMinutes(Math.round(b.inizio * 60))
   const fine = new Date(`${b.data}T00:00:00`); fine.setMinutes(Math.round(b.fine * 60))
   return rpc('pubblica_annuncio', {
@@ -265,6 +273,14 @@ export function gestisciReale(e) {
   const id = b.dataset.id
   const k = b.dataset.re
   if (k === 'conferma') conferma(id, b.dataset.annuncio)
+  if (k === 'mappe') {
+    rpc('indirizzo_incarico', { p_annuncio: b.dataset.annuncio }).then((x) => {
+      const dove = x?.indirizzo ? `${x.indirizzo}, ${x.citta}` : `${x?.zona ? `${x.zona}, ` : ''}${x?.citta || ''}`
+      s.apri(`<p class="dettaglio__cat">Come arrivare</p><h2>${esc(dove)}</h2>
+        <p>${pulsantiMappe(dove, { percorso: true })}</p>
+        <p class="finestra__nota">${x?.indirizzo ? 'Indirizzo condiviso perché hai l’incarico confermato: non diffonderlo.' : 'Chi ha pubblicato non ha indicato l’indirizzo preciso: chiedilo in chat.'}</p>`)
+    }).catch(() => s.apri('<h2>Non riesco a collegarmi</h2><p>Riprova tra poco.</p>'))
+  }
   if (k === 'rifiuta') esito(rpc('rispondi_proposta', { p_proposta: id, p_accetta: false }))
   if (k === 'ritira') esito(rpc('ritira_candidatura', { p_candidatura: id }))
   if (k === 'annulla') esito(rpc('annulla_incarico', { p_incarico: id }), () => '<h2>Incarico annullato</h2><p>L’altra persona riceve un avviso.</p>')

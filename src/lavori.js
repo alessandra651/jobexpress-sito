@@ -14,6 +14,7 @@ import { haPlus, pianoAttivo } from './abbonamenti.js'
 import { segnala } from './segnalazioni.js'
 import { festaSeServe } from './percorso.js'
 import { pannelloLavoratoreReale } from './reale.js'
+import { pulsantiMappe } from './mappe.js'
 import { adesso, avvisiSpostamenti, impostazioni, limiteFreeAttivo, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -216,6 +217,7 @@ function rigaCandidatura(c, i) {
     <li class="candidatura">
       <div><strong>${esc(c.titolo)}</strong><p>${esc(c.chi)} · ${esc(c.luogo)}</p>
         <p>${esc(c.quando)} · ${euro.format(c.euroOra)}/ora · circa ${euro.format(c.totale)}${c.compenso != null ? ` · dichiarato ${euro.format(c.compenso)}` : ''}</p>
+        ${c.stato === 'confermato' ? pulsantiMappe(c.indirizzo || c.luogo, { percorso: true, etichetta: 'Indicazioni con' }) : ''}
         ${c.stato === 'selezionato' ? `<p class="proposta-tempo">Hai <strong data-scade="${c.scade || 0}">${c.scade ? restante(c.scade - adesso()) : ''}</strong> per confermare</p>
           <p class="finestra__nota">Confermare non è ancora un contratto: prima di iniziare va formalizzato il rapporto.</p>` : ''}</div>
       <div class="candidatura__lato"><span class="stato stato--${c.stato}">${STATI[c.stato]}</span>${c.esempio && c.stato !== 'inviata' ? '<span class="etichetta-esempio">risposta di esempio</span>' : ''}</div>

@@ -1108,3 +1108,18 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .re-orari{width:100%;margin-top:.5rem}
 .re-orari summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .re-orari input{font:inherit;font-size:16px;border:1px solid var(--linea);border-radius:12px;padding:.5rem;min-height:44px}
+/* ===== Google Maps e Apple Mappe ===== */
+.mappe-link{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.45rem 0 .2rem}
+.mappe-link__testo{font-size:.82rem;color:#5d6a64;font-weight:700}
+.mappe-link__a{display:inline-flex;align-items:center;gap:.3rem;min-height:40px;padding:.3rem .8rem;border-radius:999px;border:1px solid var(--linea);background:#fff;color:#263d35;font-weight:700;font-size:.85rem;text-decoration:none}
+.mappe-link__a:hover{background:#e8efd8}
+.mappe-link__a svg{width:1rem;height:1rem;fill:none;stroke:#47835b;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mi__mappe{margin:.6rem 0 0}
+/* ===== Google Maps e Apple Mappe ===== */
+.mappe-link{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.45rem 0 .2rem}
+.mappe-link__testo{font-size:.82rem;color:#5d6a64;font-weight:700}
+.mappe-link__a{display:inline-flex;align-items:center;gap:.3rem;min-height:40px;padding:.3rem .8rem;border-radius:999px;border:1px solid var(--linea);background:#fff;color:#263d35;font-weight:700;font-size:.85rem;text-decoration:none}
+.mappe-link__a:hover{background:#e8efd8}
+.mappe-link__a svg{width:1rem;height:1rem;fill:none;stroke:#47835b;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mi__mappe{margin:.6rem 0 0}
+.mappe-link__testo{flex-basis:100%}

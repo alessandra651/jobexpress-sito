@@ -90,3 +90,9 @@ Sito:
 - ✅ Database: mie_candidature, miei_annunci, annulla_annuncio; cambio orari con nuova accettazione (modifiche_orari, risposte_orari: chi rifiuta perde l'incarico senza penalità né conteggio; dopo i nuovi orari le candidature sovrapposte si ritirano); contestazioni (contestazioni, contesta_incarico, area Admin). Provato su dati di prova
 - 🧪 Sito con account vero: annunci veri in bacheca («annuncio vero»), candidatura con controllo del database e finestra «tre candidature» con ritiro, proposte con conto alla rovescia, conferma con avviso spostamenti, rifiuto, ritiro, annullamento, nuovi orari (Accetto / Non posso), completamento, contestazione; per chi pubblica: annuncio salvato nel database, candidati con Seleziona / Rifiuta, risposta in attesa, cambio orari, annullamento; notifiche dal server. Provato nel browser con risposte del database simulate
 - ⏳ Prova completa con due account veri dal telefono (serve il sito online o un account reale registrato)
+
+## Aggiornamento 27 novembre 2026 · Google Maps e Apple Mappe
+- ✅ Pulsanti «Google Maps» e «Apple Mappe» (senza chiavi né account): nel dettaglio dell'incarico (solo la zona), sotto la mappa della bacheca, negli incarichi confermati («Indicazioni»)
+- ✅ Indirizzo preciso salvato a parte (`annunci_indirizzi`): lo vedono solo chi pubblica e chi ha l'incarico confermato (funzioni imposta_indirizzo, indirizzo_incarico)
+- ⏳ Accesso con Google: serve il progetto su Google Cloud e la configurazione in Supabase (guida passo passo in chat)
+- ⏳ Google Calendar automatico: richiede la verifica dell'app da parte di Google; intanto funzionano «+ Google Calendar» e i file .ics

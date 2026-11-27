@@ -1,3 +1,4 @@
+import { pulsantiMappe } from './mappe.js'
 import { MOTIVI, segnala } from './segnalazioni.js'
 
 // Bacheca degli incarichi: schede, filtri, dettaglio, preferiti.
@@ -255,7 +256,8 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
     <p>${esc(a.descrizione)}</p>
     <dl class="dettaglio__info">
       <dt>Quando</dt><dd>${GIORNI[a.giorno]}, dalle ${orario(a.inizio)} alle ${orario(a.fine)}</dd>
-      <dt>Dove</dt><dd>${esc(luogo(a))}, a circa ${String(a.km).replace('.', ',')} km${privato ? '. Zona indicativa: l’indirizzo preciso arriva solo dopo la conferma.' : ''}</dd>
+      <dt>Dove</dt><dd>${esc(luogo(a))}, a circa ${String(a.km).replace('.', ',')} km${privato ? '. Zona indicativa: l’indirizzo preciso arriva solo dopo la conferma.' : ''}
+        ${pulsantiMappe(`${a.zona && a.zona !== 'zona indicativa' ? `${a.zona}, ` : ''}${a.citta}`, { etichetta: 'Vedi la zona su' })}</dd>
       <dt>Requisiti</dt><dd>${a.requisiti.map(esc).join(' · ')}</dd>
       <dt>Esperienza</dt><dd>${ESPERIENZA[a.esperienza]}</dd>
       <dt>Compenso</dt><dd>Importo lordo stimato (ore × compenso orario). Il netto dipende dalla forma del rapporto.</dd>
@@ -344,6 +346,7 @@ function mappa(lista) {
       <p class="mi__legenda"><span><i class="mi__l-punto"></i>Attività</span><span><i class="mi__l-zona"></i>Privato: solo la zona, mai l’indirizzo</span>${citta ? '<span>Anelli a 2 e 4 km dal centro</span>' : ''}</p>
     </div>
     <svg class="mi__svg" viewBox="${vb}" role="group" aria-label="Mappa degli incarichi: tocca un punto per aprire l’incarico">${sfondo}${segni}</svg>
+    <p class="mi__mappe">${pulsantiMappe(citta ? 'Forlì' : 'Forlì-Cesena', { etichetta: citta ? 'Apri Forlì su' : 'Apri la zona su' })}</p>
     ${fuori ? `<p class="mi__fuori">${fuori} ${fuori === 1 ? 'incarico è' : 'incarichi sono'} fuori città: guarda «Dintorni».</p>` : ''}
     ${!lista.length ? '<p class="mi__fuori">Nessun incarico con questi filtri.</p>' : ''}`
 }
