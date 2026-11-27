@@ -15,6 +15,8 @@ import { apriCheckout, haPlus, pianoAttivo } from './abbonamenti.js'
 import { impostazioni } from './regole.js'
 import { gestisciCV, pannelloCV } from './cv.js'
 import { pannelloCareer } from './career.js'
+import { gestisciSmartCal, pannelloSmartCal } from './smartcal.js'
+import { gestisciAI, pannelloAI } from './ai.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -26,7 +28,7 @@ const K_GOAL = 'jobexpress-goal'
 const K_FESTA = 'jobexpress-festa-mesi'
 
 let vista = 'panoramica' // 'panoramica' | 'goal' | 'cv' | 'career' | 'smart_calendar' | 'ai'
-const VISTE = { goal: () => vistaGoal(), cv: () => pannelloCV(), career: () => pannelloCareer() }
+const VISTE = { goal: () => vistaGoal(), cv: () => pannelloCV(), career: () => pannelloCareer(), smart_calendar: () => pannelloSmartCal(), ai: () => pannelloAI() }
 let grafico = 'settimane' // 'settimane' | 'mesi' | 'anni'
 let s = { apri: () => {} }
 export const avviaPercorso = (strumenti) => { s = strumenti }
@@ -136,7 +138,7 @@ const SEZIONI = [
   ['smart_calendar', 'JobExpress Smart Calendar', 'Lavoro, università e tempo libero'],
   ['ai', 'JobExpress AI', 'Assistente per colloqui e crescita'],
 ]
-export const PRONTE = ['goal', 'cv', 'career']
+export const PRONTE = ['goal', 'cv', 'career', 'smart_calendar', 'ai']
 const icona = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg>`
 
 function barra(perc, percPrevisti = 0, etichetta = '') {
@@ -193,11 +195,11 @@ function panoramica() {
       <div class="pc-due">${sintesiBadge()}${ultimiIncarichi(g.tutti)}</div>
       <h4 class="pc-sotto">Strumenti${plus ? '' : ' <span class="pc-plus">Plus</span>'}</h4>
       <ul class="pc-sezioni">${SEZIONI.map(([k, t, d], i) => {
-        const pronta = PRONTE.includes(k) && fp[k] !== false
+        const pronta = PRONTE.includes(k) && (fp[k] !== false || k === 'ai')
         return `<li><button type="button" class="pc-sezione ${pronta ? '' : 'pc-sezione--presto'}" ${pronta ? `data-pc-vai="${k}"` : 'disabled'} style="--i:${i}">
           <span class="pc-sezione__icona">${icona(k)}</span>
           <span class="pc-sezione__testo"><strong>${t}</strong><span>${d}</span></span>
-          ${pronta ? (plus ? '<span class="pc-freccia" aria-hidden="true">→</span>' : '<span class="pc-plus">Plus</span>') : '<span class="in-arrivo in-arrivo--scuro">in arrivo</span>'}
+          ${pronta ? (k === 'ai' && fp.ai === false ? '<span class="in-arrivo in-arrivo--scuro">da attivare</span>' : plus ? '<span class="pc-freccia" aria-hidden="true">→</span>' : '<span class="pc-plus">Plus</span>') : '<span class="in-arrivo in-arrivo--scuro">in arrivo</span>'}
         </button></li>`
       }).join('')}</ul>
       ${plus ? '' : `<p class="pc-nota">Badge, livello, compensi e calendario degli incarichi restano gratis per tutti. Plus aggiunge strumenti per organizzarti: non compra reputazione né visibilità.</p>
@@ -326,7 +328,8 @@ function csv() {
 // true = ridisegna l'area
 export function gestisciPercorso(e) {
   const t = e.target
-  if (vista === 'cv' && !t.closest('[data-pc-vai]')) { const r = gestisciCV(e); if (r || e.defaultPrevented) return r }
+  const sotto = { cv: gestisciCV, smart_calendar: gestisciSmartCal, ai: gestisciAI }[vista]
+  if (sotto && !t.closest('[data-pc-vai]')) { const r = sotto(e); if (r || e.defaultPrevented) return r }
   if (e.type === 'submit' && t.closest('[data-pc-goal]')) {
     e.preventDefault()
     const f = t.closest('[data-pc-goal]')

@@ -1030,3 +1030,70 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .cr-tipo--esperienze{background:#e3f0d2;color:#2f5e3c}
 .cv-chip--chiaro li{background:#eeeee6}
 .pc-grafico--basso{height:130px}
+/* ===== Smart Calendar ===== */
+.sc-barra{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between}
+.sc-nav{display:flex;align-items:center;gap:.4rem}
+.sc-nav strong{min-width:9rem;text-align:center;text-transform:capitalize}
+.sc-corpo{padding:.9rem}
+.sc-lista{list-style:none;padding:0;margin:0;display:grid;gap:.4rem}
+.sc-ev{position:relative;display:grid;grid-template-columns:auto 1fr;gap:.1rem .6rem;padding:.5rem .7rem .5rem .9rem;border-radius:14px;background:#f6f8f1;border-left:5px solid #9bb0a5}
+.sc-ev__ora{font-size:.78rem;font-weight:800;color:#263d35;white-space:nowrap}
+.sc-ev__t{font-weight:700;min-width:0}
+.sc-ev__tipo{grid-column:2;font-size:.72rem;color:#5d6a64}
+.sc-ev .cal-x{position:absolute;top:.2rem;right:.3rem}
+.sc-ev__g{grid-column:2;font-size:.75rem;font-weight:700;color:#47835b}
+.sc-ev--confermato{border-color:#263d35;background:#e3f0d2}
+.sc-ev--proposta{border-color:#e0a100;background:#fff3d6}
+.sc-ev--candidatura{border-color:#9bb0a5;border-left-style:dashed;background:#f7f7f0}
+.sc-ev--universita{border-color:#5b6fd1;background:#eef0fb}
+.sc-ev--personale{border-color:#b05fa8;background:#f8eef7}
+.sc-ev--indisponibile{border-color:#7a8a83;background:repeating-linear-gradient(135deg,#f1f1ec 0 8px,#e7e7df 8px 16px)}
+.sc-ev--libero{border-color:#7fb37a;background:#f0f8ec}
+.sc-lista--compatta .sc-ev{padding:.35rem .5rem .35rem .7rem}
+.sc-lista--compatta .sc-ev__tipo,.sc-lista--compatta .sc-ev__g{display:none}
+.sc-sett{list-style:none;padding:0;margin:0;display:grid;gap:.5rem}
+.sc-sett>li{display:grid;grid-template-columns:3.6rem 1fr;gap:.6rem;align-items:start;padding:.4rem 0;border-bottom:1px solid #eef2ec}
+.sc-sett>li:last-child{border:0}
+.sc-sett>li.oggi .sc-sett__giorno{background:#263d35;color:#c4db94}
+.sc-sett__giorno{border:0;background:#f1f4ec;border-radius:14px;min-height:48px;font:inherit;font-size:.85rem;cursor:pointer;color:#263d35;text-transform:capitalize;display:grid;place-items:center;line-height:1.1}
+.sc-sett__lib{display:block;font-size:.72rem;color:#47835b;font-weight:700;margin-top:.25rem}
+.sc-liberi{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.35rem}
+.sc-liberi li{padding:.25rem .7rem;border-radius:999px;background:#f0f8ec;color:#2f5e3c;font-weight:700;font-size:.85rem}
+.sc-mese{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.25rem}
+.sc-mese__int{text-align:center;font-size:.75rem;font-weight:800;color:#5d6a64}
+.sc-mese__c{display:grid;align-content:start;gap:.2rem;min-height:56px;border:1px solid #eef2ec;border-radius:12px;background:#fff;font:inherit;font-size:.85rem;font-weight:700;color:#263d35;cursor:pointer;padding:.3rem}
+.sc-mese__c.fuori{opacity:.4}
+.sc-mese__c.oggi{border:2px solid #263d35}
+.sc-punti{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
+.sc-punti i,.sc-legenda i{display:inline-block;width:8px;height:8px;border-radius:50%}
+.sc-p--confermato{background:#263d35}.sc-p--proposta{background:#e0a100}.sc-p--candidatura{background:#9bb0a5}.sc-p--universita{background:#5b6fd1}.sc-p--personale{background:#b05fa8}.sc-p--indisponibile{background:#7a8a83}.sc-p--libero{background:#7fb37a}
+.sc-legenda{list-style:none;padding:0;margin:.8rem 0 0;display:flex;flex-wrap:wrap;gap:.3rem .8rem;font-size:.75rem;color:#5d6a64}
+.sc-legenda li{display:flex;align-items:center;gap:.3rem}
+.sc-avvisi{list-style:none;padding:0;margin:0;display:grid;gap:.4rem;font-size:.9rem}
+.sc-avvisi li{padding:.5rem .7rem;border-radius:12px}
+.sc-avv--sovr{background:#fde8e4}.sc-avv--spost{background:#fff3d6}
+.sc-nuovo select,.sc-esporta select{font:inherit;font-size:16px;border:1px solid var(--linea);border-radius:12px;padding:.5rem;min-height:44px;background:#fff}
+/* ===== JobExpress AI ===== */
+.ai-contatore .pc-card__testa{margin-bottom:.5rem}
+.ai-avviso{margin:.5rem 0 0;font-weight:700;color:#8a3b12}
+.ai-aree{display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.2rem}
+.ai-aree button{flex:none;border:1px solid var(--linea);background:#fff;border-radius:999px;padding:.5rem 1rem;min-height:44px;font:inherit;font-weight:700;color:#263d35;cursor:pointer}
+.ai-aree button[aria-selected=true]{background:#263d35;color:#c4db94;border-color:#263d35}
+.ai-chat{display:grid;gap:.7rem}
+.ai-vuoto p{font-weight:800;margin:0 0 .5rem}
+.ai-sugg{list-style:none;padding:0;margin:0;display:grid;gap:.4rem}
+.ai-sugg button{width:100%;text-align:left;border:1px dashed #9bb0a5;background:#f7f9f3;border-radius:14px;padding:.65rem .8rem;font:inherit;color:#263d35;cursor:pointer;min-height:44px}
+.ai-sugg button:disabled{opacity:.55;cursor:default}
+.ai-messaggi{list-style:none;padding:0;margin:0;display:grid;gap:.5rem;max-height:420px;overflow-y:auto}
+.ai-m{max-width:88%;padding:.6rem .85rem;border-radius:18px;font-size:.95rem;line-height:1.45}
+.ai-m--tu{justify-self:end;background:#263d35;color:#f3f3e8;border-bottom-right-radius:6px}
+.ai-m--ai{justify-self:start;background:#f1f4ec;border-bottom-left-radius:6px}
+.ai-m--attesa{display:flex;gap:4px}
+.ai-m--attesa span{width:7px;height:7px;border-radius:50%;background:#47835b;animation:ai-punti 1s infinite}
+.ai-m--attesa span:nth-child(2){animation-delay:.15s}.ai-m--attesa span:nth-child(3){animation-delay:.3s}
+@keyframes ai-punti{50%{opacity:.25;transform:translateY(-3px)}}
+.ai-form{display:flex;gap:.5rem;align-items:flex-end}
+.ai-form textarea{flex:1;font:inherit;font-size:16px;border:1px solid var(--linea);border-radius:16px;padding:.6rem .8rem;min-height:48px;resize:vertical}
+.ai-consenso{font-size:.85rem}
+.ai-consenso input{width:20px;height:20px;accent-color:#263d35;flex:none;margin-top:.1rem}
+.ai-storico{border:0;background:none;font:inherit;text-align:left;color:#263d35;cursor:pointer;flex:1;min-height:40px}

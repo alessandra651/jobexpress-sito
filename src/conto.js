@@ -10,6 +10,8 @@ import { impostaSalvaRicerca } from './incarichi.js'
 import { gestisciReputazione, riquadroReputazione } from './reputazione.js'
 import { avviaPercorso, gestisciPercorso, pannelloPercorso } from './percorso.js'
 import { avviaCV } from './cv.js'
+import { avviaSmartCal } from './smartcal.js'
+import { avviaAI } from './ai.js'
 import { FUNZIONI } from './config.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
@@ -591,6 +593,8 @@ export async function avviaConto(strumenti) {
   avviaLavori({ apri, ridisegna: aggiornaTutto })
   avviaPercorso({ apri })
   avviaCV({ utente, token: tokenValido })
+  avviaSmartCal({ utente, token: tokenValido })
+  avviaAI({ utente, token: tokenValido, ridisegna: () => { if (!area.hidden) disegnaArea() } })
   document.addEventListener('cv-cambiato', () => disegnaArea())
   avviaAbbonamenti({ apri, utente, apriAccesso, dopo: () => apriArea('profilo') })
   avviaAdmin({ utente, token: tokenValido })

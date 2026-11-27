@@ -77,3 +77,10 @@ Sito:
 - 🧪 CV: incarichi completati proposti come «Nuove esperienze» (una sola volta, niente doppioni), esperienze JobExpress «verificabili», esterne/competenze/certificazioni «autodichiarate»; studi, lingue, contatti scelti, foto facoltativa, disponibilità, badge, valutazioni scelte; modelli Minimal/Professional/Modern; ordine e sezioni nascoste; anteprima; PDF con la stampa del browser; pagina pubblica `cv.html?t=…`
 - 🧪 Career: incarichi, ore, committenti, valutazione media, completamento, esperienze per settore, incarichi nel tempo, mappa delle competenze (dalle recensioni / dalle esperienze / autodichiarate / verificate: nessuna), andamento recensioni, suggerimenti solo con almeno 3 incarichi
 - ✅ Badge, livello, requisiti mancanti, traguardi e storico: gratis per tutti, criteri invariati
+
+## Aggiornamento 27 novembre 2026 · Smart Calendar + JobExpress AI
+- ✅ Database: `calendario_personale` (solo il proprietario), `ai_conversazioni` (solo il proprietario, eliminabili), `ai_utilizzo` (contatore mensile scritto SOLO dal server); funzioni ai_stato, ai_riserva, ai_restituisci, admin_statistiche_ai (migrazione 20261127160000_calendario_e_ai.sql). Provato: la 21ª richiesta è bloccata, una richiesta fallita viene restituita, Free e funzione spenta bloccati, il sito non può aumentare il contatore
+- ✅ Funzione server `jobexpress-ai` pubblicata su Supabase (chiave del provider solo lì, limiti di lunghezza, stima dei costi, conversazioni salvate)
+- ⏳ Per accendere l'AI: aggiungere il segreto ANTHROPIC_API_KEY in Supabase → Edge Functions → Secrets, poi nell'area Admin spuntare «Funzione attiva: JobExpress AI» (oggi spenta)
+- 🧪 Smart Calendar: viste giorno/settimana/mese, incarichi/proposte/candidature + impegni universitari, personali, indisponibilità, tempo libero (anche ogni settimana), fasce libere, sovrapposizioni, avvisi spostamenti, ore lavorate e libere, collegamento con Goal, promemoria nel sito, esportazione .ics e «+ Google Calendar»
+- ⏳ Sincronizzazione automatica con Google Calendar (serve un progetto Google OAuth) · notifiche push ed email

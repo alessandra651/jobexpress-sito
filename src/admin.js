@@ -165,6 +165,7 @@ function bloccoIncarichi() {
           <li><strong>${perc(x.proposte_confermate, x.proposte_totali)}</strong><span>Proposte confermate</span></li><li><strong>${perc(x.proposte_scadute, x.proposte_totali)}</strong><span>Proposte scadute</span></li>
           <li><strong>${x.ritirate_incompatibili}</strong><span>Ritirate per incompatibilità</span></li><li><strong>${x.minuti_medi_assegnazione == null ? '—' : `${n2(x.minuti_medi_assegnazione)} min`}</strong><span>Tempo medio di assegnazione</span></li>
         </ul>
+        ${stato.ai ? `<p class="finestra__nota">JobExpress AI questo mese: ${stato.ai.richieste_mese} richieste da ${stato.ai.utenti_mese} persone · costo stimato ${n2(Number(stato.ai.costo_mese_eur).toFixed(2))} €.</p>` : ''}
         <p class="finestra__nota">Abbonamenti attivi: ${Object.entries(x.abbonamenti || {}).map(([k, v]) => `${esc(k)} ${v}`).join(' · ') || 'nessuno'}. Pagamenti reali: non ancora attivi (ricavi 0 €).</p>
       </section>`
 }
@@ -251,6 +252,7 @@ export async function apriAdmin() {
       stato.reale = true
       stato.statistiche = await rpc('admin_statistiche')
       stato.incarichi = await rpc('admin_statistiche_incarichi').catch(() => null)
+      stato.ai = await rpc('admin_statistiche_ai').catch(() => null)
     } catch {
       stato.errore = 'Non riesco a collegarmi a Supabase per i numeri reali.'
     }
