@@ -5,7 +5,8 @@
 import { SUPABASE_KEY, SUPABASE_URL } from './config.js'
 
 export const PREDEFINITE = {
-  free_monthly_job_limit_enabled: false, // SPENTO finché non c'è la verifica legale
+  free_monthly_job_limit_enabled: false, // SPENTO per gli account veri finché non c'è la verifica legale
+  free_monthly_job_limit_demo: true, // nel prototipo (account di prova) il limite si vede e si applica
   free_monthly_job_limit: 2,
   max_candidature_sovrapposte: 3,
   tempi_conferma: [
@@ -29,6 +30,9 @@ let dalServer = false
 const ascoltatori = []
 
 export const impostazioni = () => imp
+// Il limite Free vale nel prototipo (account di prova) se acceso per la demo,
+// e per gli account veri solo con l'interruttore di produzione.
+export const limiteFreeAttivo = (prova = true) => imp.free_monthly_job_limit_enabled === true || (prova && imp.free_monthly_job_limit_demo === true)
 export const impostazioniDalServer = () => dalServer
 export const quandoCambianoImpostazioni = (f) => ascoltatori.push(f)
 // Ora "vera" del server: il conto alla rovescia non dipende dall'orologio del telefono

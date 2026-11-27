@@ -591,7 +591,7 @@ export async function avviaConto(strumenti) {
   quandoCambiaChat(aggiornaTutto)
   quandoCambiaAbbonamento(aggiornaTutto)
   avviaLavori({ apri, ridisegna: aggiornaTutto })
-  avviaPercorso({ apri })
+  avviaPercorso({ apri, utente })
   avviaCV({ utente, token: tokenValido })
   avviaSmartCal({ utente, token: tokenValido })
   avviaAI({ utente, token: tokenValido, ridisegna: () => { if (!area.hidden) disegnaArea() } })

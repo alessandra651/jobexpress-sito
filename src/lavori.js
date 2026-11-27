@@ -13,7 +13,7 @@ import { notifica } from './notifiche.js'
 import { haPlus, pianoAttivo } from './abbonamenti.js'
 import { segnala } from './segnalazioni.js'
 import { festaSeServe } from './percorso.js'
-import { adesso, avvisiSpostamenti, impostazioni, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
+import { adesso, avvisiSpostamenti, impostazioni, limiteFreeAttivo, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -155,12 +155,13 @@ function confermaProposta(i, forza = false) {
     return
   }
   const imp = impostazioni()
-  if (me && imp.free_monthly_job_limit_enabled && pianoAttivo() === 'free') {
+  if (me && limiteFreeAttivo() && pianoAttivo() === 'free') {
     const mese = meseDi(me.inizio)
     const contano = altri.filter((x) => (['confermato', 'completato'].includes(x.stato) || (x.stato === 'annullato' && x.annullatoDa === 'lavoratore' && imp.annullamenti_lavoratore_contano)) && meseDi(x.inizio) === mese)
     if (contano.length >= Number(imp.free_monthly_job_limit)) {
       s.apri(`<p class="dettaglio__cat">Limite del piano Free</p><h2>Hai già ${contano.length} incarichi questo mese</h2>
         <p>Con il piano Free puoi confermare fino a ${Number(imp.free_monthly_job_limit)} incarichi per mese. Le candidature restano illimitate e il limite si rinnova il primo giorno del mese.</p>
+        <p class="finestra__nota">Con Plus gli incarichi mensili sono illimitati. Regola in prova, da confermare dopo la verifica legale.</p>
         <div class="finestra__azioni"><button type="button" class="tasto" data-vai-plus>Scopri Plus</button></div>`)
       document.querySelector('[data-vai-plus]').onclick = () => { document.querySelector('dialog.finestra').close(); document.querySelector('#costi')?.scrollIntoView({ behavior: 'smooth' }) }
       return

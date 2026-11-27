@@ -10,7 +10,7 @@ import { avviaModuli } from './moduli.js'
 import { avviaTabellone } from './tabellone.js'
 import { avviaPrezzi } from './prezzi.js'
 import { impostaFascia } from './incarichi.js'
-import { caricaImpostazioni, impostazioni, quandoCambianoImpostazioni } from './regole.js'
+import { caricaImpostazioni, impostazioni, limiteFreeAttivo, quandoCambianoImpostazioni } from './regole.js'
 
 new Lenis({
   autoRaf: true,
@@ -53,9 +53,12 @@ avviaModuli({ leggiTabellone: () => tabellone?.leggi() })
 // Regole della piattaforma (dall'area Admin): i testi dei piani seguono il limite Free
 function testiLimite() {
   const imp = impostazioni()
-  const acceso = imp.free_monthly_job_limit_enabled === true
+  const acceso = limiteFreeAttivo()
   const free = document.querySelector('[data-testo-limite="free"]')
-  if (free) free.textContent = acceso ? `Fino a ${imp.free_monthly_job_limit} incarichi confermati al mese` : 'Incarichi confermati senza limiti'
+  if (free) {
+    free.textContent = acceso ? `Fino a ${imp.free_monthly_job_limit} incarichi confermati al mese` : 'Incarichi confermati senza limiti'
+    if (acceso && !imp.free_monthly_job_limit_enabled) free.insertAdjacentHTML('beforeend', ' <small class="in-arrivo">regola in prova</small>')
+  }
   const plus = document.querySelector('[data-testo-limite="plus"]')
   if (plus) plus.hidden = !acceso
 }

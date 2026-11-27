@@ -12,7 +12,7 @@ import { NOME_CAT } from './incarichi.js'
 import { guadagni, intervallo, leggiCand } from './lavori.js'
 import { datiReputazione } from './reputazione.js'
 import { apriCheckout, haPlus, pianoAttivo } from './abbonamenti.js'
-import { impostazioni } from './regole.js'
+import { impostazioni, limiteFreeAttivo } from './regole.js'
 import { gestisciCV, pannelloCV } from './cv.js'
 import { pannelloCareer } from './career.js'
 import { gestisciSmartCal, pannelloSmartCal } from './smartcal.js'
@@ -30,7 +30,7 @@ const K_FESTA = 'jobexpress-festa-mesi'
 let vista = 'panoramica' // 'panoramica' | 'goal' | 'cv' | 'career' | 'smart_calendar' | 'ai'
 const VISTE = { goal: () => vistaGoal(), cv: () => pannelloCV(), career: () => pannelloCareer(), smart_calendar: () => pannelloSmartCal(), ai: () => pannelloAI() }
 let grafico = 'settimane' // 'settimane' | 'mesi' | 'anni'
-let s = { apri: () => {} }
+let s = { apri: () => {}, utente: null }
 export const avviaPercorso = (strumenti) => { s = strumenti }
 
 // ================= DATI =================
@@ -123,6 +123,21 @@ function serie(fatti, tipo) {
   return righe
 }
 
+// Piano Free con limite (prototipo): incarichi confermati nel mese
+function contatoreFree() {
+  const imp = impostazioni()
+  const max = Number(imp.free_monthly_job_limit) || 2
+  const mese = inizioMese(Date.now())
+  const n = incarichi().filter((x) => inizioMese(x.quando) === mese).length
+  const fine = new Date(new Date(mese).getFullYear(), new Date(mese).getMonth() + 1, 1)
+  return `<article class="pc-card pc-limite">
+    <div class="pc-card__testa"><span class="pc-etichetta">Piano Free · incarichi di ${new Date().toLocaleDateString('it-IT', { month: 'long' })}</span><strong>${Math.min(n, max)} su ${max}</strong></div>
+    <div class="pc-barra"><i style="--w:${Math.min(100, (n / max) * 100)}%"></i></div>
+    <p class="pc-nota">${n >= max ? `Hai raggiunto il limite: puoi candidarti ancora, e dal ${fine.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })} potrai confermare nuovi incarichi.` : `Puoi confermare ancora ${max - n} ${max - n === 1 ? 'incarico' : 'incarichi'} questo mese. Le candidature sono illimitate.`} Con Plus gli incarichi sono illimitati.</p>
+    ${imp.free_monthly_job_limit_enabled ? '' : '<p class="pc-nota"><small class="in-arrivo in-arrivo--scuro">regola in prova</small> da confermare dopo la verifica legale.</p>'}
+  </article>`
+}
+
 // ================= DISEGNO =================
 const ICONE = {
   goal: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
@@ -192,6 +207,7 @@ function panoramica() {
     <div class="pc">
       <header class="pc-testa"><h3>Il tuo percorso</h3><p>Lavora, cresci, raggiungi i tuoi obiettivi.</p></header>
       ${sintesiObiettivo(plus)}
+      ${!plus && limiteFreeAttivo(!s.utente?.() || s.utente().prova === true) ? contatoreFree() : ''}
       <div class="pc-due">${sintesiBadge()}${ultimiIncarichi(g.tutti)}</div>
       <h4 class="pc-sotto">Strumenti${plus ? '' : ' <span class="pc-plus">Plus</span>'}</h4>
       <ul class="pc-sezioni">${SEZIONI.map(([k, t, d], i) => {
@@ -408,7 +424,7 @@ export function festaSeServe(dopo = () => document.querySelector('dialog.finestr
         <li>Organizza il tuo tempo.</li><li>Accedi al tuo assistente professionale AI.</li>
       </ul>
       ${imp.prova_gratuita?.attiva ? `<p class="pc-nota">Puoi provare Plus gratis per ${Number(imp.prova_gratuita.giorni)} giorni: si attiva solo se lo scegli tu.</p>` : ''}
-      ${imp.free_monthly_job_limit_enabled ? '' : '<p class="pc-nota">Con Free puoi continuare a confermare incarichi gratuitamente.</p>'}
+      ${limiteFreeAttivo() ? `<p class="pc-nota">Con Free hai usato i ${Number(imp.free_monthly_job_limit)} incarichi di questo mese: con Plus continui senza limiti, altrimenti il limite si rinnova il primo giorno del mese.</p>` : '<p class="pc-nota">Con Free puoi continuare a confermare incarichi gratuitamente.</p>'}
       <div class="finestra__azioni"><button type="button" class="tasto" data-festa-plus>Scopri Plus</button><button type="button" class="tasto tasto--chiaro" data-festa-chiudi>Chiudi</button></div>
     </div>`)
   const f = document.querySelector('dialog.finestra')

@@ -94,8 +94,9 @@ function bloccoRegole() {
         ${impostazioniDalServer() ? '' : '<p class="avviso-prova">Non riesco a leggere le regole da Supabase: vedi quelle predefinite.</p>'}
         <form class="regole" data-admin-regole novalidate>
           <fieldset class="regole__gruppo"><legend>Limite sperimentale per Free</legend>
-            ${rigaSpunta('free_monthly_job_limit_enabled', 'Limite incarichi mensili acceso', im.free_monthly_job_limit_enabled === true)}
+            ${rigaSpunta('free_monthly_job_limit_enabled', 'Limite acceso per gli account veri', im.free_monthly_job_limit_enabled === true)}
             <p class="regole__avviso">Da tenere SPENTO finché un avvocato del lavoro non lo ha verificato. Accenderlo non risolve la questione legale: serve solo a rendere la scelta reversibile. Quando è spento, chi usa Free conferma incarichi senza limiti.</p>
+            ${rigaSpunta('free_monthly_job_limit_demo', 'Mostra e applica il limite nel prototipo (solo account di prova)', im.free_monthly_job_limit_demo === true)}
             ${rigaNumero('free_monthly_job_limit', 'Incarichi confermati al mese con Free', im.free_monthly_job_limit, { min: 1, max: 100 })}
             ${rigaSpunta('annullamenti_lavoratore_contano', 'Se il lavoratore annulla, l’incarico resta nel conteggio del mese (evita abusi, nessuna penalità sul badge)', im.annullamenti_lavoratore_contano === true)}
           </fieldset>
@@ -126,6 +127,7 @@ async function salvaRegole(f) {
   const num = (k) => Number(String(el[k].value).replace(',', '.'))
   const nuove = {
     free_monthly_job_limit_enabled: el.free_monthly_job_limit_enabled.checked,
+    free_monthly_job_limit_demo: el.free_monthly_job_limit_demo.checked,
     free_monthly_job_limit: num('free_monthly_job_limit'),
     annullamenti_lavoratore_contano: el.annullamenti_lavoratore_contano.checked,
     max_candidature_sovrapposte: num('max_candidature_sovrapposte'),
