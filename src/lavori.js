@@ -13,6 +13,7 @@ import { notifica } from './notifiche.js'
 import { haPlus, pianoAttivo } from './abbonamenti.js'
 import { segnala } from './segnalazioni.js'
 import { festaSeServe } from './percorso.js'
+import { pannelloLavoratoreReale } from './reale.js'
 import { adesso, avvisiSpostamenti, impostazioni, limiteFreeAttivo, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -224,13 +225,15 @@ function rigaCandidatura(c, i) {
 
 export function pannelloCandidature() {
   const l = leggiCand()
+  const veri = pannelloLavoratoreReale()
   if (!l.length) {
-    return `<div class="vuoto"><strong>Nessuna candidatura.</strong><p>Quando ti candidi a un incarico, qui segui lo stato passo per passo.</p>
+    if (veri.includes('<ul')) return veri
+    return `${veri}<div class="vuoto"><strong>Nessuna candidatura.</strong><p>Quando ti candidi a un incarico, qui segui lo stato passo per passo.</p>
       <button type="button" class="tasto" data-area-vai="esplora">Esplora gli incarichi</button></div>`
   }
   const att = l.map((c, i) => [c, i]).filter(([c]) => ATTIVE.includes(c.stato) || (c.stato === 'completato' && (c.compenso == null || !c.recensito)))
   const storico = l.map((c, i) => [c, i]).filter(([c]) => !att.some(([x]) => x === c))
-  return `
+  return `${veri}
     ${att.length ? `<h3 class="area__sotto-titolo">In corso</h3><ul class="candidature">${att.map(([c, i]) => rigaCandidatura(c, i)).join('')}</ul>` : ''}
     ${storico.length ? `<details class="storico" ${att.length ? '' : 'open'}><summary>Storico (${storico.length})</summary><ul class="candidature">${storico.map(([c, i]) => rigaCandidatura(c, i)).join('')}</ul></details>` : ''}
     <p class="finestra__nota">Versione di prova: le candidature restano su questo dispositivo e le risposte di chi pubblica sono di esempio.</p>`

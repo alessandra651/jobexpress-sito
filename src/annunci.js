@@ -7,6 +7,7 @@ import { CATEGORIE, NOME_CAT, aggiornaBacheca, registraFonte, scheda } from './i
 import { avviaConversazione } from './chat.js'
 import { notifica } from './notifiche.js'
 import { apriRecensione, controllaRicerche } from './lavori.js'
+import { aggiorna as aggiornaReale, caricaBacheca, pannelloCommittenteReale, pubblicaReale } from './reale.js'
 
 const CHIAVE = 'jobexpress-miei-annunci'
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -73,7 +74,7 @@ function comeIncarico(a) {
 }
 export function annunciInBacheca() {
   const settimana = new Date(); settimana.setDate(settimana.getDate() + 7)
-  return aggiornaStati().filter((a) => a.stato === 'attivo' && a.data >= oggiIso() && new Date(`${a.data}T00:00:00`) < settimana).map(comeIncarico)
+  return aggiornaStati().filter((a) => a.stato === 'attivo' && !a.realeId && a.data >= oggiIso() && new Date(`${a.data}T00:00:00`) < settimana).map(comeIncarico)
 }
 
 // ---------- procedura guidata ----------
@@ -281,6 +282,15 @@ function concludi() {
   l.unshift(b)
   scrivi(l)
   aggiornaBacheca()
+  // Account vero: l'annuncio attivo viene pubblicato anche nel database (le regole le applica Supabase)
+  if (b.stato === 'attivo' && !b.realeId) {
+    pubblicaReale(b).then((id) => {
+      if (!id) return
+      const l2 = leggi(); const x = l2.find((y) => y.id === b.id)
+      if (x) { x.realeId = id; x.candidati = []; scrivi(l2) }
+      caricaBacheca(); aggiornaReale(); aggiornaBacheca()
+    }).catch(() => notifica('annuncio', `«${b.titolo}» non è stato pubblicato nel database: riprova più tardi.`, { scheda: 'attivita', modo: 'pubblico' }))
+  }
   controllaRicerche()
   const testi = {
     attivo: 'È visibile nella bacheca. Le candidature arrivano nella tua area.',
@@ -361,12 +371,14 @@ export function pannelloPubblicatoreHome() {
 let filtroStato = 'tutti'
 export function pannelloAnnunci() {
   const l = aggiornaStati()
+  const veri = pannelloCommittenteReale()
   if (!l.length) {
-    return `<div class="vuoto"><strong>Nessun annuncio.</strong><p>Pubblica il tuo primo incarico: è gratis e ci vogliono pochi minuti.</p>
+    if (veri.includes('<ul')) return veri
+    return `${veri}<div class="vuoto"><strong>Nessun annuncio.</strong><p>Pubblica il tuo primo incarico: è gratis e ci vogliono pochi minuti.</p>
       <button type="button" class="tasto" data-pubblica>+ Pubblica un incarico</button></div>`
   }
   const mostrati = l.filter((a) => filtroStato === 'tutti' || a.stato === filtroStato)
-  return `
+  return `${veri}
     <div class="pa-testa">
       <div class="filtri__categorie" role="group" aria-label="Filtra per stato">
         ${[['tutti', 'Tutti'], ...Object.entries(STATI)].map(([k, t]) => `<button type="button" data-pa-filtro="${k}" aria-pressed="${filtroStato === k}">${t}</button>`).join('')}

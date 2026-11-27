@@ -12,11 +12,12 @@ import { avviaPercorso, gestisciPercorso, pannelloPercorso } from './percorso.js
 import { avviaCV } from './cv.js'
 import { avviaSmartCal } from './smartcal.js'
 import { avviaAI } from './ai.js'
+import { aggiorna as aggiornaReale, avviaReale, candidaReale, gestisciReale, segnaLetteServer } from './reale.js'
 import { FUNZIONI } from './config.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
 import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
-import { gestisciNotifiche, nonLette, notifica, pannelloNotifiche, quandoCambianoNotifiche } from './notifiche.js'
+import { gestisciNotifiche, impostaSegnaServer, nonLette, notifica, pannelloNotifiche, quandoCambianoNotifiche } from './notifiche.js'
 import { collegaCandidature, dataDi, dataIso, gestisciCalendario, pannelloCalendario } from './calendario.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -197,6 +198,7 @@ export function candidati(a, quando) {
     apriAccesso('Per candidarti, registrati o accedi')
     return null
   }
+  if (a.reale) return candidaReale(a) // annuncio vero: decide il database
   const lista = leggiCand()
   const gia = lista.find((c) => c.id === a.id && ['inviata', 'selezionato', 'confermato'].includes(c.stato))
   if (gia) return 'Ti sei già candidato a questo incarico. Lo trovi in «La mia area» → Attività.'
@@ -392,6 +394,7 @@ function esplora() {
 function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
+    if (gestisciReale(e)) return
     if (gestisciPercorso(e) || gestisciCalendario(e) || gestisciPubblicatore(e) || gestisciAbbonamento(e)) return disegnaArea()
     const lv = gestisciLavori(e)
     if (lv === 'esplora') return esplora()
@@ -482,6 +485,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('submit', (e) => {
+    if (gestisciReale(e)) return
     if (gestisciPercorso(e)) return disegnaArea()
     if (gestisciAbbonamento(e)) return disegnaArea()
     const c = gestisciChat(e)
@@ -592,6 +596,9 @@ export async function avviaConto(strumenti) {
   quandoCambiaAbbonamento(aggiornaTutto)
   avviaLavori({ apri, ridisegna: aggiornaTutto })
   avviaPercorso({ apri, utente })
+  avviaReale({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() } })
+  impostaSegnaServer(segnaLetteServer)
+  quandoCambiaUtente(() => aggiornaReale())
   avviaCV({ utente, token: tokenValido })
   avviaSmartCal({ utente, token: tokenValido })
   avviaAI({ utente, token: tokenValido, ridisegna: () => { if (!area.hidden) disegnaArea() } })

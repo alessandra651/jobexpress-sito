@@ -1098,3 +1098,13 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .ai-consenso input{width:20px;height:20px;accent-color:#263d35;flex:none;margin-top:.1rem}
 .ai-storico{border:0;background:none;font:inherit;text-align:left;color:#263d35;cursor:pointer;flex:1;min-height:40px}
 .piano li small.in-arrivo{display:inline-block;width:auto;margin:0 0 0 .2rem}
+/* ===== Dati veri (27 nov 2026) ===== */
+.etichetta-vero{background:#263d35;color:#c4db94}
+.re-candidati{list-style:none;padding:0;margin:.6rem 0 0;display:grid;gap:.5rem;width:100%}
+.re-candidati>li{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;padding:.6rem .7rem;border-radius:14px;background:#f6f8f1}
+.re-candidati>li>div:first-child{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}
+.re-candidati span{font-size:.85rem;color:#5d6a64}
+.re-attesa{font-weight:700;color:#8a3b12!important}
+.re-orari{width:100%;margin-top:.5rem}
+.re-orari summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.re-orari input{font:inherit;font-size:16px;border:1px solid var(--linea);border-radius:12px;padding:.5rem;min-height:44px}

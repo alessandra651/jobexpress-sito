@@ -87,11 +87,11 @@ const scriviSalvati = (s) => {
 }
 
 // Altri incarichi oltre a quelli di esempio (per esempio quelli che pubblichi tu)
-let fonteExtra = () => []
+const fonti = []
 export function registraFonte(fn) {
-  fonteExtra = fn
+  fonti.push(fn)
 }
-export const tuttiIncarichi = () => [...fonteExtra(), ...INCARICHI_DEMO]
+export const tuttiIncarichi = () => [...fonti.flatMap((f) => f()), ...INCARICHI_DEMO]
 
 // Il calendario personale, se compilato, ha la precedenza sulla fascia del tabellone
 let dalCalendario = () => null
@@ -270,13 +270,12 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
       <button class="tasto tasto--chiaro" type="button" data-condividi>Condividi</button>
       <button class="tasto tasto--chiaro" type="button" data-segnala>Segnala</button>
     </div>
-    <p class="finestra__nota" data-d-esito aria-live="polite">${a.mio ? 'È un tuo annuncio: lo gestisci da «La mia area».' : 'Incarico di esempio, non reale.'}</p>`)
+    <p class="finestra__nota" data-d-esito aria-live="polite">${a.mio ? 'È un tuo annuncio: lo gestisci da «La mia area».' : a.reale ? 'Annuncio vero, pubblicato su JobExpress.' : 'Incarico di esempio, non reale.'}</p>`)
   const fin = document.querySelector('dialog.finestra')
   const esito = fin.querySelector('[data-d-esito]')
   if (!a.mio) fin.querySelector('[data-candidati]').onclick = () => {
     if (!strumenti.candidati) return strumenti.accesso('Per candidarti, accedi')
-    const msg = strumenti.candidati(a, `${GIORNI[a.giorno]}, ${orario(a.inizio)}–${orario(a.fine)}`)
-    if (msg) esito.textContent = msg
+    Promise.resolve(strumenti.candidati(a, `${GIORNI[a.giorno]}, ${orario(a.inizio)}–${orario(a.fine)}`)).then((msg) => { if (msg) esito.textContent = msg })
   }
   fin.querySelector('[data-d-salva]').onclick = (e) => {
     salvati.has(a.id) ? salvati.delete(a.id) : salvati.add(a.id)

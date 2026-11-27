@@ -36,6 +36,29 @@ export function notifica(tipo, testo, vai = null) {
 
 export const nonLette = () => lista.filter((n) => !n.letta).length
 
+// Notifiche che arrivano dal server (account vero): si aggiungono una volta sola
+const DAL_SERVER = { nuova_candidatura: 'ricevuta', proposta_ricevuta: 'selezione', proposta_confermata: 'selezione', proposta_rifiutata: 'selezione',
+  proposta_scaduta: 'selezione', candidatura_rifiutata: 'candidatura', candidatura_ritirata: 'ricevuta', candidatura_ritirata_incompatibile: 'ricevuta',
+  candidature_ritirate: 'candidatura', incarico_annullato: 'selezione', incarico_modificato: 'selezione', incarico_completato: 'selezione',
+  incarico_contestato: 'selezione', friends: 'abbonamento' }
+let segnaServer = () => {}
+export const impostaSegnaServer = (f) => { segnaServer = f }
+export function importaNotifiche(righe) {
+  let nuove = 0
+  righe.forEach((r) => {
+    const id = `s-${r.id}`
+    const gia = lista.find((n) => n.id === id)
+    if (gia) { if (r.letta && !gia.letta) { gia.letta = true; nuove++ } return }
+    lista.push({ id, tipo: DAL_SERVER[r.tipo] || 'selezione', testo: r.testo, vai: { scheda: 'attivita' }, il: new Date(r.creato_il).getTime(), letta: r.letta })
+    nuove++
+  })
+  if (!nuove) return
+  lista.sort((a, b) => b.il - a.il)
+  lista = lista.slice(0, 80)
+  scrivi(CHIAVE, lista)
+  avvisa()
+}
+
 const quando = (t) => {
   const min = Math.round((Date.now() - t) / 6e4)
   if (min < 1) return 'adesso'
@@ -75,6 +98,7 @@ export function gestisciNotifiche(e) {
   if (e.type !== 'click') return false
   if (t.closest('[data-notif="tutte"]')) {
     lista.forEach((n) => { n.letta = true })
+    segnaServer()
     scrivi(CHIAVE, lista)
     avvisa()
     return true

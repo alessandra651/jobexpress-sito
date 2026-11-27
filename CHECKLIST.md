@@ -84,3 +84,9 @@ Sito:
 - ⏳ Per accendere l'AI: aggiungere il segreto ANTHROPIC_API_KEY in Supabase → Edge Functions → Secrets, poi nell'area Admin spuntare «Funzione attiva: JobExpress AI» (oggi spenta)
 - 🧪 Smart Calendar: viste giorno/settimana/mese, incarichi/proposte/candidature + impegni universitari, personali, indisponibilità, tempo libero (anche ogni settimana), fasce libere, sovrapposizioni, avvisi spostamenti, ore lavorate e libere, collegamento con Goal, promemoria nel sito, esportazione .ics e «+ Google Calendar»
 - ⏳ Sincronizzazione automatica con Google Calendar (serve un progetto Google OAuth) · notifiche push ed email
+
+## Aggiornamento 27 novembre 2026 · Sito collegato ai dati veri
+- ✅ Limite dei 2 incarichi Free visibile nel prototipo (regola admin `free_monthly_job_limit_demo`, solo account di prova); per gli account veri resta spento
+- ✅ Database: mie_candidature, miei_annunci, annulla_annuncio; cambio orari con nuova accettazione (modifiche_orari, risposte_orari: chi rifiuta perde l'incarico senza penalità né conteggio; dopo i nuovi orari le candidature sovrapposte si ritirano); contestazioni (contestazioni, contesta_incarico, area Admin). Provato su dati di prova
+- 🧪 Sito con account vero: annunci veri in bacheca («annuncio vero»), candidatura con controllo del database e finestra «tre candidature» con ritiro, proposte con conto alla rovescia, conferma con avviso spostamenti, rifiuto, ritiro, annullamento, nuovi orari (Accetto / Non posso), completamento, contestazione; per chi pubblica: annuncio salvato nel database, candidati con Seleziona / Rifiuta, risposta in attesa, cambio orari, annullamento; notifiche dal server. Provato nel browser con risposte del database simulate
+- ⏳ Prova completa con due account veri dal telefono (serve il sito online o un account reale registrato)
