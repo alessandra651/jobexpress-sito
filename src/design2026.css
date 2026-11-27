@@ -1125,3 +1125,62 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .mappe-link__testo{flex-basis:100%}
 .social[hidden]{display:none!important}
 .accesso .social--mail{border:0;background:#263d35;color:#fff}.accesso .social--mail:hover{background:#47835b}
+
+/* ================= JobExpress Trust ================= */
+.avatar--foto{object-fit:cover;background:#e8eee0;padding:0}
+.avatar--grande{width:5rem;height:5rem;font-size:2rem}
+.trust-schede{margin-bottom:1rem}
+.trust-testa{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.trust-testa > div{flex:1;min-width:12rem}
+.trust-nome{font-size:1.25rem}
+.trust-testa p{margin:.15rem 0;color:#4a5a53}
+.trust-badge{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.35rem}
+.badge-verifica{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem .2rem .35rem;border-radius:999px;background:#e3efe9;color:#1d4b3c;font-size:.8rem;font-weight:700}
+.badge-verifica svg{width:1rem;height:1rem;fill:#2c7a5f}
+.badge-verifica--identita{background:#dfeaf7;color:#1e3f66}.badge-verifica--identita svg{fill:#2f6db3}
+.badge-verifica--azienda{background:#f4ead6;color:#5b4210}.badge-verifica--azienda svg{fill:#b07b14}
+.trust-compl{margin-bottom:1rem}
+.trust-compl__testa{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.trust-compl__testa h3{margin:0}
+.trust-barra{height:.6rem;border-radius:999px;background:#e6ebe3;overflow:hidden;margin:.6rem 0 .8rem}
+.trust-barra i{display:block;height:100%;background:linear-gradient(90deg,#8fbf5a,#2c7a5f);border-radius:inherit}
+.trust-compl__liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.8rem}
+.trust-compl__liste ul{list-style:none;margin:0;padding:0;display:grid;gap:.2rem;font-size:.92rem;color:#6b7771}
+.trust-compl__liste li.ok{color:#1d4b3c;font-weight:600}
+.trust-etichetta{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:#6b7771;margin:0 0 .3rem}
+.trust-foto{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
+.trust-foto > div{flex:1;min-width:14rem}
+.trust-foto label.tasto{cursor:pointer}
+.trust-ritaglio{display:block;width:min(320px,100%);aspect-ratio:1;border-radius:50%;margin:.6rem auto;touch-action:none;cursor:grab;box-shadow:0 0 0 3px #c4db94}
+.trust-chip{display:flex;flex-wrap:wrap;gap:.4rem .9rem}
+.trust-voci{list-style:none;margin:.4rem 0;padding:0;display:grid;gap:.5rem}
+.trust-voci li{display:flex;justify-content:space-between;gap:.8rem;align-items:flex-start;padding:.6rem .8rem;border:1px solid #e3e8df;border-radius:.8rem;background:#fff}
+.trust-voci li > div{display:grid;gap:.1rem}
+.trust-voci span{font-size:.88rem;color:#55645d}
+.trust-dich{font-size:.72rem!important;text-transform:uppercase;letter-spacing:.04em;color:#8a6d1d!important}
+.tasto--piccolo{padding:.3rem .7rem;font-size:.82rem;min-height:0}
+.trust-righe{list-style:none;margin:0;padding:0;display:grid;gap:.35rem}
+.trust-righe li{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-bottom:1px dashed #e3e8df;padding-bottom:.35rem}
+.trust-righe span{color:#55645d}
+.trust-metodi{list-style:none;margin:.6rem 0;padding:0;display:grid;gap:.5rem}
+.trust-metodi li{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem .9rem;border:1px solid #e3e8df;border-radius:.8rem}
+.trust-metodi li p{margin:.15rem 0 0;font-size:.88rem;color:#55645d}
+.trust-metodi li.spento{background:#f6f7f4}
+.trust-metodi li.spento strong{color:#4a5a53}
+.trust-demo{padding:.8rem 1rem;border-radius:.8rem;background:#fff7e0;border:1px solid #f0dfa8;margin:.6rem 0}
+.trust-demo p{margin:0 0 .5rem}
+.trust-manca{list-style:none;padding:0;margin:.6rem 0;display:grid;gap:.45rem}
+.trust-manca li{display:grid;gap:.1rem;padding:.6rem .8rem;border-left:4px solid #e0a33a;background:#fdf6ea;border-radius:.4rem}
+.trust-manca span{font-size:.9rem;color:#55645d}
+.trust-riga-form{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem}
+.trust-riga-form input{flex:1;min-width:10rem}
+.trust-pubblico{display:grid;gap:.5rem;justify-items:start}
+.trust-pubblico h2{margin:.2rem 0 0}
+.trust-flag{list-style:none;margin:.4rem 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.3rem .9rem;font-size:.9rem}
+.trust-flag li{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px dashed #e3e8df}
+.trust-flag strong{color:#8a8f8c;font-weight:600}.trust-flag strong.acceso{color:#1d6b4f}
+.trust-ok{color:#1d6b4f!important}
+.cv-ed__form select,.cv-ed__form textarea,.trust-riga-form input,.trust-riga-form select{font:inherit;font-size:16px;border:1px solid var(--linea);border-radius:12px;padding:.55rem .7rem;min-height:44px;color:#263d35;width:100%;background:#fff}
+.trust-riga-form select{width:auto}
+.cv-ed__form label.spunta{display:flex;font-weight:600;color:#263d35}
+.trust-metodi .stato{white-space:nowrap;background:#e6e8e4;color:#55645d;border-radius:999px;padding:.25rem .7rem;font-size:.78rem}

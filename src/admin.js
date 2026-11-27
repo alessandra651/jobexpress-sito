@@ -172,6 +172,98 @@ function bloccoIncarichi() {
       </section>`
 }
 
+
+// ---------- JobExpress Trust: verifiche, foto, segnalazioni, sospensioni ----------
+const FLAG_TRUST = [['identity_verification_required', 'Verifica identità obbligatoria prima di operare'], ['profile_photo_required', 'Foto del volto obbligatoria'],
+  ['email_verification_required', 'Email confermata obbligatoria'], ['company_verification_required', 'Azienda verificata per pubblicare'],
+  ['minor_accounts_enabled', 'Account di minorenni'], ['spid_enabled', 'SPID'], ['cie_enabled', 'CIE'], ['eidas_enabled', 'eIDAS'], ['id_provider_enabled', 'Provider documentale'],
+  ['alternative_verification_enabled', 'Verifica alternativa'], ['phone_verification_enabled', 'Verifica telefono'], ['captcha_enabled', 'Captcha'],
+  ['biometric_verification_enabled', 'Verifica biometrica'], ['professional_passport_enabled', 'JobExpress Passport']]
+function bloccoTrust() {
+  const x = stato.trust
+  const im = impostazioni()
+  const flag = `<ul class="trust-flag">${FLAG_TRUST.map(([k, n]) => `<li><span>${esc(n)}</span><strong class="${im[k] === true ? 'acceso' : ''}">${im[k] === true ? 'acceso' : 'spento'}</strong></li>`).join('')}</ul>
+    <p class="finestra__nota">Età minima: ${esc(im.minimum_user_age ?? 18)} anni. SPID, CIE, eIDAS, provider e biometria restano spenti finché non c’è un’integrazione vera e autorizzata.</p>`
+  if (!stato.reale) return `<section class="admin__blocco"><h3>Trust: identità e sicurezza <span class="etichetta-esempio">prova</span></h3>
+    <p>Con l’account di prova le verifiche sono simulate dalla sezione «Sicurezza e identità» del profilo. Con il tuo account vero qui vedi code e numeri reali.</p>${flag}</section>`
+  if (!x) return ''
+  const c = x.coda || {}
+  const data = (d) => new Date(d).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  return `<section class="admin__blocco admin-trust">
+    <h3>Trust: identità e sicurezza <span class="stato">dati reali</span></h3>
+    <ul class="stat stat--sei">
+      <li><strong>${x.identita_verificate}</strong><span>Identità verificate</span></li><li><strong>${x.identita_simulate}</strong><span>Verifiche simulate (test)</span></li>
+      <li><strong>${x.in_attesa}</strong><span>In attesa</span></li><li><strong>${x.revisione_manuale}</strong><span>Revisione manuale</span></li>
+      <li><strong>${x.non_riuscite}</strong><span>Non riuscite</span></li><li><strong>${x.foto_in_revisione}</strong><span>Foto segnalate</span></li>
+      <li><strong>${x.segnalazioni_profili}</strong><span>Profili segnalati come falsi</span></li><li><strong>${x.sospesi}</strong><span>Account sospesi</span></li>
+      <li><strong>${x.aziende_verificate}/${x.aziende_verificate + x.aziende_in_attesa}</strong><span>Aziende verificate</span></li><li><strong>${x.privati_verificati}</strong><span>Privati verificati</span></li>
+      <li><strong>${x.tasso_completamento == null ? '—' : `${x.tasso_completamento}%`}</strong><span>Completamento verifiche</span></li><li><strong>${n2(x.costi_identificazione_eur)} €</strong><span>Costi identificazione</span></li>
+    </ul>
+
+    <h4>Account di test e interventi</h4>
+    <form class="trust-riga-form" data-adm-cerca novalidate><input name="email" type="email" placeholder="Email dell’account" required /><button type="submit" class="tasto tasto--chiaro">Cerca</button></form>
+    <div data-adm-utente>${stato.trovato ? schedaUtente(stato.trovato) : ''}</div>
+
+    <h4>Segnalazioni (${(c.segnalazioni || []).length})</h4>
+    ${(c.segnalazioni || []).length ? `<ul class="candidature">${c.segnalazioni.map((s2) => `<li class="candidatura"><div><strong>${esc(s2.segnalato)}</strong><p>${esc(s2.tipo)} · ${esc(s2.motivo)} · ${data(s2.creato_il)}</p></div>
+      <div class="pa-azioni-riga"><button type="button" class="tasto" data-adm-t="seg" data-id="${s2.id}" data-v="risolta">Risolta</button><button type="button" class="tasto tasto--chiaro" data-adm-t="seg" data-id="${s2.id}" data-v="archiviata">Archivia</button></div></li>`).join('')}</ul>` : '<p>Nessuna segnalazione aperta.</p>'}
+
+    <h4>Foto da rivedere (${(c.foto || []).length})</h4>
+    ${(c.foto || []).length ? `<ul class="candidature">${c.foto.map((f) => `<li class="candidatura"><div><strong>${esc(f.nome)}</strong><p>Segnalata da un utente</p></div>
+      <div class="pa-azioni-riga"><button type="button" class="tasto tasto--chiaro" data-adm-t="vedi-foto" data-p="${esc(f.foto_path)}">Vedi</button><button type="button" class="tasto" data-adm-t="foto" data-id="${esc(f.user_id)}" data-v="ok">Va bene</button><button type="button" class="tasto tasto--chiaro" data-adm-t="foto" data-id="${esc(f.user_id)}" data-v="da_sostituire">Chiedi di sostituirla</button></div></li>`).join('')}</ul>` : '<p>Nessuna foto da rivedere.</p>'}
+    <p class="finestra__nota">La revisione è solo visiva e umana: nessun riconoscimento facciale. Non giudicare aspetto o caratteristiche fisiche, solo se la foto è adatta (volto visibile, niente contenuti inappropriati).</p>
+
+    <h4>Verifiche in revisione (${(c.verifiche || []).length})</h4>
+    ${(c.verifiche || []).length ? `<ul class="candidature">${c.verifiche.map((v) => `<li class="candidatura"><div><strong>${esc(v.nome)}</strong><p>${esc(v.tipo)} · ${esc(v.stato)}${v.motivo ? ` · ${esc(v.motivo)}` : ''}</p></div>
+      <div class="pa-azioni-riga"><button type="button" class="tasto tasto--chiaro" data-adm-t="revoca" data-id="${esc(v.user_id)}" data-tipo="${esc(v.tipo)}">Rifiuta / revoca</button></div></li>`).join('')}</ul>` : '<p>Nessuna verifica in revisione.</p>'}
+
+    <h4>Aziende da verificare (${(c.aziende || []).length})</h4>
+    ${(c.aziende || []).length ? `<ul class="candidature">${c.aziende.map((a) => `<li class="candidatura"><div><strong>${esc(a.ragione_sociale)}</strong><p>${a.partita_iva ? `P. IVA ${esc(a.partita_iva)} · ` : ''}${esc(a.stato)}</p></div>
+      ${a.creato_da ? `<div class="pa-azioni-riga"><button type="button" class="tasto" data-adm-t="simula" data-id="${esc(a.creato_da)}" data-tipo="azienda">Verifica simulata (test)</button></div>` : ''}</li>`).join('')}</ul>` : '<p>Nessuna azienda in attesa.</p>'}
+
+    <h4>Assistenza (${(c.assistenza || []).length})</h4>
+    ${(c.assistenza || []).length ? `<ul class="candidature">${c.assistenza.map((a) => `<li class="candidatura"><div><strong>${esc(a.tipo)}</strong><p>${esc(a.messaggio)} · ${data(a.creato_il)}</p></div>
+      <form class="trust-riga-form" data-adm-risposta="${a.id}" novalidate><input name="risposta" maxlength="1000" placeholder="Risposta" required /><button type="submit" class="tasto tasto--chiaro">Rispondi e chiudi</button></form></li>`).join('')}</ul>` : '<p>Nessuna richiesta aperta.</p>'}
+
+    <h4>Interruttori (feature flag)</h4>${flag}
+    <p class="finestra__nota" data-adm-trust-msg role="status"></p>
+  </section>`
+}
+function schedaUtente(u) {
+  if (u === 'nessuno') return '<p>Nessun account con questa email.</p>'
+  const id = u.verifiche?.identita
+  return `<div class="riquadro"><strong>${esc(u.nome)}</strong>
+    <p>Email ${u.email_verificata ? 'confermata' : 'da confermare'} · foto: ${esc(u.foto_stato || 'assente')} · identità: ${esc(id ? `${id.stato}${id.simulata ? ' (simulata)' : ''}` : 'non iniziata')}${u.sospeso ? ' · <strong>sospeso</strong>' : ''}</p>
+    <div class="pa-azioni-riga">
+      <button type="button" class="tasto" data-adm-t="simula" data-id="${esc(u.id)}" data-tipo="identita">Verifica simulata (solo account di test)</button>
+      ${id?.stato === 'verificata' ? `<button type="button" class="tasto tasto--chiaro" data-adm-t="revoca" data-id="${esc(u.id)}" data-tipo="identita">Revoca</button>` : ''}
+      ${u.sospeso ? `<button type="button" class="tasto tasto--chiaro" data-adm-t="riattiva" data-id="${esc(u.id)}">Riattiva</button>` : `<button type="button" class="tasto tasto--pericolo" data-adm-t="sospendi" data-id="${esc(u.id)}">Sospendi in via cautelativa</button>`}
+    </div>
+    <p class="finestra__nota">La verifica simulata è segnata come tale nel profilo («Identità verificata · simulata») e non vale come identificazione reale. Usala solo per account di prova tuoi.</p></div>`
+}
+async function azioneTrust(b) {
+  const k = b.dataset.admT
+  const msg = pannello.querySelector('[data-adm-trust-msg]')
+  const chiedi = (testo) => { const m = prompt(testo); return m && m.trim().length >= 3 ? m.trim() : null }
+  try {
+    if (k === 'vedi-foto') {
+      const r = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/foto-profilo/${b.dataset.p}`, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${await s.token()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ expiresIn: 120 }) })
+      const j = await r.json(); if (j.signedURL) window.open(`${SUPABASE_URL}/storage/v1${j.signedURL}`, '_blank', 'noopener'); return
+    }
+    if (k === 'seg') await rpc('admin_gestisci_segnalazione', { p_id: Number(b.dataset.id), p_stato: b.dataset.v, p_esito: b.dataset.v })
+    if (k === 'foto') await rpc('admin_revisione_foto', { p_user: b.dataset.id, p_esito: b.dataset.v, p_motivo: b.dataset.v === 'ok' ? 'Foto adatta' : 'Foto non adatta: volto non riconoscibile o contenuto non appropriato' })
+    if (k === 'simula') { const m = chiedi('Motivo (es. «account di test di Alessandra»):'); if (!m) return; await rpc('admin_simula_verifica', { p_user: b.dataset.id, p_tipo: b.dataset.tipo, p_motivo: m }) }
+    if (k === 'revoca') { const m = chiedi('Motivo della revoca:'); if (!m) return; await rpc('admin_revoca_verifica', { p_user: b.dataset.id, p_tipo: b.dataset.tipo, p_motivo: m }) }
+    if (k === 'sospendi') { const m = chiedi('Motivo della sospensione cautelativa:'); if (!m) return; await rpc('admin_sospendi', { p_user: b.dataset.id, p_motivo: m }) }
+    if (k === 'riattiva') { const m = chiedi('Motivo della riattivazione:'); if (!m) return; await rpc('admin_riattiva', { p_user: b.dataset.id, p_motivo: m }) }
+    registra(`Trust: ${k}`, { utente: b.dataset.id || null })
+    stato.trust = await rpc('admin_trust').catch(() => stato.trust)
+    if (stato.trovato?.id) stato.trovato = await rpc('admin_cerca_utente', { p_email: stato.cercata }).catch(() => stato.trovato) || 'nessuno'
+    disegna()
+    pannello.querySelector('[data-adm-trust-msg]').textContent = 'Fatto.'
+  } catch { if (msg) msg.textContent = 'Non è stato possibile: riprova.' }
+}
+
 function disegna() {
   const n = numeri()
   const seg = segnalazioni()
@@ -196,6 +288,7 @@ function disegna() {
       </section>
 
       ${bloccoIncarichi()}
+      ${bloccoTrust()}
       ${bloccoRegole()}
 
       <section class="admin__blocco">
@@ -255,6 +348,7 @@ export async function apriAdmin() {
       stato.statistiche = await rpc('admin_statistiche')
       stato.incarichi = await rpc('admin_statistiche_incarichi').catch(() => null)
       stato.ai = await rpc('admin_statistiche_ai').catch(() => null)
+      stato.trust = await rpc('admin_trust').catch(() => null)
     } catch {
       stato.errore = 'Non riesco a collegarmi a Supabase per i numeri reali.'
     }
@@ -275,7 +369,22 @@ export function avviaAdmin(strumenti) {
   pannello.setAttribute('role', 'region')
   pannello.setAttribute('aria-label', 'Area Admin')
   document.body.appendChild(pannello)
-  pannello.addEventListener('submit', (e) => {
+  pannello.addEventListener('submit', async (e) => {
+    const c = e.target.closest('[data-adm-cerca]')
+    if (c) {
+      e.preventDefault()
+      stato.cercata = c.elements.email.value.trim()
+      stato.trovato = (await rpc('admin_cerca_utente', { p_email: stato.cercata }).catch(() => null)) || 'nessuno'
+      return disegna()
+    }
+    const ri = e.target.closest('[data-adm-risposta]')
+    if (ri) {
+      e.preventDefault()
+      if (!ri.elements.risposta.value.trim()) return
+      await rpc('admin_rispondi_assistenza', { p_id: Number(ri.dataset.admRisposta), p_risposta: ri.elements.risposta.value.trim() }).catch(() => null)
+      stato.trust = await rpc('admin_trust').catch(() => stato.trust)
+      return disegna()
+    }
     const f = e.target.closest('[data-admin-regole]')
     if (!f) return
     e.preventDefault()
@@ -284,6 +393,8 @@ export function avviaAdmin(strumenti) {
   pannello.addEventListener('click', (e) => {
     const t = e.target
     if (t.closest('[data-admin-chiudi]')) return chiudi()
+    const tr = t.closest('[data-adm-t]')
+    if (tr) return azioneTrust(tr)
     const an = t.closest('[data-admin-annuncio]')
     if (an) {
       const a = moderaAnnuncio(an.dataset.adminAnnuncio, an.dataset.ok === '1')

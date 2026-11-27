@@ -14,6 +14,7 @@ import { avviaSmartCal } from './smartcal.js'
 import { avviaAI } from './ai.js'
 import { aggiorna as aggiornaReale, avviaReale, candidaReale, gestisciReale, segnaLetteServer } from './reale.js'
 import { FUNZIONI } from './config.js'
+import { avatarUtente, avviaTrust, caricaTrust, finestraTrust, gestisciTrust, impostaSottoProfilo, pannelloTrust, requisitiMancanti } from './trust.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
 import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
@@ -200,6 +201,9 @@ export function candidati(a, quando) {
     apriAccesso('Per candidarti, registrati o accedi')
     return null
   }
+  // Trust: prima della prima candidatura servono identità verificata e foto (lo controlla anche il server)
+  const manca = requisitiMancanti('candidatura')
+  if (manca.length) { finestraTrust(manca, 'candidatura'); return null }
   if (a.reale) return candidaReale(a) // annuncio vero: decide il database
   const lista = leggiCand()
   const gia = lista.find((c) => c.id === a.id && ['inviata', 'selezionato', 'confermato'].includes(c.stato))
@@ -280,10 +284,14 @@ const pannelloAttivita = () => pannelloCandidature()
 
 
 function pannelloProfilo(u) {
+  return pannelloTrust(u, pannelloAccount(u))
+}
+
+function pannelloAccount(u) {
   return `
     <form class="conto-form profilo-form" data-profilo novalidate>
       <div class="profilo-testa">
-        <span class="avatar" aria-hidden="true">${esc((u.nome || u.email || '?').trim().charAt(0).toUpperCase())}</span>
+        ${avatarUtente(u)}
         <div><strong>${esc(u.nome || 'Senza nome')}</strong><p>${esc(u.email || '')}</p>
           <div class="etichette">${u.automunito ? '<span>Automunito/a</span>' : ''}${u.citta ? `<span>${esc(u.citta)}</span>` : ''}${u.prova ? '<span>Account di prova</span>' : ''}</div></div>
       </div>
@@ -396,6 +404,7 @@ function esplora() {
 function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
+    if (gestisciTrust(e)) return
     if (gestisciReale(e)) return
     if (gestisciPercorso(e) || gestisciCalendario(e) || gestisciPubblicatore(e) || gestisciAbbonamento(e)) return disegnaArea()
     const lv = gestisciLavori(e)
@@ -467,6 +476,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('change', (e) => {
+    if (gestisciTrust(e)) return
     if (gestisciPercorso(e)) return disegnaArea()
     if (gestisciReputazione(e, apri, utente())) return disegnaArea()
     if (gestisciCalendario(e) || gestisciNotifiche(e) || gestisciLavori(e)) return disegnaArea()
@@ -476,6 +486,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('input', (e) => {
+    if (gestisciTrust(e)) return
     const c = gestisciChat(e)
     if (c) { disegnaArea(); fineChat(c) }
   })
@@ -487,6 +498,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('submit', (e) => {
+    if (gestisciTrust(e)) return
     if (gestisciReale(e)) return
     if (gestisciPercorso(e)) return disegnaArea()
     if (gestisciAbbonamento(e)) return disegnaArea()
@@ -607,6 +619,8 @@ export async function avviaConto(strumenti) {
   document.addEventListener('cv-cambiato', () => disegnaArea())
   avviaAbbonamenti({ apri, utente, apriAccesso, dopo: () => apriArea('profilo') })
   avviaAdmin({ utente, token: tokenValido })
+  avviaTrust({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() }, vaiSicurezza: () => { impostaSottoProfilo('sicurezza'); apriArea('profilo') } })
+  quandoCambiaUtente(() => caricaTrust(true))
   impostaSalvaRicerca(() => {
     if (!utente()) { apriAccesso('Per salvare le ricerche, registrati o accedi'); return '' }
     const m = salvaRicercaCorrente()

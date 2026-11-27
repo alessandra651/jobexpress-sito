@@ -10,6 +10,7 @@ import { NOME_CAT, aggiornaBacheca, registraFonte } from './incarichi.js'
 import { adesso, restante } from './regole.js'
 import { importaNotifiche } from './notifiche.js'
 import { pulsantiMappe } from './mappe.js'
+import { apriCVCandidato, apriProfiloPubblico, codiciTrust, condividiCV, finestraTrust, haCV } from './trust.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -105,7 +106,11 @@ export async function candidaReale(a) {
     if (r.ok) { aggiorna(); return `Candidatura inviata a ${a.chi}. La trovi in «La mia area» → Attività.${r.avvisi_spostamenti?.length ? ' Attenzione: è vicino a un altro tuo incarico, controlla gli spostamenti.' : ''}` }
     if (r.motivo === 'sovrapposte' || r.motivo === 'incarico_confermato') { conflitti(a, r); return null }
     return MOTIVI[r.motivo] || 'Non è stato possibile inviare la candidatura.'
-  } catch { return 'Non riesco a collegarmi. Riprova tra poco.' }
+  } catch (e) {
+    const c = codiciTrust(e)
+    if (c) { finestraTrust(c, 'candidatura'); return null }
+    return 'Non riesco a collegarmi. Riprova tra poco.'
+  }
 }
 
 function conflitti(a, r) {
@@ -153,6 +158,7 @@ export function pannelloLavoratoreReale() {
     if (i?.stato === 'programmato' && !iniziato(c.turni)) az.push(['annulla', 'Annulla', true])
     if (i?.stato === 'programmato' && finito(c.turni)) az.push(['completa', 'Segna come completato', false])
     if (i && ['programmato', 'completato'].includes(i.stato) && iniziato(c.turni)) az.push(['contesta', 'Apri una contestazione', true])
+    if (haCV() && !['ritirata', 'rifiutata_committente', 'rifiutata_lavoratore', 'scaduta'].includes(c.stato)) az.push(c.cv_condiviso ? ['cv-no', 'Non condividere più il CV', true] : ['cv-si', 'Condividi il CV in PDF', true])
     return `<li class="candidatura">
       <div><strong>${esc(a.titolo)}</strong> <span class="etichetta-esempio etichetta-vero">annuncio vero</span><p>${esc(a.nome)} · ${esc(a.citta)}</p>
         <p>${esc(turniTesto(c.turni))} · ${euro.format(a.compenso_ora)}/ora ${a.compenso_tipo === 'non_specificato' ? '' : esc(a.compenso_tipo)}</p>
@@ -183,6 +189,8 @@ export function pannelloCommittenteReale() {
           ${c.proposta ? `<span class="re-attesa">Risposta entro <strong data-scade="${new Date(c.proposta.scade_il).getTime()}">${restante(new Date(c.proposta.scade_il).getTime() - adesso())}</strong></span>` : ''}</div>
         <div class="pa-azioni-riga">
           ${['inviata', 'in_valutazione'].includes(c.stato) && a.stato === 'pubblicato' ? `<button type="button" class="tasto" data-re="seleziona" data-id="${esc(c.candidatura_id)}">Seleziona</button><button type="button" class="tasto tasto--chiaro" data-re="scarta" data-id="${esc(c.candidatura_id)}">Rifiuta</button>` : ''}
+              <button type="button" class="tasto tasto--chiaro" data-re="profilo" data-id="${esc(c.lavoratore_id)}">Profilo</button>
+          ${c.cv_condiviso ? `<button type="button" class="tasto tasto--chiaro" data-re="cv" data-id="${esc(c.candidatura_id)}">CV in PDF</button>` : ''}
           ${c.incarico?.stato === 'programmato' && !iniziato(a.turni) ? `<button type="button" class="tasto tasto--chiaro" data-re="annulla" data-id="${esc(c.incarico.id)}">Annulla incarico</button>` : ''}
           ${c.incarico?.stato === 'programmato' && finito(a.turni) ? `<button type="button" class="tasto" data-re="completa" data-id="${esc(c.incarico.id)}">Segna come completato</button>` : ''}
           ${c.incarico && ['programmato', 'completato'].includes(c.incarico.stato) && iniziato(a.turni) ? `<button type="button" class="tasto tasto--chiaro" data-re="contesta" data-id="${esc(c.incarico.id)}">Contesta</button>` : ''}
@@ -224,7 +232,11 @@ async function esito(promessa, ok) {
     const r = await promessa
     if (r && r.ok === false) s.apri(`<h2>Non è stato possibile</h2><p>${esc(MOTIVI[r.motivo] || 'Riprova tra poco.')}</p>`)
     else if (ok) s.apri(ok(r))
-  } catch { s.apri('<h2>Non riesco a collegarmi</h2><p>Riprova tra poco.</p>') }
+  } catch (e) {
+    const c = codiciTrust(e)
+    if (c) finestraTrust(c, 'candidatura')
+    else s.apri('<h2>Non riesco a collegarmi</h2><p>Riprova tra poco.</p>')
+  }
   aggiorna(); caricaBacheca()
 }
 
@@ -273,6 +285,9 @@ export function gestisciReale(e) {
   const id = b.dataset.id
   const k = b.dataset.re
   if (k === 'conferma') conferma(id, b.dataset.annuncio)
+  if (k === 'profilo') apriProfiloPubblico(id)
+  if (k === 'cv') rpc('cv_candidatura', { p_candidatura: id }).then((p) => { if (!p) throw new Error(); return apriCVCandidato(p) }).catch(() => s.apri('<h2>CV non disponibile</h2><p>Il candidato potrebbe averlo tolto.</p>'))
+  if (k === 'cv-si' || k === 'cv-no') condividiCV(id, k === 'cv-si').then(() => aggiorna()).catch(() => s.apri('<h2>Non riesco a collegarmi</h2><p>Riprova tra poco.</p>'))
   if (k === 'mappe') {
     rpc('indirizzo_incarico', { p_annuncio: b.dataset.annuncio }).then((x) => {
       const dove = x?.indirizzo ? `${x.indirizzo}, ${x.citta}` : `${x?.zona ? `${x.zona}, ` : ''}${x?.citta || ''}`

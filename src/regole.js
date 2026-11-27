@@ -22,6 +22,15 @@ export const PREDEFINITE = {
   promozione: { attiva: false, fine: null },
   funzioni_premium: { goal: true, cv: true, career: true, smart_calendar: true, ai: false },
   annullamenti_lavoratore_contano: true,
+  // JobExpress Trust (i valori veri arrivano dalla tabella impostazioni; i metodi di identificazione restano spenti)
+  identity_verification_required: true, identity_verification_stage: 'before_operational_access',
+  minimum_user_age: 18, minor_accounts_enabled: false,
+  profile_photo_required: true, profile_photo_visibility: 'authenticated_users',
+  cv_upload_enabled: true, cv_required: false, cv_max_mb: 5,
+  email_verification_required: true, phone_verification_enabled: false, captcha_enabled: false,
+  spid_enabled: false, cie_enabled: false, eidas_enabled: false, id_provider_enabled: false,
+  alternative_verification_enabled: false, biometric_verification_enabled: false,
+  company_verification_required: true, professional_passport_enabled: false, verifiche_simulate_consentite: true,
 }
 
 let imp = structuredClone(PREDEFINITE)

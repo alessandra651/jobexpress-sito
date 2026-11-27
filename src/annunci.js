@@ -7,6 +7,7 @@ import { CATEGORIE, NOME_CAT, aggiornaBacheca, registraFonte, scheda } from './i
 import { avviaConversazione } from './chat.js'
 import { notifica } from './notifiche.js'
 import { apriRecensione, controllaRicerche } from './lavori.js'
+import { codiciTrust, finestraTrust, requisitiMancanti } from './trust.js'
 import { aggiorna as aggiornaReale, caricaBacheca, pannelloCommittenteReale, pubblicaReale } from './reale.js'
 
 const CHIAVE = 'jobexpress-miei-annunci'
@@ -271,8 +272,12 @@ function leggiCampi(f) {
 
 function concludi() {
   const b = bozza
-  const come = b._come
+  let come = b._come
   delete b._come
+  // Trust: prima della prima pubblicazione servono identità, foto (e azienda verificata, per le aziende).
+  // Se manca qualcosa l'annuncio resta in bozza: niente va perso.
+  const manca = come === 'bozza' ? [] : requisitiMancanti('pubblica')
+  if (manca.length) come = 'bozza'
   if (come === 'bozza') b.stato = 'bozza'
   else if (DA_VERIFICARE.includes(b.cat)) b.stato = 'revisione'
   else if (come === 'programma') b.stato = 'programmato'
@@ -289,7 +294,11 @@ function concludi() {
       const l2 = leggi(); const x = l2.find((y) => y.id === b.id)
       if (x) { x.realeId = id; x.candidati = []; scrivi(l2) }
       caricaBacheca(); aggiornaReale(); aggiornaBacheca()
-    }).catch(() => notifica('annuncio', `«${b.titolo}» non è stato pubblicato nel database: riprova più tardi.`, { scheda: 'attivita', modo: 'pubblico' }))
+    }).catch((err) => {
+      const c = codiciTrust(err)
+      if (c) { const l2 = leggi(); const x = l2.find((y) => y.id === b.id); if (x) { x.stato = 'bozza'; scrivi(l2) }; aggiornaBacheca(); return finestraTrust(c, 'pubblica') }
+      notifica('annuncio', `«${b.titolo}» non è stato pubblicato nel database: riprova più tardi.`, { scheda: 'attivita', modo: 'pubblico' })
+    })
   }
   controllaRicerche()
   const testi = {
@@ -303,6 +312,7 @@ function concludi() {
     <div class="finestra__azioni"><button type="button" class="tasto" data-vai-area>Vai ai tuoi annunci</button></div>`)
   document.querySelector('dialog.finestra [data-vai-area]').onclick = () => { document.querySelector('dialog.finestra').close(); s.dopo() }
   bozza = null
+  if (manca.length) finestraTrust(manca, 'pubblica')
 }
 
 export const haAnnunci = () => leggi().length > 0
