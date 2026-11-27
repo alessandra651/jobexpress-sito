@@ -9,6 +9,7 @@ import { apriAdmin, avviaAdmin, puoAmministrare } from './admin.js'
 import { impostaSalvaRicerca } from './incarichi.js'
 import { gestisciReputazione, riquadroReputazione } from './reputazione.js'
 import { avviaPercorso, gestisciPercorso, pannelloPercorso } from './percorso.js'
+import { avviaCV } from './cv.js'
 import { FUNZIONI } from './config.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
@@ -459,6 +460,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('change', (e) => {
+    if (gestisciPercorso(e)) return disegnaArea()
     if (gestisciReputazione(e, apri, utente())) return disegnaArea()
     if (gestisciCalendario(e) || gestisciNotifiche(e) || gestisciLavori(e)) return disegnaArea()
     if (e.target.matches('[data-esempio]')) {
@@ -588,6 +590,8 @@ export async function avviaConto(strumenti) {
   quandoCambiaAbbonamento(aggiornaTutto)
   avviaLavori({ apri, ridisegna: aggiornaTutto })
   avviaPercorso({ apri })
+  avviaCV({ utente, token: tokenValido })
+  document.addEventListener('cv-cambiato', () => disegnaArea())
   avviaAbbonamenti({ apri, utente, apriAccesso, dopo: () => apriArea('profilo') })
   avviaAdmin({ utente, token: tokenValido })
   impostaSalvaRicerca(() => {

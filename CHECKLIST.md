@@ -71,3 +71,9 @@ Sito:
 - 🧪 Schermata «Il tuo percorso è appena iniziato!» per Free al secondo incarico completato del mese (una volta al mese, nessuna attivazione automatica)
 - ⏳ JobExpress CV, Career, Smart Calendar, AI: prossimi blocchi
 - ⏳ Spostare candidature e guadagni su Supabase (oggi restano sul dispositivo)
+
+## Aggiornamento 27 novembre 2026 · JobExpress CV + Career
+- ✅ Database: tabelle `curricula` (solo il proprietario) e `cv_condivisi` (link segreto revocabile, serve Plus), funzioni cv_pubblica / cv_revoca / cv_leggi (migrazione 20261127140000_curriculum.sql)
+- 🧪 CV: incarichi completati proposti come «Nuove esperienze» (una sola volta, niente doppioni), esperienze JobExpress «verificabili», esterne/competenze/certificazioni «autodichiarate»; studi, lingue, contatti scelti, foto facoltativa, disponibilità, badge, valutazioni scelte; modelli Minimal/Professional/Modern; ordine e sezioni nascoste; anteprima; PDF con la stampa del browser; pagina pubblica `cv.html?t=…`
+- 🧪 Career: incarichi, ore, committenti, valutazione media, completamento, esperienze per settore, incarichi nel tempo, mappa delle competenze (dalle recensioni / dalle esperienze / autodichiarate / verificate: nessuna), andamento recensioni, suggerimenti solo con almeno 3 incarichi
+- ✅ Badge, livello, requisiti mancanti, traguardi e storico: gratis per tutti, criteri invariati

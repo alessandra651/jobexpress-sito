@@ -13,6 +13,7 @@ export default defineConfig({
         condizioni: 'condizioni.html',
         sicurezza: 'sicurezza.html',
         'chi-siamo': 'chi-siamo.html',
+        cv: 'cv.html',
       },
     },
   },

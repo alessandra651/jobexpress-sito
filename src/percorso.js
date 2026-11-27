@@ -13,6 +13,8 @@ import { guadagni, intervallo, leggiCand } from './lavori.js'
 import { datiReputazione } from './reputazione.js'
 import { apriCheckout, haPlus, pianoAttivo } from './abbonamenti.js'
 import { impostazioni } from './regole.js'
+import { gestisciCV, pannelloCV } from './cv.js'
+import { pannelloCareer } from './career.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -23,7 +25,8 @@ const scrivi = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } ca
 const K_GOAL = 'jobexpress-goal'
 const K_FESTA = 'jobexpress-festa-mesi'
 
-let vista = 'panoramica' // 'panoramica' | 'goal'
+let vista = 'panoramica' // 'panoramica' | 'goal' | 'cv' | 'career' | 'smart_calendar' | 'ai'
+const VISTE = { goal: () => vistaGoal(), cv: () => pannelloCV(), career: () => pannelloCareer() }
 let grafico = 'settimane' // 'settimane' | 'mesi' | 'anni'
 let s = { apri: () => {} }
 export const avviaPercorso = (strumenti) => { s = strumenti }
@@ -133,7 +136,7 @@ const SEZIONI = [
   ['smart_calendar', 'JobExpress Smart Calendar', 'Lavoro, università e tempo libero'],
   ['ai', 'JobExpress AI', 'Assistente per colloqui e crescita'],
 ]
-const PRONTE = ['goal']
+export const PRONTE = ['goal', 'cv', 'career']
 const icona = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg>`
 
 function barra(perc, percPrevisti = 0, etichetta = '') {
@@ -310,7 +313,7 @@ function vistaGoal() {
 }
 
 export function pannelloPercorso() {
-  return vista === 'goal' ? vistaGoal() : panoramica()
+  return (VISTE[vista] || panoramica)()
 }
 
 function csv() {
@@ -323,6 +326,7 @@ function csv() {
 // true = ridisegna l'area
 export function gestisciPercorso(e) {
   const t = e.target
+  if (vista === 'cv' && !t.closest('[data-pc-vai]')) { const r = gestisciCV(e); if (r || e.defaultPrevented) return r }
   if (e.type === 'submit' && t.closest('[data-pc-goal]')) {
     e.preventDefault()
     const f = t.closest('[data-pc-goal]')
@@ -338,7 +342,7 @@ export function gestisciPercorso(e) {
   }
   if (e.type !== 'click') return false
   const vai = t.closest('[data-pc-vai]')
-  if (vai) { vista = vai.dataset.pcVai === 'goal' ? 'goal' : 'panoramica'; return true }
+  if (vai) { vista = VISTE[vai.dataset.pcVai] ? vai.dataset.pcVai : 'panoramica'; document.querySelector('#area')?.scrollTo?.(0, 0); return true }
   const per = t.closest('[data-pc-periodo]')
   if (per) {
     const f = per.closest('form')

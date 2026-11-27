@@ -31,7 +31,7 @@ function testi(periodo) {
 }
 
 // Funzioni Plus già pronte nel sito: le altre mostrano «in arrivo»
-export const FUNZIONI_PRONTE = ['goal']
+export const FUNZIONI_PRONTE = ['goal', 'cv', 'career']
 
 export function avviaPrezzi() {
   const tasti = document.querySelectorAll('[data-periodo]')
