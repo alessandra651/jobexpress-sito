@@ -57,7 +57,7 @@ const sovrappone = (a1, b1, a2, b2) => a1 < b2 && a2 < b1
 export function sovrapposizioni(a, escludiId) {
   const d = dataDi(a)
   if (!d) return []
-  return leggiCandidature().filter((c) => c.stato !== 'ritirata' && c.id !== escludiId && c.data === iso(d) && sovrappone(a.inizio, a.fine, c.inizio, c.fine))
+  return leggiCandidature().filter((c) => ['inviata', 'selezionato', 'confermato'].includes(c.stato) && c.id !== escludiId && c.data === iso(d) && sovrappone(a.inizio, a.fine, c.inizio, c.fine))
 }
 
 export function compatCalendario(a) {
@@ -72,7 +72,9 @@ export function compatCalendario(a) {
   if (!f) return { ok: false, testo: `${nome[0].toUpperCase() + nome.slice(1)} sei disponibile ${fasce.map(fasciaTesto).join(' e ')}, ma l’incarico va dalle ${hhmm(a.inizio)} alle ${hhmm(a.fine)}.` }
   if (a.km > cal.km) return { ok: false, testo: `Gli orari vanno bene, ma è a ${String(a.km).replace('.', ',')} km: oltre il tuo raggio di ${cal.km} km.` }
   const altri = sovrapposizioni(a)
-  if (altri.length) return { ok: false, testo: `Si sovrappone a un incarico a cui ti sei già candidato: ${altri[0].titolo}.` }
+  const confermato = altri.find((c) => c.stato === 'confermato')
+  if (confermato) return { ok: false, testo: `In questo orario hai già un incarico confermato: ${confermato.titolo}.` }
+  if (altri.length) return { ok: true, testo: `Compatibile con la tua disponibilità, ma hai già ${altri.length === 1 ? 'una candidatura' : `${altri.length} candidature`} in questo orario: se confermi un incarico, le altre si ritirano da sole.` }
   return { ok: true, testo: `Compatibile con la tua disponibilità di ${nome} (${fasciaTesto(f)}) ed entro il tuo raggio di ${cal.km} km.` }
 }
 impostaCalendario(compatCalendario)

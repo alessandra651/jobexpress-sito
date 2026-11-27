@@ -1,13 +1,18 @@
 // Il percorso di un incarico per chi lavora:
-// candidatura → selezione → conferma → completamento → compenso dichiarato → recensione.
+// candidatura → selezione → PROPOSTA (con tempo per confermare) → conferma del lavoratore
+// → completamento → compenso dichiarato → recensione.
+// Regole (uguali per Free, Plus e Friends): massimo 3 candidature attive nella stessa fascia
+// oraria; confermando un incarico, le candidature con orari incompatibili vengono ritirate.
 // Poi: guadagni, obiettivo guadagno, preferiti e ricerche salvate.
 // In questa versione di prova tutto resta su questo dispositivo; le risposte
 // di chi pubblica (selezione, recensioni ricevute) sono di esempio.
+// Per gli annunci veri le stesse regole le applica il database (vedi regole.js).
 import { NOME_CAT, apriIncarico, descriviFiltri, impostaFiltri, leggiFiltri, scheda, tuttiIncarichi, corrisponde } from './incarichi.js'
 import { compatCalendario, dataDi, dataIso } from './calendario.js'
 import { notifica } from './notifiche.js'
-import { haPlus } from './abbonamenti.js'
+import { haPlus, pianoAttivo } from './abbonamenti.js'
 import { segnala } from './segnalazioni.js'
+import { adesso, avvisiSpostamenti, impostazioni, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -20,27 +25,181 @@ let s = { apri: () => {}, ridisegna: () => {} }
 
 // ================= CANDIDATURE =================
 export const STATI = {
-  inviata: 'Candidatura inviata', selezionato: 'Incarico da confermare', confermato: 'Incarico confermato',
-  completato: 'Incarico completato', non_selezionato: 'Non selezionato', ritirata: 'Candidatura ritirata',
-  rifiutata: 'Proposta rifiutata', annullato: 'Incarico annullato',
+  inviata: 'Inviata', selezionato: 'In attesa di conferma', confermato: 'Confermata',
+  completato: 'Incarico completato', non_selezionato: 'Rifiutata dal committente', ritirata: 'Ritirata',
+  ritirata_incompatibile: 'Ritirata per incompatibilità', rifiutata: 'Rifiutata da te',
+  scaduta: 'Proposta scaduta', annullato: 'Annullata',
 }
 const ATTIVE = ['inviata', 'selezionato', 'confermato']
 export const leggiCand = () => leggi(K.cand, [])
 export const scriviCand = (l) => scrivi(K.cand, l)
 
-// Simulazione: dopo qualche secondo chi pubblica risponde (esempio)
+// Orari veri (in millisecondi) di una candidatura o di un incarico. Turni notturni: fine il giorno dopo.
+export function intervallo(x) {
+  const data = x.data || (dataDi(x) && dataIso(dataDi(x)))
+  if (!data) return null
+  const base = new Date(`${data}T00:00:00`).getTime()
+  return { inizio: base + x.inizio * 3600000, fine: base + x.fine * 3600000 }
+}
+const conOrari = (l) => l.filter((c) => c.data).map((c) => ({ ...c, ...intervallo(c) }))
+const quandoBreve = (c) => {
+  const iv = c.inizio > 1e9 ? c : intervallo(c) // già in millisecondi oppure in ore
+  if (!iv) return c.quando || ''
+  const d = new Date(iv.inizio)
+  const ora = (ms) => new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+  return `${d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })} · ${ora(iv.inizio)}–${ora(iv.fine)}`
+}
+
+// Controllo prima di candidarsi (stesse regole del database)
+export function verificaCandidatura(a) {
+  const nuovo = intervallo(a)
+  if (!nuovo) return { ok: true }
+  const l = conOrari(leggiCand()).filter((c) => ATTIVE.includes(c.stato) && c.id !== a.id)
+  const occupato = l.find((c) => c.stato === 'confermato' && sovrappone(c, nuovo))
+  if (occupato) return { ok: false, confermato: occupato }
+  const v = puoCandidarsi([nuovo], l)
+  return { ...v, conflitti: l.filter((c) => v.conflitti.includes(c.id)) }
+}
+
+// Finestra «hai già tre candidature in questa fascia oraria»
+export function mostraConflitti(a, conflitti) {
+  s.apri(`
+    <p class="dettaglio__cat">Fascia oraria piena</p>
+    <h2>Hai già ${conflitti.length} candidature qui</h2>
+    <p>Hai già tre candidature attive in questa fascia oraria. Per candidarti a questo incarico, ritira una delle candidature incompatibili.</p>
+    <ul class="conflitti">${conflitti.map((c) => `
+      <li class="conflitto" data-conflitto="${esc(c.id)}">
+        <div><strong>${esc(c.titolo)}</strong><p>${esc(c.chi)}</p>
+          <p class="conflitto__quando">${esc(quandoBreve(c))}</p>
+          <p>${euro.format(c.euroOra)}/ora · circa ${euro.format(c.totale)} <span class="stato stato--${c.stato}">${STATI[c.stato]}</span></p></div>
+        <div class="conflitto__azioni">
+          <button type="button" class="tasto tasto--chiaro" data-conf-vedi="${esc(c.id)}">Vedi</button>
+          <button type="button" class="tasto tasto--chiaro" data-conf-ritira="${esc(c.id)}">Ritira</button>
+        </div>
+      </li>`).join('')}</ul>
+    <p class="finestra__nota" data-conf-esito aria-live="polite">Nessuna candidatura viene ritirata in automatico: scegli tu.</p>
+    <div class="finestra__azioni"><button type="button" class="tasto" data-conf-torna>Torna all’incarico</button></div>`)
+  const f = document.querySelector('dialog.finestra')
+  f.querySelector('[data-conf-torna]').onclick = () => apriIncarico(a.id)
+  f.querySelectorAll('[data-conf-vedi]').forEach((b) => { b.onclick = () => apriIncarico(b.dataset.confVedi) })
+  f.querySelectorAll('[data-conf-ritira]').forEach((b) => {
+    b.onclick = () => {
+      const l = leggiCand()
+      const c = l.find((x) => String(x.id) === b.dataset.confRitira && ['inviata', 'selezionato'].includes(x.stato))
+      if (!c) return
+      c.stato = 'ritirata'
+      scriviCand(l)
+      b.closest('li').classList.add('conflitto--ritirata')
+      b.closest('.conflitto__azioni').innerHTML = '<span class="stato stato--ritirata">Ritirata</span>'
+      f.querySelector('[data-conf-esito]').textContent = 'Candidatura ritirata. Ora puoi tornare all’incarico e candidarti.'
+      s.ridisegna()
+    }
+  })
+}
+
+// Simulazione: dopo qualche secondo chi pubblica risponde (esempio).
+// Se ti sceglie, ricevi una PROPOSTA con un tempo per confermare (come nel sito vero).
 function evolvi() {
   const l = leggiCand()
   let cambiato = false
+  const ora = adesso()
   l.forEach((c) => {
+    if (c.stato === 'selezionato' && c.scade && ora >= c.scade) {
+      // proposta scaduta: nessuna penalità per chi lavora
+      c.stato = 'scaduta'
+      cambiato = true
+      notifica('selezione', `La proposta per «${c.titolo}» è scaduta. Nessun problema: non cambia nulla per il tuo profilo.`, { scheda: 'attivita', sotto: 'candidature' })
+      return
+    }
     if (c.stato !== 'inviata' || Date.now() - c.il < 8000) return
+    const iv = intervallo(c)
+    if (iv && iv.inizio <= ora) return
     const preso = (String(c.id).length + c.titolo.length) % 4 !== 0
     c.stato = preso ? 'selezionato' : 'non_selezionato'
+    if (preso) c.scade = iv ? scadenzaProposta(iv.inizio, ora) : ora + 2 * 3600000
     c.esempio = true
     cambiato = true
-    notifica('selezione', preso ? `Sei stato selezionato per «${c.titolo}» (esempio). Conferma o rifiuta da Attività.` : `Per «${c.titolo}» hanno scelto un’altra persona (esempio).`, { scheda: 'attivita', sotto: 'candidature' })
+    notifica('selezione', preso ? `${c.chi} ti propone «${c.titolo}» (esempio). Conferma entro le ${new Date(c.scade).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}.` : `Per «${c.titolo}» hanno scelto un’altra persona (esempio).`, { scheda: 'attivita', sotto: 'candidature' })
   })
   if (cambiato) { scriviCand(l); s.ridisegna() }
+}
+
+// Conto alla rovescia delle proposte, aggiornato ogni secondo (ora del server)
+function aggiornaContiAllaRovescia() {
+  document.querySelectorAll('[data-scade]').forEach((el) => {
+    const resta = Number(el.dataset.scade) - adesso()
+    el.textContent = resta > 0 ? restante(resta) : 'scaduta'
+    el.closest('.proposta-tempo')?.classList.toggle('proposta-tempo--urgente', resta > 0 && resta < 5 * 60000)
+  })
+}
+
+// Conferma di una proposta: SOLO adesso l'incarico è assegnato
+function confermaProposta(i, forza = false) {
+  const l = leggiCand()
+  const c = l[i]
+  if (!c || c.stato !== 'selezionato') return
+  if (c.scade && adesso() >= c.scade) {
+    c.stato = 'scaduta'
+    scriviCand(l)
+    s.ridisegna()
+    s.apri('<h2>Proposta scaduta</h2><p>Il tempo per confermare è finito. Nessun problema: non cambia nulla per il tuo profilo, le tue recensioni o il tuo badge.</p>')
+    return
+  }
+  const me = intervallo(c)
+  const altri = conOrari(l).filter((x) => x.id !== c.id)
+  const confermati = altri.filter((x) => x.stato === 'confermato')
+  const sopra = me && confermati.find((x) => sovrappone(x, me))
+  if (sopra) {
+    s.apri(`<h2>Non puoi confermare</h2><p>Hai già un incarico confermato in questo orario: <strong>${esc(sopra.titolo)}</strong> (${esc(quandoBreve(sopra))}).</p><p class="finestra__nota">Due incarichi che si sovrappongono non si possono confermare insieme.</p>`)
+    return
+  }
+  const imp = impostazioni()
+  if (me && imp.free_monthly_job_limit_enabled && pianoAttivo() === 'free') {
+    const mese = meseDi(me.inizio)
+    const contano = altri.filter((x) => (['confermato', 'completato'].includes(x.stato) || (x.stato === 'annullato' && x.annullatoDa === 'lavoratore' && imp.annullamenti_lavoratore_contano)) && meseDi(x.inizio) === mese)
+    if (contano.length >= Number(imp.free_monthly_job_limit)) {
+      s.apri(`<p class="dettaglio__cat">Limite del piano Free</p><h2>Hai già ${contano.length} incarichi questo mese</h2>
+        <p>Con il piano Free puoi confermare fino a ${Number(imp.free_monthly_job_limit)} incarichi per mese. Le candidature restano illimitate e il limite si rinnova il primo giorno del mese.</p>
+        <div class="finestra__azioni"><button type="button" class="tasto" data-vai-plus>Scopri Plus</button></div>`)
+      document.querySelector('[data-vai-plus]').onclick = () => { document.querySelector('dialog.finestra').close(); document.querySelector('#costi')?.scrollIntoView({ behavior: 'smooth' }) }
+      return
+    }
+  }
+  const avvisi = me ? avvisiSpostamenti([me], confermati) : []
+  if (avvisi.length && !forza) {
+    s.apri(`<p class="dettaglio__cat">Controlla gli spostamenti</p>
+      <h2>Poco tempo tra due incarichi</h2>
+      <p class="avviso-spostamenti">Attenzione: potresti non avere abbastanza tempo per raggiungere il prossimo luogo di lavoro. Verifica gli spostamenti prima di confermare.</p>
+      <ul class="conflitti">${avvisi.map((x) => `<li class="conflitto"><div><strong>${esc(x.titolo)}</strong><p>${esc(x.luogo)}</p><p class="conflitto__quando">${esc(quandoBreve(x))} · ${x.minuti} minuti di margine</p></div></li>`).join('')}
+        <li class="conflitto conflitto--nuovo"><div><strong>${esc(c.titolo)}</strong><p>${esc(c.luogo)}</p><p class="conflitto__quando">${esc(quandoBreve(c))}</p></div></li></ul>
+      <p class="finestra__nota">Non è un blocco: se i due posti sono vicini, puoi confermare lo stesso.</p>
+      <div class="finestra__azioni"><button type="button" class="tasto" data-conferma-comunque>Conferma comunque</button><button type="button" class="tasto tasto--chiaro" data-annulla-conferma>Torna indietro</button></div>`)
+    const f = document.querySelector('dialog.finestra')
+    f.querySelector('[data-conferma-comunque]').onclick = () => confermaProposta(i, true)
+    f.querySelector('[data-annulla-conferma]').onclick = () => f.close()
+    return
+  }
+  c.stato = 'confermato'
+  c.confermatoIl = Date.now()
+  // ritiro automatico delle candidature con orari incompatibili
+  const ritirate = []
+  if (me) {
+    l.forEach((x) => {
+      if (x === c || !['inviata', 'selezionato'].includes(x.stato)) return
+      const iv = intervallo(x)
+      if (iv && sovrappone(iv, me)) { x.stato = 'ritirata_incompatibile'; ritirate.push(x) }
+    })
+  }
+  scriviCand(l)
+  notifica('selezione', `Hai confermato «${c.titolo}». Ricordati di formalizzare il rapporto prima di iniziare.`, { scheda: 'attivita', sotto: 'calendario' })
+  if (ritirate.length) notifica('candidatura', `Abbiamo ritirato ${ritirate.length} candidatur${ritirate.length === 1 ? 'a' : 'e'} con orari incompatibili.`, { scheda: 'attivita', sotto: 'candidature' })
+  s.ridisegna()
+  s.apri(`<p class="dettaglio__cat">Doppia conferma completata</p>
+    <h2>Incarico confermato</h2>
+    <p><strong>${esc(c.titolo)}</strong> · ${esc(c.chi)}<br>${esc(quandoBreve(c))} · ${esc(c.luogo)}</p>
+    ${ritirate.length ? `<p>Abbiamo ritirato in automatico ${ritirate.length === 1 ? 'questa candidatura, che si sovrapponeva' : 'queste candidature, che si sovrapponevano'}:</p>
+      <ul class="lista-semplice">${ritirate.map((x) => `<li>${esc(x.titolo)} · ${esc(quandoBreve(x))}</li>`).join('')}</ul>` : ''}
+    <p class="finestra__nota">La conferma su JobExpress non sostituisce il contratto di lavoro né gli adempimenti obbligatori: prima di iniziare va formalizzato il rapporto.</p>`)
 }
 
 function rigaCandidatura(c, i) {
@@ -54,7 +213,8 @@ function rigaCandidatura(c, i) {
     <li class="candidatura">
       <div><strong>${esc(c.titolo)}</strong><p>${esc(c.chi)} · ${esc(c.luogo)}</p>
         <p>${esc(c.quando)} · ${euro.format(c.euroOra)}/ora · circa ${euro.format(c.totale)}${c.compenso != null ? ` · dichiarato ${euro.format(c.compenso)}` : ''}</p>
-        ${c.stato === 'selezionato' ? '<p class="finestra__nota">Confermare non è ancora un contratto: prima di iniziare va formalizzato il rapporto.</p>' : ''}</div>
+        ${c.stato === 'selezionato' ? `<p class="proposta-tempo">Hai <strong data-scade="${c.scade || 0}">${c.scade ? restante(c.scade - adesso()) : ''}</strong> per confermare</p>
+          <p class="finestra__nota">Confermare non è ancora un contratto: prima di iniziare va formalizzato il rapporto.</p>` : ''}</div>
       <div class="candidatura__lato"><span class="stato stato--${c.stato}">${STATI[c.stato]}</span>${c.esempio && c.stato !== 'inviata' ? '<span class="etichetta-esempio">risposta di esempio</span>' : ''}</div>
       ${az.length ? `<div class="pa-azioni-riga">${az.map(([k, t, cl]) => `<button type="button" class="tasto ${cl ? 'tasto--chiaro' : ''}" data-lav="${k}" data-i="${i}">${t}</button>`).join('')}</div>` : ''}
     </li>`
@@ -354,8 +514,8 @@ export function gestisciLavori(e) {
   const l = leggiCand()
   if (k === 'ritira') l[i].stato = 'ritirata'
   if (k === 'rifiuta') l[i].stato = 'rifiutata'
-  if (k === 'annulla') l[i].stato = 'annullato'
-  if (k === 'conferma') { l[i].stato = 'confermato'; notifica('selezione', `Hai confermato «${l[i].titolo}». Ricordati di formalizzare il rapporto prima di iniziare.`, { scheda: 'attivita', sotto: 'calendario' }) }
+  if (k === 'annulla') { l[i].stato = 'annullato'; l[i].annullatoDa = 'lavoratore' }
+  if (k === 'conferma') { confermaProposta(i); return false }
   if (k === 'completa') { l[i].stato = 'completato'; scriviCand(l); chiediCompenso(i); return true }
   if (k === 'compenso') { chiediCompenso(i); return false }
   if (k === 'recensisci') { apriRecensione({ i, a: l[i].chi, incaricoId: l[i].id, titolo: l[i].titolo, lato: 'lavoro' }); return false }
@@ -382,4 +542,5 @@ export function gestisciLavori(e) {
 export function avviaLavori(strumenti) {
   s = strumenti
   setInterval(evolvi, 3000)
+  setInterval(aggiornaContiAllaRovescia, 1000)
 }

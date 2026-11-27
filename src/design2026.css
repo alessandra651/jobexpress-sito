@@ -783,3 +783,30 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
   body.stampa-passport dialog.finestra>*:not(.passport){display:none!important}
   body.stampa-passport .passport{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* ===== Candidature sovrapposte, proposte e spostamenti (27 nov 2026) ===== */
+.stato--ritirata_incompatibile,.stato--scaduta{background:#e7e7df;color:#5d6a64}
+.conflitti{list-style:none;margin:1rem 0;padding:0;display:grid;gap:.6rem}
+.conflitto{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap;background:#fff;border:1px solid var(--linea);border-radius:18px;padding:.85rem 1rem;transition:opacity .3s,transform .3s}
+.conflitto p{margin:.1rem 0 0;color:#4d6a5e;font-size:.9rem}
+.conflitto__quando{font-weight:700;color:#263d35!important}
+.conflitto__azioni{display:flex;gap:.4rem;flex-wrap:wrap}
+.conflitto__azioni .tasto{min-height:44px;padding-inline:1rem}
+.conflitto--ritirata{opacity:.55}
+.conflitto--nuovo{border:2px dashed #47835b}
+.proposta-tempo{display:inline-flex;align-items:baseline;gap:.35rem;margin:.5rem 0 .2rem!important;padding:.35rem .8rem;border-radius:999px;background:#263d35;color:#c4db94!important;font-weight:600}
+.proposta-tempo strong{font-variant-numeric:tabular-nums;font-size:1.05rem;color:#fff}
+.proposta-tempo--urgente{background:#8a3b12;color:#ffe2cf!important;animation:pulsa 1.2s ease-in-out infinite}
+@keyframes pulsa{50%{transform:scale(1.03)}}
+@media (prefers-reduced-motion:reduce){.proposta-tempo--urgente{animation:none}}
+.avviso-spostamenti{background:#fff3d6;border:1px solid #f0d58c;color:#4a3a00;border-radius:16px;padding:.8rem 1rem;font-weight:600}
+.lista-semplice{margin:.4rem 0 .8rem;padding-left:1.2rem}
+/* Admin: regole della piattaforma */
+.regole{display:grid;gap:1rem}
+.regole__gruppo{border:1px solid var(--linea);border-radius:20px;padding:1rem;background:#fff}
+.regole__gruppo legend{font-weight:800;padding:0 .4rem}
+.regole__riga{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.45rem 0;border-bottom:1px solid #eef2ec}
+.regole__riga:last-child{border-bottom:0}
+.regole__riga label{flex:1 1 14rem}
+.regole__riga input[type=number]{width:6.5rem;min-height:44px;font-size:16px;border:1px solid var(--linea);border-radius:12px;padding:.3rem .6rem}
+.regole__riga input[type=checkbox]{width:24px;height:24px;accent-color:#263d35}
+.regole__avviso{background:#fff3d6;border-radius:14px;padding:.6rem .8rem;font-size:.9rem;margin:.4rem 0 0}

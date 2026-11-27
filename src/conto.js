@@ -3,7 +3,7 @@ import {
   PROVIDER_ATTIVI, SenzaRete, accedi, avviaAuth, conProvider, eliminaAccount, entraInProva, esci, inRecupero,
   nuovaPassword, quandoCambiaUtente, recupera, registra, salvaProfilo, tokenValido, utente,
 } from './auth.js'
-import { STATI, avviaLavori, datiGuadagni, gestisciLavori, leggiCand, pannelloCandidature, pannelloSalvati, riquadroObiettivo, riquadroPlus, riquadroRecensioni, salvaRicercaCorrente, scriviCand, statistiche } from './lavori.js'
+import { STATI, avviaLavori, mostraConflitti, verificaCandidatura, datiGuadagni, gestisciLavori, leggiCand, pannelloCandidature, pannelloSalvati, riquadroObiettivo, riquadroPlus, riquadroRecensioni, salvaRicercaCorrente, scriviCand, statistiche } from './lavori.js'
 import { avviaAbbonamenti, gestisciAbbonamento, pannelloAbbonamento, quandoCambiaAbbonamento } from './abbonamenti.js'
 import { apriAdmin, avviaAdmin, puoAmministrare } from './admin.js'
 import { impostaSalvaRicerca } from './incarichi.js'
@@ -13,7 +13,7 @@ import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
 import { apriConversazione, avviaConversazione, gestisciChat, nonLetti, pannelloChat, quandoCambiaChat } from './chat.js'
 import { gestisciNotifiche, nonLette, notifica, pannelloNotifiche, quandoCambianoNotifiche } from './notifiche.js'
-import { collegaCandidature, dataDi, dataIso, gestisciCalendario, pannelloCalendario, sovrapposizioni } from './calendario.js'
+import { collegaCandidature, dataDi, dataIso, gestisciCalendario, pannelloCalendario } from './calendario.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
@@ -194,10 +194,12 @@ export function candidati(a, quando) {
     return null
   }
   const lista = leggiCand()
-  const gia = lista.find((c) => c.id === a.id && !['ritirata', 'rifiutata', 'non_selezionato', 'annullato'].includes(c.stato))
+  const gia = lista.find((c) => c.id === a.id && ['inviata', 'selezionato', 'confermato'].includes(c.stato))
   if (gia) return 'Ti sei già candidato a questo incarico. Lo trovi in «La mia area» → Attività.'
-  const altri = sovrapposizioni(a, a.id)
-  if (altri.length) return `Non puoi candidarti: si sovrappone a «${altri[0].titolo}», a cui ti sei già candidato. Se vuoi, ritira prima l’altra candidatura.`
+  // Regola: massimo 3 candidature attive nella stessa fascia oraria (uguale per tutti i piani)
+  const v = verificaCandidatura(a)
+  if (v.confermato) return `Non puoi candidarti: in questo orario hai già un incarico confermato («${v.confermato.titolo}»).`
+  if (!v.ok) { mostraConflitti(a, v.conflitti); return null }
   const d = dataDi(a)
   lista.unshift({ id: a.id, cat: a.cat, titolo: a.titolo, chi: a.chi, luogo: `${a.citta}, ${a.zona}`, quando, euroOra: a.euroOra, totale: a.totale, stato: 'inviata', il: Date.now(),
     data: d ? dataIso(d) : null, inizio: a.inizio, fine: a.fine })

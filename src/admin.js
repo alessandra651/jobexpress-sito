@@ -9,12 +9,13 @@ import { moderaAnnuncio, tuttiIMieiAnnunci } from './annunci.js'
 import { aggiornaSegnalazione, segnalazioni } from './segnalazioni.js'
 import { leggiCand } from './lavori.js'
 import { pianoAttivo } from './abbonamenti.js'
+import { caricaImpostazioni, impostazioni, impostazioniDalServer } from './regole.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const CHIAVE_LOG = 'jobexpress-registro-admin'
 let s = {} // strumenti: utente, token
 let pannello = null
-let stato = { reale: null, statistiche: null, errore: '' }
+let stato = { reale: null, statistiche: null, incarichi: null, errore: '' }
 
 async function rpc(nome, corpo = {}) {
   const token = await s.token()
@@ -73,6 +74,101 @@ const barre = (righe, nome) => {
   return `<ul class="percat">${righe.map(([k, v]) => `<li><span>${esc(nome(k))}</span><span class="percat__barra"><i style="width:${(v / max) * 100}%"></i></span><strong>${v}</strong></li>`).join('')}</ul>`
 }
 
+
+// ---------- Regole della piattaforma (tabella "impostazioni" su Supabase) ----------
+const n2 = (v) => String(v).replace('.', ',')
+function rigaNumero(nome, etichetta, valore, { min = 0, max = 1000, passo = 1 } = {}) {
+  return `<div class="regole__riga"><label for="rg-${nome}">${etichetta}</label><input id="rg-${nome}" name="${nome}" type="number" inputmode="decimal" min="${min}" max="${max}" step="${passo}" value="${valore}" ${stato.reale ? '' : 'disabled'} /></div>`
+}
+function rigaSpunta(nome, etichetta, acceso) {
+  return `<div class="regole__riga"><label for="rg-${nome}">${etichetta}</label><input id="rg-${nome}" name="${nome}" type="checkbox" ${acceso ? 'checked' : ''} ${stato.reale ? '' : 'disabled'} /></div>`
+}
+function bloccoRegole() {
+  const im = impostazioni()
+  const tempi = im.tempi_conferma
+  const fasce = ['Meno di 1 ora all’inizio', 'Da 1 a 3 ore', 'Da 3 a 24 ore', 'Più di 24 ore']
+  const fp = im.funzioni_premium || {}
+  return `
+      <section class="admin__blocco">
+        <h3>Regole della piattaforma ${stato.reale ? '<span class="stato">modificabili</span>' : '<span class="etichetta-esempio">sola lettura</span>'}</h3>
+        ${impostazioniDalServer() ? '' : '<p class="avviso-prova">Non riesco a leggere le regole da Supabase: vedi quelle predefinite.</p>'}
+        <form class="regole" data-admin-regole novalidate>
+          <fieldset class="regole__gruppo"><legend>Limite sperimentale per Free</legend>
+            ${rigaSpunta('free_monthly_job_limit_enabled', 'Limite incarichi mensili acceso', im.free_monthly_job_limit_enabled === true)}
+            <p class="regole__avviso">Da tenere SPENTO finché un avvocato del lavoro non lo ha verificato. Accenderlo non risolve la questione legale: serve solo a rendere la scelta reversibile. Quando è spento, chi usa Free conferma incarichi senza limiti.</p>
+            ${rigaNumero('free_monthly_job_limit', 'Incarichi confermati al mese con Free', im.free_monthly_job_limit, { min: 1, max: 100 })}
+            ${rigaSpunta('annullamenti_lavoratore_contano', 'Se il lavoratore annulla, l’incarico resta nel conteggio del mese (evita abusi, nessuna penalità sul badge)', im.annullamenti_lavoratore_contano === true)}
+          </fieldset>
+          <fieldset class="regole__gruppo"><legend>Candidature e proposte</legend>
+            ${rigaNumero('max_candidature_sovrapposte', 'Candidature attive nella stessa fascia oraria (uguale per tutti i piani)', im.max_candidature_sovrapposte, { min: 1, max: 100 })}
+            ${rigaNumero('margine_spostamenti_minuti', 'Avviso spostamenti sotto (minuti)', im.margine_spostamenti_minuti, { min: 0, max: 240 })}
+            ${tempi.map((t, i) => rigaNumero(`tempo_${i}`, `Tempo per confermare · ${fasce[i] || (t.meno_di_minuti == null ? 'oltre' : `meno di ${t.meno_di_minuti} min`)} (minuti)`, t.minuti, { min: 1, max: 1440 })).join('')}
+          </fieldset>
+          <fieldset class="regole__gruppo"><legend>Abbonamenti e funzioni Plus</legend>
+            ${rigaNumero('plus_mese', 'Plus mensile (€)', im.prezzi.plus.mese, { min: 0, max: 999, passo: 0.01 })}
+            ${rigaNumero('plus_anno', 'Plus annuale (€)', im.prezzi.plus.anno, { min: 0, max: 999, passo: 0.01 })}
+            ${rigaNumero('friends_mese', 'Friends mensile, in tre (€)', im.prezzi.friends.mese, { min: 0, max: 999, passo: 0.01 })}
+            ${rigaNumero('friends_anno', 'Friends annuale, in tre (€)', im.prezzi.friends.anno, { min: 0, max: 999, passo: 0.01 })}
+            ${rigaSpunta('prova_attiva', 'Prova gratuita di Plus disponibile (solo se la persona la sceglie)', im.prova_gratuita?.attiva === true)}
+            ${rigaNumero('prova_giorni', 'Giorni di prova gratuita', im.prova_gratuita?.giorni ?? 7, { min: 1, max: 60 })}
+            ${rigaNumero('ai_richieste_mensili', 'Richieste AI al mese (Plus e ogni membro Friends)', im.ai_richieste_mensili, { min: 1, max: 100 })}
+            ${['goal', 'cv', 'career', 'smart_calendar', 'ai'].map((k) => rigaSpunta(`fp_${k}`, `Funzione attiva: JobExpress ${{ goal: 'Goal', cv: 'CV', career: 'Career', smart_calendar: 'Smart Calendar', ai: 'AI' }[k]}`, fp[k] === true)).join('')}
+          </fieldset>
+          <div class="finestra__azioni"><button type="submit" class="tasto" ${stato.reale ? '' : 'disabled'}>Salva le regole</button></div>
+          <p class="finestra__nota" data-regole-msg role="status">Le modifiche valgono da adesso in poi: non cambiano incarichi già confermati né proposte già inviate. Ogni modifica viene registrata.</p>
+        </form>
+      </section>`
+}
+
+async function salvaRegole(f) {
+  const im = impostazioni()
+  const el = f.elements
+  const num = (k) => Number(String(el[k].value).replace(',', '.'))
+  const nuove = {
+    free_monthly_job_limit_enabled: el.free_monthly_job_limit_enabled.checked,
+    free_monthly_job_limit: num('free_monthly_job_limit'),
+    annullamenti_lavoratore_contano: el.annullamenti_lavoratore_contano.checked,
+    max_candidature_sovrapposte: num('max_candidature_sovrapposte'),
+    margine_spostamenti_minuti: num('margine_spostamenti_minuti'),
+    tempi_conferma: im.tempi_conferma.map((t, i) => ({ ...t, minuti: num(`tempo_${i}`) })),
+    prezzi: { plus: { mese: num('plus_mese'), anno: num('plus_anno') }, friends: { mese: num('friends_mese'), anno: num('friends_anno') } },
+    prova_gratuita: { attiva: el.prova_attiva.checked, giorni: num('prova_giorni') },
+    ai_richieste_mensili: num('ai_richieste_mensili'),
+    funzioni_premium: Object.fromEntries(['goal', 'cv', 'career', 'smart_calendar', 'ai'].map((k) => [k, el[`fp_${k}`].checked])),
+  }
+  const msg = f.querySelector('[data-regole-msg]')
+  const cambiate = Object.keys(nuove).filter((k) => JSON.stringify(nuove[k]) !== JSON.stringify(im[k]))
+  if (!cambiate.length) { msg.textContent = 'Nessuna modifica da salvare.'; return }
+  msg.textContent = 'Salvo…'
+  const errori = []
+  for (const k of cambiate) {
+    try { await rpc('admin_imposta', { p_chiave: k, p_valore: nuove[k] }) } catch { errori.push(k) }
+  }
+  await caricaImpostazioni()
+  registra(`Regole modificate: ${cambiate.join(', ')}`, { chiavi: cambiate })
+  disegna()
+  pannello.querySelector('[data-regole-msg]').textContent = errori.length
+    ? `Non salvate (valore non valido o accesso scaduto): ${errori.join(', ')}.`
+    : `Salvato: ${cambiate.length} ${cambiate.length === 1 ? 'regola' : 'regole'}. Valgono da adesso.`
+}
+
+function bloccoIncarichi() {
+  const x = stato.incarichi
+  if (!x) return ''
+  const perc = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : '—')
+  return `
+      <section class="admin__blocco">
+        <h3>Candidature e incarichi <span class="stato">dati reali</span></h3>
+        <ul class="stat stat--sei">
+          <li><strong>${x.annunci_pubblicati}</strong><span>Annunci pubblicati</span></li><li><strong>${x.candidature_inviate}</strong><span>Candidature</span></li>
+          <li><strong>${x.incarichi_assegnati}</strong><span>Incarichi assegnati</span></li><li><strong>${x.incarichi_completati}</strong><span>Completati</span></li>
+          <li><strong>${perc(x.proposte_confermate, x.proposte_totali)}</strong><span>Proposte confermate</span></li><li><strong>${perc(x.proposte_scadute, x.proposte_totali)}</strong><span>Proposte scadute</span></li>
+          <li><strong>${x.ritirate_incompatibili}</strong><span>Ritirate per incompatibilità</span></li><li><strong>${x.minuti_medi_assegnazione == null ? '—' : `${n2(x.minuti_medi_assegnazione)} min`}</strong><span>Tempo medio di assegnazione</span></li>
+        </ul>
+        <p class="finestra__nota">Abbonamenti attivi: ${Object.entries(x.abbonamenti || {}).map(([k, v]) => `${esc(k)} ${v}`).join(' · ') || 'nessuno'}. Pagamenti reali: non ancora attivi (ricavi 0 €).</p>
+      </section>`
+}
+
 function disegna() {
   const n = numeri()
   const seg = segnalazioni()
@@ -95,6 +191,9 @@ function disegna() {
             ${st.citta.length ? `<h4>Distribuzione per città</h4>${barre(st.citta.map((c) => [c.citta, c.utenti]), (k) => k)}` : ''}`
           : `<p>${stato.errore || 'I numeri reali degli utenti arrivano da Supabase quando entri con il tuo account da amministratore.'}</p>`}
       </section>
+
+      ${bloccoIncarichi()}
+      ${bloccoRegole()}
 
       <section class="admin__blocco">
         <h3>Piattaforma <span class="etichetta-esempio">dati dimostrativi</span></h3>
@@ -140,7 +239,8 @@ export async function apriAdmin() {
   if (!u) return
   pannello.hidden = false
   document.documentElement.classList.add('area-aperta')
-  stato = { reale: false, statistiche: null, errore: '' }
+  stato = { reale: false, statistiche: null, incarichi: null, errore: '' }
+  caricaImpostazioni()
   if (!u.prova) {
     pannello.innerHTML = '<div class="area__interno"><p>Controllo l’accesso…</p></div>'
     try {
@@ -150,6 +250,7 @@ export async function apriAdmin() {
       }
       stato.reale = true
       stato.statistiche = await rpc('admin_statistiche')
+      stato.incarichi = await rpc('admin_statistiche_incarichi').catch(() => null)
     } catch {
       stato.errore = 'Non riesco a collegarmi a Supabase per i numeri reali.'
     }
@@ -170,6 +271,12 @@ export function avviaAdmin(strumenti) {
   pannello.setAttribute('role', 'region')
   pannello.setAttribute('aria-label', 'Area Admin')
   document.body.appendChild(pannello)
+  pannello.addEventListener('submit', (e) => {
+    const f = e.target.closest('[data-admin-regole]')
+    if (!f) return
+    e.preventDefault()
+    if (stato.reale) salvaRegole(f)
+  })
   pannello.addEventListener('click', (e) => {
     const t = e.target
     if (t.closest('[data-admin-chiudi]')) return chiudi()

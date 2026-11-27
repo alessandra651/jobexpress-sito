@@ -10,6 +10,7 @@ import { avviaModuli } from './moduli.js'
 import { avviaTabellone } from './tabellone.js'
 import { avviaPrezzi } from './prezzi.js'
 import { impostaFascia } from './incarichi.js'
+import { caricaImpostazioni, impostazioni, quandoCambianoImpostazioni } from './regole.js'
 
 new Lenis({
   autoRaf: true,
@@ -48,3 +49,16 @@ impostaFascia(() => tabellone?.leggi())
 avviaCalcolo()
 avviaPrezzi()
 avviaModuli({ leggiTabellone: () => tabellone?.leggi() })
+
+// Regole della piattaforma (dall'area Admin): i testi dei piani seguono il limite Free
+function testiLimite() {
+  const imp = impostazioni()
+  const acceso = imp.free_monthly_job_limit_enabled === true
+  const free = document.querySelector('[data-testo-limite="free"]')
+  if (free) free.textContent = acceso ? `Fino a ${imp.free_monthly_job_limit} incarichi confermati al mese` : 'Incarichi confermati senza limiti'
+  const plus = document.querySelector('[data-testo-limite="plus"]')
+  if (plus) plus.hidden = !acceso
+}
+quandoCambianoImpostazioni(testiLimite)
+testiLimite()
+caricaImpostazioni()
