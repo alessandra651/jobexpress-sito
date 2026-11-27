@@ -4,9 +4,12 @@
 // Gli abbonamenti danno strumenti di organizzazione e statistiche:
 // mai più visibilità o priorità nelle candidature.
 import { notifica } from './notifiche.js'
+import { impostazioni, quandoCambianoImpostazioni } from './regole.js'
 
 const CHIAVE = 'jobexpress-abbonamento'
-export const PREZZI = { plus: { mese: 4.99, anno: 39.99 }, friends: { mese: 9.99, anno: 79.99 } }
+// Prezzi: arrivano dalle regole della piattaforma (area Admin)
+export const PREZZI = structuredClone(impostazioni().prezzi)
+quandoCambianoImpostazioni((imp) => { Object.assign(PREZZI.plus, imp.prezzi.plus); Object.assign(PREZZI.friends, imp.prezzi.friends) })
 const NOMI = { free: 'Free', plus: 'Plus', friends: 'Friends' }
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])

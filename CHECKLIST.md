@@ -62,3 +62,12 @@ Sito:
 - ⏳ Modifica orari di un annuncio già assegnato: oggi il database la blocca; serve la schermata di nuova accettazione del lavoratore
 - ⏳ Notifiche push ed email (oggi solo interne)
 - ⚖️ Da verificare con un avvocato del lavoro prima di accendere il limite Free e prima dei pagamenti veri
+
+## Aggiornamento 27 novembre 2026 · Abbonamenti + «Il tuo percorso»
+- ✅ Pagina abbonamenti: nuove funzioni di Free, Plus (Goal, CV, Career, Smart Calendar, AI) e Friends; prezzi e numero di richieste AI presi dalle regole dell'area Admin; le funzioni non ancora pronte mostrano «in arrivo»; il testo sul limite Free segue l'interruttore
+- 🧪 Nuova scheda «Percorso» nell'area personale: obiettivo del mese, badge (gratis per tutti), ultimi incarichi, cinque strumenti
+- 🧪 JobExpress Goal (Plus): obiettivo settimanale, mensile, annuale o fino a una data; maturati, mancante, %, media oraria, ore indicative; compensi previsti / maturati / ricevuti distinti; grafici per settimane, mesi, anni con confronto; medie; per categoria; report CSV
+- 🧪 Free vede i propri compensi e una presentazione di Goal, senza dati inventati
+- 🧪 Schermata «Il tuo percorso è appena iniziato!» per Free al secondo incarico completato del mese (una volta al mese, nessuna attivazione automatica)
+- ⏳ JobExpress CV, Career, Smart Calendar, AI: prossimi blocchi
+- ⏳ Spostare candidature e guadagni su Supabase (oggi restano sul dispositivo)

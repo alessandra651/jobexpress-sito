@@ -8,6 +8,7 @@ import { avviaAbbonamenti, gestisciAbbonamento, pannelloAbbonamento, quandoCambi
 import { apriAdmin, avviaAdmin, puoAmministrare } from './admin.js'
 import { impostaSalvaRicerca } from './incarichi.js'
 import { gestisciReputazione, riquadroReputazione } from './reputazione.js'
+import { avviaPercorso, gestisciPercorso, pannelloPercorso } from './percorso.js'
 import { FUNZIONI } from './config.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
@@ -303,11 +304,12 @@ function pannelloProfilo(u) {
     </div>`
 }
 
-const SCHEDE = [['home', 'Home'], ['esplora', 'Esplora'], ['attivita', 'Attività'], ['chat', 'Chat'], ['profilo', 'Profilo']]
+const SCHEDE = [['home', 'Home'], ['esplora', 'Esplora'], ['attivita', 'Attività'], ['percorso', 'Percorso'], ['chat', 'Chat'], ['profilo', 'Profilo']]
 const ICONE = {
   home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
   esplora: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
   attivita: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/>',
+  percorso: '<path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/>',
   chat: '<path d="M4 6h16v10H9l-5 4z"/>',
   profilo: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
 }
@@ -333,7 +335,7 @@ function disegnaArea() {
     </div>${sottoAttivita === 'calendario' ? pannelloCalendario() : sottoAttivita === 'salvati' ? pannelloSalvati() : pannelloAttivita()}`
   const pann = (modo === 'pubblico'
     ? { home: pannelloPubblicatoreHome, attivita: pannelloAnnunci, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche }
-    : { home: pannelloHome, attivita: attivitaLavoro, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche })[scheda] || pannelloHome
+    : { home: pannelloHome, attivita: attivitaLavoro, percorso: pannelloPercorso, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche })[scheda] || pannelloHome
   const scambio = lavora && pubblica ? `
     <div class="scelta area__modo" role="group" aria-label="Modalità">
       <button type="button" data-modo-area="lavoro" aria-pressed="${modo === 'lavoro'}">Cerco lavoro</button>
@@ -354,7 +356,7 @@ function disegnaArea() {
       <section class="area__pannello" aria-label="${SCHEDE.find((s) => s[0] === scheda)?.[1] || 'Notifiche'}">${pann(u)}</section>
     </div>
     <nav class="area__nav" aria-label="Navigazione dell’area personale">
-      ${SCHEDE.map(([k, t]) => `<button type="button" data-area-scheda="${k}" ${k === scheda ? 'aria-current="page"' : ''}>
+      ${SCHEDE.filter(([k]) => k !== 'percorso' || modo === 'lavoro').map(([k, t]) => `<button type="button" data-area-scheda="${k}" ${k === scheda ? 'aria-current="page"' : ''}>
         <svg viewBox="0 0 24 24" aria-hidden="true">${ICONE[k]}</svg><span>${t}</span>${k === 'chat' && nonLetti() ? `<span class="nav__badge" aria-label="${nonLetti()} messaggi da leggere">${nonLetti()}</span>` : ''}</button>`).join('')}
     </nav>`
 }
@@ -387,7 +389,7 @@ function esplora() {
 function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
-    if (gestisciCalendario(e) || gestisciPubblicatore(e) || gestisciAbbonamento(e)) return disegnaArea()
+    if (gestisciPercorso(e) || gestisciCalendario(e) || gestisciPubblicatore(e) || gestisciAbbonamento(e)) return disegnaArea()
     const lv = gestisciLavori(e)
     if (lv === 'esplora') return esplora()
     if (lv) return disegnaArea()
@@ -476,6 +478,7 @@ function collegaArea() {
     }
   })
   area.addEventListener('submit', (e) => {
+    if (gestisciPercorso(e)) return disegnaArea()
     if (gestisciAbbonamento(e)) return disegnaArea()
     const c = gestisciChat(e)
     if (c) { disegnaArea(); fineChat(c) }
@@ -584,6 +587,7 @@ export async function avviaConto(strumenti) {
   quandoCambiaChat(aggiornaTutto)
   quandoCambiaAbbonamento(aggiornaTutto)
   avviaLavori({ apri, ridisegna: aggiornaTutto })
+  avviaPercorso({ apri })
   avviaAbbonamenti({ apri, utente, apriAccesso, dopo: () => apriArea('profilo') })
   avviaAdmin({ utente, token: tokenValido })
   impostaSalvaRicerca(() => {

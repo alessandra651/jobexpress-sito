@@ -12,6 +12,7 @@ import { compatCalendario, dataDi, dataIso } from './calendario.js'
 import { notifica } from './notifiche.js'
 import { haPlus, pianoAttivo } from './abbonamenti.js'
 import { segnala } from './segnalazioni.js'
+import { festaSeServe } from './percorso.js'
 import { adesso, avvisiSpostamenti, impostazioni, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -254,7 +255,11 @@ function chiediCompenso(i) {
       <div class="finestra__azioni"><button type="submit" class="tasto">Salva</button><button type="button" class="tasto tasto--chiaro" data-salta>Più tardi</button></div>
     </form>`)
   const f = document.querySelector('[data-form-compenso]')
-  const dopo = () => { if (!c.recensito) apriRecensione({ i, a: c.chi, incaricoId: c.id, titolo: c.titolo, lato: 'lavoro' }); else document.querySelector('dialog.finestra').close() }
+  // dopo compenso e recensione: per Free, al 2° incarico del mese, la schermata «Il tuo percorso è appena iniziato!»
+  const dopo = () => {
+    if (!c.recensito) apriRecensione({ i, a: c.chi, incaricoId: c.id, titolo: c.titolo, lato: 'lavoro', dopo: () => setTimeout(() => festaSeServe(() => {}), 1600) })
+    else festaSeServe()
+  }
   f.querySelector('[data-salta]').onclick = dopo
   f.onsubmit = (e) => {
     e.preventDefault()
