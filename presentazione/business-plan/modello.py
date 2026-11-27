@@ -23,16 +23,24 @@ LEGALE_ANNO=[3000,1000,1000]  # parere iniziale + aggiornamenti
 # Limite 20 richieste/mese per account pagante; uso medio ipotizzato 50% (10 richieste).
 AI_EUR_RICHIESTA=0.004
 AI_RICHIESTE_MEDIE=10
+# JobExpress Trust (27/11/2026): costo della verifica dell'identità per ogni NUOVO utente che inizia a operare.
+# Nello scenario base è 0 perché SPID/CIE/provider NON sono ancora attivi e i corrispettivi non sono ancora
+# stati quotati per JobExpress (vedi docs/trust/RAPPORTO-IDENTIFICAZIONE.md). La sensibilità sotto mostra
+# l'effetto di costi ipotetici: NON sono prezzi di fornitori.
+TRUST_EUR_VERIFICA=0.0
+TRUST_QUOTA_OPERATIVI=0.6   # ipotesi: 60% dei nuovi iscritti arriva alla prima candidatura/pubblicazione
+TRUST_SENSIBILITA=[0.5,1.0,1.5,2.0]
 out={'ipotesi':{'iva':IVA,'prezzi':PREZZI,'mix':MIX,'incasso_medio_account_mese_ivato':round(arpa_lordo,3),'netto_iva':round(arpa_netto_iva,3),'commissioni_pagamento_mese':round(comm,3),'ricavo_netto_account_mese':round(arpa,3),'fissi_mese':FISSI,'legale_anno':LEGALE_ANNO,'ai_eur_richiesta':AI_EUR_RICHIESTA,'ai_richieste_medie_mese':AI_RICHIESTE_MEDIE,'ai_costo_account_mese':round(AI_EUR_RICHIESTA*AI_RICHIESTE_MEDIE,3)},'scenari':{}}
 for n,s in SCEN.items():
-    righe=[];cum=0;pareggio=None
+    righe=[];cum=0;pareggio=None;prec=0
     for m in range(1,37):
         a=(m-1)//12; f=((m-1)%12+1)/12
         u=s['utenti'][a]+(s['utenti'][a+1]-s['utenti'][a])*f
         pag=u*s['conv']
         incasso=pag*arpa_lordo
         ricavo=pag*arpa  # netto IVA e commissioni
-        costi=s['tech'][a]+s['mkt']+sum(FISSI.values())+LEGALE_ANNO[a]/12+pag*AI_EUR_RICHIESTA*AI_RICHIESTE_MEDIE
+        nuovi=max(0,u-prec); prec=u
+        costi=s['tech'][a]+s['mkt']+sum(FISSI.values())+LEGALE_ANNO[a]/12+pag*AI_EUR_RICHIESTA*AI_RICHIESTE_MEDIE+nuovi*TRUST_QUOTA_OPERATIVI*TRUST_EUR_VERIFICA
         utile=ricavo-costi; cum+=utile
         if pareggio is None and utile>=0: pareggio=m
         righe.append(dict(mese=m,utenti=round(u),paganti=round(pag),incasso=round(incasso),ricavo=round(ricavo),costi=round(costi),utile=round(utile),cumulato=round(cum)))
@@ -40,6 +48,13 @@ for n,s in SCEN.items():
     annui={y:{'incasso':sum(r['incasso'] for r in righe[(y-1)*12:y*12]),'ricavo':sum(r['ricavo'] for r in righe[(y-1)*12:y*12]),'costi':sum(r['costi'] for r in righe[(y-1)*12:y*12])} for y in (1,2,3)}
     for y in annui: annui[y]['utile']=annui[y]['ricavo']-annui[y]['costi']
     out['scenari'][n]={'ipotesi':s,'mese_pareggio_mensile':pareggio,'paganti_per_pareggio_anno1':round((s['tech'][0]+s['mkt']+sum(FISSI.values())+LEGALE_ANNO[0]/12)/arpa),'mesi':sintesi,'anni':annui,'righe':righe}
+# Sensibilità Trust: costo annuo aggiuntivo se ogni verifica costasse X € (ipotesi, non prezzi)
+for n,s in SCEN.items():
+    sens={}
+    for x in TRUST_SENSIBILITA:
+        sens[str(x)]={str(y+1):round((s['utenti'][y+1]-s['utenti'][y])*TRUST_QUOTA_OPERATIVI*x) for y in range(3)}
+    out['scenari'][n]['trust_sensibilita_costo_annuo']=sens
+out['ipotesi']['trust_eur_verifica']=TRUST_EUR_VERIFICA; out['ipotesi']['trust_quota_operativi']=TRUST_QUOTA_OPERATIVI
 import os
 json.dump(out,open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'risultati.json'),'w'),indent=1,ensure_ascii=False)
 print('incasso medio/account/mese IVA incl.',round(arpa_lordo,2),'| netto IVA',round(arpa_netto_iva,2),'| commissioni',round(comm,3),'| ricavo netto',round(arpa,2))

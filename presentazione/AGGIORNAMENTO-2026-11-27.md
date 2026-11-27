@@ -74,3 +74,19 @@ JobExpress passa da marketplace di lavoro last minute a **ecosistema di crescita
 - Reputazione e curriculum **verificabili**, non comprabili.
 - Strumenti di crescita (Goal, CV, Career, Smart Calendar, AI) pensati per studenti e giovani che conciliano lavoro e studio.
 - Nessuna commissione sul compenso e pubblicazione gratuita.
+
+## JobExpress Trust (aggiornamento del 27/11/2026, sera)
+**Perché:** in un mercato di lavoro last minute, chi pubblica deve potersi fidare di chi arriva, e chi lavora di chi pubblica. Trust è il livello di fiducia della piattaforma.
+
+- **Verifica progressiva:** ci si registra ed esplora liberamente; prima della **prima candidatura o pubblicazione** servono identità verificata e foto del volto (per le aziende: azienda e referente verificati). Lo controlla il database, non l'app.
+- **Profilo professionale:** presentazione, competenze, lingue, esperienze (JobExpress verificate / esterne autodichiarate), formazione e certificazioni, disponibilità e mobilità, indicatore di completamento.
+- **Foto obbligatoria ma rispettosa:** ritaglio e compressione sul telefono, nessun riconoscimento facciale, **mai** usata per ordinare o scegliere le persone.
+- **CV PDF gratuito e privato,** condiviso solo con il committente scelto.
+- **Badge di verifica** distinti dai badge professionali; nessuno si può auto-verificare.
+- **Sicurezza e identità:** stato account, contatti, identità, accesso (cambio password, esci dagli altri dispositivi), privacy con anteprima, assistenza; segnalazioni, blocchi, sospensioni cautelative; aziende con più referenti.
+- **Identificazione:** SPID, CIE, eIDAS, provider e verifica assistita sono **progettati ma spenti**. Strada consigliata: aggregatore privato SPID/CIE, poi IT-Wallet/EUDI. Nessun documento o dato biometrico conservato da JobExpress.
+- **Admin Trust:** code di segnalazioni, foto, verifiche, aziende e assistenza; interruttori; verifiche simulate solo per i test.
+
+**Impatto economico:** nello scenario base il costo di identificazione è 0 € perché nessun metodo è attivo e i corrispettivi non sono ancora stati quotati. Tabella di sensibilità (ipotesi, non prezzi): con 1 € a verifica e il 60% dei nuovi iscritti che inizia a operare, il costo annuo aggiuntivo sarebbe circa 900/1.500/2.400 € (prudente, anni 1–3), 1.800/4.200/9.000 € (intermedio), 3.600/11.400/27.000 € (espansivo). Dettagli in `business-plan/risultati.json` → `trust_sensibilita_costo_annuo`.
+
+**Da validare:** preventivi aggregatori SPID/CIE e provider senza biometria, DPIA, informativa privacy aggiornata. Screenshot: `screenshot/2026-11-27-trust/`.

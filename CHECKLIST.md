@@ -96,3 +96,11 @@ Sito:
 - ✅ Indirizzo preciso salvato a parte (`annunci_indirizzi`): lo vedono solo chi pubblica e chi ha l'incarico confermato (funzioni imposta_indirizzo, indirizzo_incarico)
 - ⏳ Accesso con Google: serve il progetto su Google Cloud e la configurazione in Supabase (guida passo passo in chat)
 - ⏳ Google Calendar automatico: richiede la verifica dell'app da parte di Google; intanto funzionano «+ Google Calendar» e i file .ics
+
+## Aggiornamento 27 novembre 2026 · JobExpress Trust (ramo `feature/jobexpress-trust`)
+- ✅ Database: profilo professionale, dati riservati, verifiche (non modificabili dall'utente), sospensioni, aziende e referenti, segnalazioni, blocchi, assistenza, consensi; trigger che bloccano candidature/annunci/proposte/incarichi senza i requisiti; limiti anti-abuso; bucket privati foto (2 MB) e CV (5 MB). 15 scenari di test superati
+- ✅ Sito: Profilo professionale (foto con ritaglio, presentazione, competenze, lingue, esperienze, formazione, disponibilità, CV PDF, completamento), Sicurezza e identità, aziende, anteprima pubblica, segnala/blocca, condivisione CV con la candidatura, finestra «Prima di candidarti/pubblicare», pannello Admin Trust
+- 🧪 Verifica dell'identità: solo **simulata** (account di prova) o «simulata» dall'admin per gli account di test
+- ⛔ SPID, CIE, eIDAS, provider, verifica assistita, telefono, captcha, biometria: **spenti** (vedi docs/trust/RAPPORTO-IDENTIFICAZIONE.md)
+- ⚠️ Con il database Trust attivo gli account veri **non possono candidarsi né pubblicare** finché non sono verificati: è voluto (nessun metodo reale funziona ancora). Per provarli: Admin → Trust → cerca email → «Verifica simulata»
+- ⏳ Preventivi aggregatori SPID/CIE e provider senza biometria · DPIA · informativa privacy aggiornata · pulizia dei file nello storage quando si elimina l'account · esportazione dati (portabilità) · cognome nella registrazione
