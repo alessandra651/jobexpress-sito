@@ -15,6 +15,7 @@ import { avviaAI } from './ai.js'
 import { aggiorna as aggiornaReale, avviaReale, candidaReale, gestisciReale, segnaLetteServer } from './reale.js'
 import { FUNZIONI } from './config.js'
 import { aggiornaLive, avviaLive, gestisciLive, riquadroLive } from './live.js'
+import { aggiornaSafe, avviaSafe, riquadroRecensioniReali } from './safe.js'
 import { avatarUtente, avviaTrust, caricaTrust, finestraTrust, gestisciTrust, impostaSottoProfilo, pannelloTrust, requisitiMancanti } from './trust.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
@@ -306,7 +307,7 @@ function pannelloAccount(u) {
     </form>
     ${FUNZIONI.reputazione ? `<section class="profilo-blocco profilo-blocco--reputazione">${riquadroReputazione()}</section>` : ''}
     <section class="profilo-blocco"><h3>Il tuo abbonamento</h3>${pannelloAbbonamento()}</section>
-    <section class="profilo-blocco">${riquadroRecensioni()}</section>
+    <section class="profilo-blocco">${u.prova ? riquadroRecensioni() : riquadroRecensioniReali()}</section>
     <div class="profilo-blocco" data-admin-posto></div>
     <div class="zona-rischio">
       <h3>Elimina l’account</h3>
@@ -620,6 +621,8 @@ export async function avviaConto(strumenti) {
   quandoCambiaUtente(() => caricaTrust(true))
   avviaLive({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() }, dopo: () => aggiornaReale() })
   quandoCambiaUtente(() => aggiornaLive())
+  avviaSafe({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() } })
+  quandoCambiaUtente(() => aggiornaSafe())
   impostaSalvaRicerca(() => {
     if (!utente()) { apriAccesso('Per salvare le ricerche, registrati o accedi'); return '' }
     const m = salvaRicercaCorrente()

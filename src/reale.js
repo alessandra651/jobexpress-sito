@@ -11,6 +11,7 @@ import { adesso, restante } from './regole.js'
 import { importaNotifiche } from './notifiche.js'
 import { pulsantiMappe } from './mappe.js'
 import { bloccoProposteDirette, bloccoRescue, impostaAnnunciCommittente } from './live.js'
+import { bloccoSafe } from './safe.js'
 import { apriCVCandidato, apriProfiloPubblico, codiciTrust, condividiCV, finestraTrust, haCV } from './trust.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -195,7 +196,8 @@ function extraLavoratore(c) {
       <p class="finestra__nota">Se rifiuti, l’incarico resta valido con le condizioni originali.</p></div>` : ''}
     ${mp ? `<div class="avviso-spostamenti"><strong>Presenza da verificare</strong><p>Il committente segnala che non risultavi presente. È una segnalazione, non un fatto accertato, e non è pubblica.</p>
       ${mp.chiarimento ? `<p>La tua versione: «${esc(mp.chiarimento)}»</p>` : ''}${mp.decisione ? `<p>Decisione del team (${esc(mp.stato === 'confermata' ? 'assenza confermata' : mp.stato === 'non_confermata' ? 'assenza non confermata' : 'in revisione')}): ${esc(mp.decisione)}</p>` : ''}
-      ${['segnalata', 'chiarimento_inviato', 'confermata'].includes(mp.stato) ? `<button type="button" class="tasto tasto--chiaro" data-re="mancata-chiarisci" data-id="${esc(i.id)}">${mp.stato === 'confermata' ? 'Contesta la decisione' : mp.chiarimento ? 'Aggiungi la tua versione' : 'Racconta cosa è successo'}</button>` : ''}</div>` : ''}`
+      ${['segnalata', 'chiarimento_inviato', 'confermata'].includes(mp.stato) ? `<button type="button" class="tasto tasto--chiaro" data-re="mancata-chiarisci" data-id="${esc(i.id)}">${mp.stato === 'confermata' ? 'Contesta la decisione' : mp.chiarimento ? 'Aggiungi la tua versione' : 'Racconta cosa è successo'}</button>` : ''}</div>` : ''}
+    ${bloccoSafe(i, 'lavoratore', c.turni)}`
 }
 function postiHtml(ps) {
   if (!ps || ps.richiesti <= 1 && !ps.annullati) return ''
@@ -216,6 +218,7 @@ function extraCommittente(c, a) {
       ${!iniziato(a.turni) && !i.adempimenti_dichiarati ? `<button type="button" class="tasto tasto--chiaro" data-re="adempimenti" data-id="${esc(i.id)}">Adempimenti fatti</button>` : ''}
       ${iniziato(a.turni) && !mp ? `<button type="button" class="tasto tasto--chiaro" data-re="mancata" data-id="${esc(i.id)}">Non si è presentato</button>` : ''}
       <button type="button" class="tasto tasto--chiaro" data-re="storico" data-id="${esc(i.id)}">Storico condizioni</button></span>` : '')
+    + (['programmato', 'completato', 'contestato'].includes(i.stato) ? bloccoSafe(i, 'committente', a.turni) : '')
 }
 
 const inCorso = (turni) => { const n = Date.now(); return turni?.some((t) => new Date(t.inizio) <= n && new Date(t.fine) > n) }

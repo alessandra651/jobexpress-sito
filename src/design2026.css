@@ -1235,3 +1235,32 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .offerta-dati{display:grid;grid-template-columns:minmax(6.5rem,auto) 1fr;gap:.25rem .8rem;font-size:.92rem}
 .offerta-dati dt{color:#6b7771;font-weight:600}
 .offerta-dati dd{margin:0}
+
+/* ---------- Fase 3 · JobExpress Safe e recensioni ---------- */
+.safe-centro{border:1px solid #d6e2dc}
+.safe-centro h4{margin:1.1rem 0 .4rem;font-size:1rem}
+.safe-112{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:#fff3f0;border:1px solid #f1c7bd;border-radius:14px;padding:.8rem 1rem;margin:.6rem 0}
+.safe-112 p{margin:.15rem 0 0;font-size:.92rem;color:#5a3a33}
+.safe-112 .tasto{white-space:nowrap}
+.safe-112--piccolo{padding:.5rem .8rem}
+.safe-112--piccolo p{margin:0}
+.safe-112 a:not(.tasto){color:#a2321c}
+.safe-consigli{margin:.4rem 0}
+.safe-consigli summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.safe-link{width:100%;margin-top:.35rem;font:inherit;font-size:.85rem;padding:.45rem .6rem;border:1px solid var(--linea);border-radius:10px;background:#f7f8f6;color:#33433c}
+.safe-azioni{margin-top:.5rem}
+.campo--voto{display:grid;grid-template-columns:1fr minmax(9rem,12rem);align-items:center;gap:.6rem}
+.campo--voto label{margin:0}
+@media (max-width:480px){.campo--voto{grid-template-columns:1fr}}
+.reputazione-pubblica{margin:1rem 0;text-align:left}
+.reputazione-pubblica h3{margin:0 0 .3rem}
+.reputazione-cat{list-style:none;padding:0;margin:.5rem 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.35rem}
+.reputazione-cat li{display:flex;justify-content:space-between;gap:.5rem;background:#f4f6f3;border-radius:10px;padding:.4rem .7rem;font-size:.9rem}
+.recensione-citata{margin:.6rem 0;padding:.6rem .9rem;border-left:3px solid #9fcdb3;background:#fafbf9;border-radius:0 10px 10px 0}
+.recensione-citata p{margin:.25rem 0}
+.recensione-citata small{color:#5b6a63}
+.recensione-risposta{margin:.4rem 0 0;padding:.4rem .7rem;background:#eef3f0;border-radius:8px;font-size:.9rem}
+.badge-nuovo{display:inline-block;background:#e8f0fb;color:#24406b;border-radius:999px;padding:.15rem .6rem;font-size:.8rem;font-weight:700;margin-right:.3rem}
+.condiviso-pagina main{max-width:40rem;margin:0 auto;padding:1.2rem}
+.condiviso-scheda h1{font-size:clamp(1.4rem,4vw,2rem);margin:.3rem 0 .5rem}
+.condiviso-stato{font-weight:700;color:#1d4b3c;background:#eef7f1;border-radius:10px;padding:.5rem .8rem;display:inline-block}

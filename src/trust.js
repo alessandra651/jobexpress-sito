@@ -9,6 +9,7 @@
 //     l'amministratore con una verifica SIMULATA, segnata come tale.
 //   * SPID, CIE, eIDAS e provider restano «non ancora attivi» finché non c'è un'integrazione vera e autorizzata.
 //   * Account di prova: tutto resta sul dispositivo e le verifiche sono simulate, con l'etichetta «simulata».
+import { TIPI_SEGNALAZIONE, bloccoReputazione, leggiReputazione, riquadroSafe } from './safe.js'
 import { SUPABASE_KEY, SUPABASE_URL } from './config.js'
 import { impostazioni } from './regole.js'
 import { haPlus } from './abbonamenti.js'
@@ -335,6 +336,7 @@ function pannelloSicurezza(u) {
   const mancaC = requisitiMancanti('candidatura')
   const azienda = st.pro.tipo === 'azienda' || u.modalita?.includes('attivita')
   return `
+    ${riquadroSafe(u)}
     <section class="riquadro trust-stato">
       <h3>Stato dell’account</h3>
       <ul class="trust-righe">
@@ -446,6 +448,7 @@ function schedaPubblica(p, mio = false) {
     <h2>${esc(p.nome)}</h2><p>${esc(p.citta || '')}${p.iscritto_il ? ` · su JobExpress da ${new Date(p.iscritto_il).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}` : ''} · ${p.incarichi_completati || 0} incarichi completati</p>
     <div class="trust-badge">${[r.contatti && 'Contatti verificati', r.identita && (r.identita_simulata ? 'Identità verificata · simulata' : 'Identità verificata'), r.foto && 'Foto confermata', r.azienda && 'Azienda verificata', r.qualifiche && 'Qualifica verificata'].filter(Boolean).map((x) => `<span class="badge-verifica">${esc(x)}</span>`).join('')}</div>
     ${p.presentazione ? `<p>${esc(p.presentazione)}</p>` : ''}
+    ${p._rep ? bloccoReputazione(p._rep) : ''}
     ${[...(p.settori || []), ...(p.mansioni || []), ...(p.competenze_tecniche || [])].length ? `<div class="etichette">${[...(p.settori || []), ...(p.mansioni || []), ...(p.competenze_tecniche || [])].map((x) => `<span>${esc(x)}</span>`).join('')}</div>` : ''}
     ${(p.esperienze_esterne || []).length ? `<h3>Esperienze</h3><ul class="lista-semplice">${p.esperienze_esterne.map((x) => `<li>${esc(x.ruolo)}${x.dove ? ` · ${esc(x.dove)}` : ''} <small>(autodichiarata)</small></li>`).join('')}</ul>` : ''}
     ${(p.formazione || []).length + (p.certificazioni || []).length ? `<h3>Formazione</h3><ul class="lista-semplice">${[...(p.formazione || []), ...(p.certificazioni || [])].map((x) => `<li>${esc(x.titolo)}${x.ente ? ` · ${esc(x.ente)}` : ''}</li>`).join('')}</ul>` : ''}
@@ -476,6 +479,7 @@ export async function apriProfiloPubblico(id) {
     const p = await rpc('profilo_pubblico', { p_user: id })
     if (!p) return s.apri('<h2>Profilo non disponibile</h2><p>Questo profilo non è visibile in questo momento.</p>')
     if (p.foto_path) p._fotoUrl = await linkFirmato('foto-profilo', p.foto_path, 300).catch(() => null)
+    p._rep = await leggiReputazione(id)
     s.apri(schedaPubblica(p))
   } catch { s.apri('<h2>Non riesco a collegarmi</h2><p>Riprova tra poco.</p>') }
 }
@@ -719,7 +723,7 @@ export function gestisciTrust(e) {
   const bl = t.closest('[data-trust-blocca]')
   if (bl) {
     if (bl.dataset.conferma !== 'si') { bl.dataset.conferma = 'si'; bl.textContent = 'Tocca di nuovo per bloccare'; return true }
-    rpc('blocca_utente', { p_utente: bl.dataset.trustBlocca }).then(() => s.apri('<h2>Utente bloccato</h2><p>Non potrà candidarsi ai tuoi annunci né scriverti. Puoi sbloccarlo dall’assistenza.</p>'))
+    rpc('blocca_utente', { p_utente: bl.dataset.trustBlocca }).then(() => s.apri('<h2>Utente bloccato</h2><p>Non potrà candidarsi ai tuoi annunci né scriverti. Puoi sbloccarlo dal Centro sicurezza, in Profilo › Sicurezza e identità.</p>'))
       .catch(() => s.apri('<h2>Non riesco a collegarmi</h2><p>Riprova tra poco.</p>'))
     return true
   }
@@ -729,18 +733,17 @@ export function gestisciTrust(e) {
 function chiediSegnalazione(id) {
   s.apri(`<h2>Segnala questo profilo</h2>
     <form class="conto-form" data-trust-segnala-form novalidate>
-      <div class="campo"><label for="sg-tipo">Motivo</label><select id="sg-tipo" name="tipo">
-        <option value="foto">La foto non è adatta o non sembra la persona</option><option value="profilo_falso">Profilo falso</option>
-        <option value="comportamento">Comportamento scorretto</option><option value="sicurezza">Problema di sicurezza</option><option value="altro">Altro</option></select></div>
+      <div class="campo"><label for="sg-tipo">Motivo</label><select id="sg-tipo" name="tipo">${TIPI_SEGNALAZIONE.map(([v, n]) => `<option value="${v}">${n}</option>`).join('')}</select></div>
       <div class="campo"><label for="sg-motivo">Racconta cosa è successo</label><textarea id="sg-motivo" name="motivo" rows="3" maxlength="1000" required></textarea></div>
-      <p class="finestra__nota">La segnalazione è riservata: l’altra persona non sa chi l’ha fatta. Se c’è un pericolo immediato chiama il 112.</p>
+      <label class="spunta"><input type="checkbox" name="pericolo" /> Mi sono sentita/o in pericolo</label>
+      <p class="finestra__nota">La segnalazione è riservata: l’altra persona non sa chi l’ha fatta. Se c’è un pericolo immediato chiama il <a href="tel:112">112</a>.</p>
       <div class="finestra__azioni"><button class="tasto" type="submit">Invia la segnalazione</button></div></form>`)
   document.querySelector('[data-trust-segnala-form]').onsubmit = (e) => {
     e.preventDefault()
     const f = e.target
     if (f.elements.motivo.value.trim().length < 5) return f.elements.motivo.focus()
-    rpc('segnala_utente', { p_segnalato: id, p_annuncio: null, p_tipo: f.elements.tipo.value, p_motivo: f.elements.motivo.value.trim() })
-      .then(() => s.apri('<h2>Segnalazione inviata</h2><p>Grazie. Il team JobExpress la esaminerà.</p>'))
+    rpc('segnala', { p: { segnalato_id: id, tipo: f.elements.tipo.value, motivo: f.elements.motivo.value.trim(), pericolo_immediato: f.elements.pericolo.checked } })
+      .then(() => s.apri('<h2>Segnalazione inviata</h2><p>Grazie. Il team JobExpress la esaminerà. Trovi lo stato nel Centro sicurezza.</p>'))
       .catch((err) => s.apri(`<h2>Non è stato possibile</h2><p>${codiciTrust(err)?.includes('troppe_richieste') ? 'Hai inviato molte segnalazioni oggi: riprova domani.' : 'Riprova tra poco.'}</p>`))
   }
 }

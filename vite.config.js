@@ -14,6 +14,7 @@ export default defineConfig({
         sicurezza: 'sicurezza.html',
         'chi-siamo': 'chi-siamo.html',
         cv: 'cv.html',
+        'incarico-condiviso': 'incarico-condiviso.html',
       },
     },
   },
