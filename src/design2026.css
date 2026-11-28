@@ -1374,3 +1374,11 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .live-attiva p{margin:0}
 .live-programma{align-self:flex-start;border:0;background:none;padding:.3rem 0;font:inherit;font-weight:700;color:#2c6a50;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px}
 @media (prefers-reduced-motion:reduce){.riquadro--live-on .live-punto{animation:none}}
+
+/* Caselle da compilare: sempre bianche con testo nero, anche con il telefono in modalità scura */
+:root{color-scheme:only light}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=submit]):not([type=button]),
+select,textarea{background-color:#fff;color:#111;-webkit-text-fill-color:#111;caret-color:#111;color-scheme:only light}
+input::placeholder,textarea::placeholder{color:#7a8580;-webkit-text-fill-color:#7a8580;opacity:1}
+select option{background:#fff;color:#111}
+input:-webkit-autofill,input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #fff inset;-webkit-text-fill-color:#111}
