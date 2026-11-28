@@ -1201,3 +1201,37 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .posti-stato__riservati{background:#fff6e0!important}.posti-stato__scoperti{background:#fdeaea!important;color:#8a2f2f!important}
 .storico-versioni{display:grid;gap:.7rem;padding-left:1.2rem}
 .storico-versioni li p{margin:.15rem 0}
+
+/* ================= Fase 2: Live e Rescue ================= */
+.riquadro--live{border:1px solid #d6e6dc}
+.riquadro--live-on{background:linear-gradient(160deg,#eef7f1,#fff 60%);border-color:#9fcdb3}
+.live-switch{display:inline-flex;padding:.25rem;border-radius:999px;background:#eef1ec;gap:.2rem;margin:.4rem 0 .6rem}
+.live-switch button{border:0;background:transparent;padding:.55rem 1.1rem;border-radius:999px;font:inherit;font-weight:700;color:#4a5a53;cursor:pointer;min-height:44px}
+.live-switch button[aria-pressed="true"]{background:#1d4b3c;color:#fff}
+.live-switch button[data-live="on"][aria-pressed="true"]{background:#2c7a5f}
+.live-lista{list-style:none;margin:.3rem 0;padding:0;display:grid;gap:.3rem}
+.live-lista li{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.92rem}
+.live-durate{display:flex;flex-wrap:wrap;gap:.4rem}
+.live-filtri{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.4rem;align-items:center;margin:.4rem 0 .8rem}
+.live-filtri input:not([type=checkbox]){font:inherit;font-size:16px;border:1px solid var(--linea);border-radius:12px;padding:.55rem .7rem;min-height:44px}
+.live-persone{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.live-persona{display:grid;grid-template-columns:auto 1fr;gap:.4rem .8rem;align-items:start;padding:.8rem;border:1px solid #e3e8df;border-radius:1rem;background:#fff}
+.live-persona > button{grid-column:2;justify-self:start}
+.live-persona p{margin:.15rem 0}
+.offerta--rescue{border-color:#f0c879!important;background:#fffaf0!important}
+.etichetta-urgente{background:#b4471f!important;color:#fff!important}
+.offerta-dati{margin:.5rem 0}
+.rescue-stato{margin:.6rem 0;padding:.8rem 1rem;border-radius:.9rem;background:#fff7e6;border:1px solid #f0d9a8}
+.rescue-stato__titolo{font-weight:800;color:#7a4a0c;margin:0 0 .4rem}
+.rescue-gruppi{margin:.3rem 0 .5rem;padding-left:1.3rem;display:grid;gap:.2rem;font-size:.92rem;color:#6b7771}
+.rescue-gruppi li.fatto{color:#1d2e27}
+.rescue-gruppi--spiega{color:#1d2e27}
+.rescue-invito{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem;margin:.6rem 0;padding:.6rem .8rem;border-radius:.8rem;background:#f1f4ef}
+.rescue-invito p{margin:0}
+.rescue-invito--urgente{background:#fff1e6;border:1px solid #f3c9a6}
+.rescue-conto{padding:.6rem .8rem;border-radius:.7rem;background:#f5faf7}
+.proposte-dirette{list-style:none;margin:.4rem 0;padding:0;display:grid;gap:.3rem;font-size:.9rem}
+.proposte-dirette li{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:space-between}
+.offerta-dati{display:grid;grid-template-columns:minmax(6.5rem,auto) 1fr;gap:.25rem .8rem;font-size:.92rem}
+.offerta-dati dt{color:#6b7771;font-weight:600}
+.offerta-dati dd{margin:0}

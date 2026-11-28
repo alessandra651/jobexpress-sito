@@ -10,6 +10,7 @@ import { NOME_CAT, aggiornaBacheca, registraFonte } from './incarichi.js'
 import { adesso, restante } from './regole.js'
 import { importaNotifiche } from './notifiche.js'
 import { pulsantiMappe } from './mappe.js'
+import { bloccoProposteDirette, bloccoRescue, impostaAnnunciCommittente } from './live.js'
 import { apriCVCandidato, apriProfiloPubblico, codiciTrust, condividiCV, finestraTrust, haCV } from './trust.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -260,6 +261,7 @@ export function pannelloCommittenteReale() {
       <div><strong>${esc(a.titolo)}</strong> <span class="etichetta-esempio etichetta-vero">annuncio vero</span><p>${esc(NOME_CAT[a.categoria] || a.categoria)} · ${esc(a.citta)} · ${euro.format(a.compenso_ora)}/ora</p>
         <p>${esc(turniTesto(a.turni))} · posti ${a.posti} (liberi ${Math.max(0, a.posti_liberi)})</p>
         ${postiHtml(a.posti_stato)}
+        ${bloccoRescue(a)}${bloccoProposteDirette(a)}
         ${a.modifica_in_attesa ? '<p class="avviso-spostamenti">Nuovi orari in attesa della risposta delle persone assegnate.</p>' : ''}</div>
       <div class="candidatura__lato"><span class="stato">${esc({ pubblicato: 'Pubblicato', completo: 'Posti completi', chiuso: 'Chiuso', annullato: 'Annullato' }[a.stato])}</span></div>
       ${a.candidati.length ? `<ul class="re-candidati">${a.candidati.map((c) => `<li><div><strong>${esc(c.nome)}</strong><span>${esc(c.citta || '')}${c.automunito ? ' · automunito' : ''}</span>
@@ -464,6 +466,7 @@ export function gestisciReale(e) {
 export function avviaReale(strumenti) {
   s = { ...s, ...strumenti }
   registraFonte(() => bacheca)
+  impostaAnnunciCommittente(() => miei)
   caricaBacheca()
   aggiorna()
   setInterval(() => { aggiorna() }, 30000)

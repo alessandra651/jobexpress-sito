@@ -14,6 +14,7 @@ import { avviaSmartCal } from './smartcal.js'
 import { avviaAI } from './ai.js'
 import { aggiorna as aggiornaReale, avviaReale, candidaReale, gestisciReale, segnaLetteServer } from './reale.js'
 import { FUNZIONI } from './config.js'
+import { aggiornaLive, avviaLive, gestisciLive, riquadroLive } from './live.js'
 import { avatarUtente, avviaTrust, caricaTrust, finestraTrust, gestisciTrust, impostaSottoProfilo, pannelloTrust, requisitiMancanti } from './trust.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
@@ -238,12 +239,7 @@ function pannelloHome(u) {
   const d = leggiDisponibile()
   return `
     <div class="area__griglia">
-      <article class="riquadro riquadro--dispo">
-        <h3>Disponibilità</h3>
-        ${d ? `<p class="grande">Disponibile ora</p><p>Fino alle ${new Date(d.fino).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}, entro ${d.km} km.</p>`
-            : '<p class="grande">Non visibile</p><p>Attiva «Disponibile ora» quando hai qualche ora libera.</p>'}
-        <button type="button" class="tasto tasto--chiaro" data-area-vai="dispo">${d ? 'Modifica' : 'Attiva'}</button>
-      </article>
+      ${riquadroLive()}
       <article class="riquadro">
         <h3>Prossimo incarico</h3>
         ${prossimo ? `<p class="grande">${esc(prossimo.titolo)}</p><p>${esc(prossimo.quando)} · ${esc(prossimo.luogo)}</p><p><span class="stato stato--${prossimo.stato}">${STATI[prossimo.stato]}</span> · ${euro.format(prossimo.euroOra)}/ora</p>
@@ -405,6 +401,7 @@ function collegaArea() {
   area.addEventListener('click', async (e) => {
     const t = e.target
     if (gestisciTrust(e)) return
+    if (gestisciLive(e)) return
     if (gestisciReale(e)) return
     if (gestisciPercorso(e) || gestisciCalendario(e) || gestisciPubblicatore(e) || gestisciAbbonamento(e)) return disegnaArea()
     const lv = gestisciLavori(e)
@@ -621,6 +618,8 @@ export async function avviaConto(strumenti) {
   avviaAdmin({ utente, token: tokenValido })
   avviaTrust({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() }, vaiSicurezza: () => { impostaSottoProfilo('sicurezza'); apriArea('profilo') } })
   quandoCambiaUtente(() => caricaTrust(true))
+  avviaLive({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() }, dopo: () => aggiornaReale() })
+  quandoCambiaUtente(() => aggiornaLive())
   impostaSalvaRicerca(() => {
     if (!utente()) { apriAccesso('Per salvare le ricerche, registrati o accedi'); return '' }
     const m = salvaRicercaCorrente()

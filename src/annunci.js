@@ -7,6 +7,7 @@ import { CATEGORIE, NOME_CAT, aggiornaBacheca, registraFonte, scheda } from './i
 import { avviaConversazione } from './chat.js'
 import { notifica } from './notifiche.js'
 import { apriRecensione, controllaRicerche } from './lavori.js'
+import { riquadroDisponibili } from './live.js'
 import { codiciTrust, finestraTrust, requisitiMancanti } from './trust.js'
 import { aggiorna as aggiornaReale, caricaBacheca, pannelloCommittenteReale, pubblicaReale } from './reale.js'
 
@@ -370,6 +371,7 @@ export function pannelloPubblicatoreHome() {
         <p>In pochi passaggi, gratis. Le candidature arrivano qui.</p>
         <button type="button" class="tasto tasto--lime" data-pubblica>+ Pubblica un incarico</button>
       </article>
+      ${riquadroDisponibili()}
       <article class="riquadro riquadro--largo">
         <h3>I tuoi incarichi</h3>
         <ul class="stat stat--sei">

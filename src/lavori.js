@@ -14,6 +14,7 @@ import { haPlus, pianoAttivo } from './abbonamenti.js'
 import { segnala } from './segnalazioni.js'
 import { festaSeServe } from './percorso.js'
 import { pannelloLavoratoreReale } from './reale.js'
+import { pannelloOfferte } from './live.js'
 import { pulsantiMappe } from './mappe.js'
 import { adesso, avvisiSpostamenti, impostazioni, limiteFreeAttivo, meseDi, puoCandidarsi, restante, scadenzaProposta, sovrappone } from './regole.js'
 
@@ -227,7 +228,7 @@ function rigaCandidatura(c, i) {
 
 export function pannelloCandidature() {
   const l = leggiCand()
-  const veri = pannelloLavoratoreReale()
+  const veri = pannelloOfferte() + pannelloLavoratoreReale()
   if (!l.length) {
     if (veri.includes('<ul')) return veri
     return `${veri}<div class="vuoto"><strong>Nessuna candidatura.</strong><p>Quando ti candidi a un incarico, qui segui lo stato passo per passo.</p>
