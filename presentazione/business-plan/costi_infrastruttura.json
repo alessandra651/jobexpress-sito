@@ -1,0 +1,82 @@
+{
+ "data_listini": "2026-11-28",
+ "cambio": "1 € = 1.1734 $ (BCE 3/10/2025, da aggiornare)",
+ "scenari": [
+  {
+   "utenti": 300,
+   "attivi_mese": 180,
+   "email_mese": 114,
+   "storage_gb": 0.2,
+   "database_gb": 0.32,
+   "traffico_gb": 7.0,
+   "paganti": 11,
+   "costi_usd": {
+    "supabase": 25.0,
+    "email_resend": 0.0,
+    "hosting": 0.0,
+    "ai_haiku": 0.04
+   },
+   "totale_usd_mese": 25.04,
+   "totale_eur_mese": 31.34,
+   "eur_per_utente_mese": 0.1045,
+   "note": "Supabase Pro con istanza Micro (coperta dai crediti)"
+  },
+  {
+   "utenti": 1000,
+   "attivi_mese": 600,
+   "email_mese": 380,
+   "storage_gb": 0.6,
+   "database_gb": 0.36,
+   "traffico_gb": 23.4,
+   "paganti": 35,
+   "costi_usd": {
+    "supabase": 25.0,
+    "email_resend": 0.0,
+    "hosting": 0.0,
+    "ai_haiku": 0.14
+   },
+   "totale_usd_mese": 25.14,
+   "totale_eur_mese": 31.42,
+   "eur_per_utente_mese": 0.0314,
+   "note": "Supabase Pro con istanza Micro (coperta dai crediti)"
+  },
+  {
+   "utenti": 5000,
+   "attivi_mese": 3000,
+   "email_mese": 1900,
+   "storage_gb": 2.9,
+   "database_gb": 0.59,
+   "traffico_gb": 117.2,
+   "paganti": 175,
+   "costi_usd": {
+    "supabase": 30.0,
+    "email_resend": 20.0,
+    "hosting": 0.0,
+    "ai_haiku": 0.7
+   },
+   "totale_usd_mese": 50.7,
+   "totale_eur_mese": 53.21,
+   "eur_per_utente_mese": 0.0106,
+   "note": "Supabase Pro + istanza Small"
+  },
+  {
+   "utenti": 10000,
+   "attivi_mese": 6000,
+   "email_mese": 3800,
+   "storage_gb": 5.9,
+   "database_gb": 0.87,
+   "traffico_gb": 234.4,
+   "paganti": 350,
+   "costi_usd": {
+    "supabase": 30.0,
+    "email_resend": 20.0,
+    "hosting": 0.0,
+    "ai_haiku": 1.4
+   },
+   "totale_usd_mese": 51.4,
+   "totale_eur_mese": 53.8,
+   "eur_per_utente_mese": 0.0054,
+   "note": "Supabase Pro + istanza Small"
+  }
+ ]
+}
