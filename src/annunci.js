@@ -387,8 +387,8 @@ export function pannelloPubblicatoreHome() {
   return `
     <div class="area__griglia">
       <article class="riquadro riquadro--dispo riquadro--largo">
-        <h3>Hai bisogno di una mano?</h3>
-        <p class="grande">Pubblica un incarico</p>
+        <h3>SOS turno vuoto?</h3>
+        <p class="grande">Trova personale subito</p>
         <p>In pochi passaggi, gratis. Le candidature arrivano qui.</p>
         <button type="button" class="tasto tasto--lime" data-pubblica>+ Pubblica un incarico</button>
       </article>
