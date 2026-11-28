@@ -10,6 +10,7 @@ import { aggiornaSegnalazione, segnalazioni } from './segnalazioni.js'
 import { leggiCand } from './lavori.js'
 import { pianoAttivo } from './abbonamenti.js'
 import { caricaImpostazioni, impostazioni, impostazioniDalServer } from './regole.js'
+import { bloccoOperativo, caricaOperativo, gestisciOperativo } from './admin-operativo.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const CHIAVE_LOG = 'jobexpress-registro-admin'
@@ -289,6 +290,7 @@ function disegna() {
 
       ${bloccoIncarichi()}
       ${bloccoTrust()}
+      ${bloccoOperativo(stato, impostazioni())}
       ${bloccoRegole()}
 
       <section class="admin__blocco">
@@ -349,6 +351,7 @@ export async function apriAdmin() {
       stato.incarichi = await rpc('admin_statistiche_incarichi').catch(() => null)
       stato.ai = await rpc('admin_statistiche_ai').catch(() => null)
       stato.trust = await rpc('admin_trust').catch(() => null)
+      stato.operativo = await caricaOperativo(rpc)
     } catch {
       stato.errore = 'Non riesco a collegarmi a Supabase per i numeri reali.'
     }
@@ -395,6 +398,17 @@ export function avviaAdmin(strumenti) {
     if (t.closest('[data-admin-chiudi]')) return chiudi()
     const tr = t.closest('[data-adm-t]')
     if (tr) return azioneTrust(tr)
+    const op = t.closest('[data-adm-o]')
+    if (op) {
+      return gestisciOperativo(op, {
+        rpc,
+        ricarica: async () => { stato.operativo = await caricaOperativo(rpc); await caricaImpostazioni(); registra(`Operativo: ${op.dataset.admO}`, { id: op.dataset.id || op.dataset.k || null }); disegna() },
+        apriFirmato: async (bucket, percorso) => {
+          const r = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/${bucket}/${percorso}`, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${await s.token()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ expiresIn: 120 }) })
+          const j = await r.json(); if (j.signedURL) window.open(`${SUPABASE_URL}/storage/v1${j.signedURL}`, '_blank', 'noopener')
+        },
+      })
+    }
     const an = t.closest('[data-admin-annuncio]')
     if (an) {
       const a = moderaAnnuncio(an.dataset.adminAnnuncio, an.dataset.ok === '1')

@@ -1331,3 +1331,14 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .biz-conferma{border:1px solid #f0d9a8;background:#fffaf0}
 .biz-giorni{display:flex;flex-wrap:wrap;gap:.35rem}
 .biz-azioni-annuncio{margin:.4rem 0}
+
+/* ---------- Fase 5 · Admin operativo ---------- */
+.adm-indice{display:flex;flex-wrap:wrap;gap:.35rem;margin:1rem 0 .4rem}
+.adm-indice a{border:1px solid var(--linea);border-radius:999px;padding:.35rem .8rem;font-size:.85rem;font-weight:700;color:#1d4b3c;text-decoration:none;background:#fff}
+.adm-pill{display:inline-block;background:#f0f3ef;border-radius:999px;padding:.2rem .7rem;font-size:.85rem;margin:.15rem .15rem .15rem 0}
+.adm-seg--urgente{border-left:4px solid #b23b2a}
+.adm-seg--alta{border-left:4px solid #d08a1e}
+.stato--pericolo{background:#fbe3de;color:#8a2a1b}
+.interruttore-btn{border:1px solid var(--linea);background:#f0f1ee;border-radius:999px;padding:.35rem .9rem;font:inherit;font-weight:700;cursor:pointer;min-height:40px;color:#5b6a63}
+.interruttore-btn.acceso{background:#2c7a5f;border-color:#2c7a5f;color:#fff}
+.stato--alta{background:#fbecd2;color:#7a4a05}
