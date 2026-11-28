@@ -11,3 +11,6 @@ Cartella separata dal sito: non viene usata dal sito e non lo modifica.
 - `screenshot/` — schermate reali del prototipo, fatte con account e dati dimostrativi (26 novembre 2026). I file `c-*` sono concept del sistema reputazionale, che nel sito è spento.
 - `AGGIORNAMENTO-2026-11-27.md` — nuovo modello: abbonamenti, conferma reciproca, 3 candidature per fascia, limite sperimentale, criticità legali, costi AI, evoluzione.
 - `screenshot/2026-11-27/` — 14 schermate JPEG ad alta risoluzione delle nuove funzioni (schermate vere del sito, con account di prova e dati di esempio; nessun mockup).
+- `AGGIORNAMENTO-2026-11-28.md` — operatività (Live, Rescue, Business), Safe, recensioni a doppio cieco, costi reali per 300/1.000/5.000/10.000 utenti, aspetti legali aggiornati (D.Lgs. 208/2026). Slide nuove `operativo` e `costi`, aggiornate `fiducia`, `legale`, `app-stato`, `roadmap`.
+- `business-plan/costi_infrastruttura.py` — costi tecnici con i listini ufficiali del 28/11/2026.
+- `screenshot/2026-11-28/` — schermate JPEG delle nuove funzioni, per funzione, telefono e computer (dati di esempio).
