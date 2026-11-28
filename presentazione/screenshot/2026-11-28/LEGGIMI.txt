@@ -1,0 +1,5 @@
+JobExpress · schermate del 28 novembre 2026
+Schermate vere del sito (non mockup), fatte con account e dati di esempio: nessuna persona reale.
+Ogni cartella è una funzione; i file «telefono-…» sono a 430 px, «computer-…» a 1366 px, tutti a doppia risoluzione.
+00-riepilogo-*.jpg = immagini riassuntive di ogni funzione.
+01 Assegnazioni, condizioni e annullamenti · 02 Live e Rescue · 03 Safe e recensioni · 04 Business · 05 Admin
