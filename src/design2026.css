@@ -1360,3 +1360,17 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .interruttore-btn{border:1px solid var(--linea);background:#f0f1ee;border-radius:999px;padding:.35rem .9rem;font:inherit;font-weight:700;cursor:pointer;min-height:40px;color:#5b6a63}
 .interruttore-btn.acceso{background:#2c7a5f;border-color:#2c7a5f;color:#fff}
 .stato--alta{background:#fbecd2;color:#7a4a05}
+
+/* JobExpress Live: casella con la domanda «Sei libero/a adesso?» */
+.riquadro--live{display:flex;flex-direction:column;gap:.55rem}
+.live-etichetta{display:flex;align-items:center;gap:.45rem;margin:0;font-size:.85rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#47835b}
+.live-punto{width:.55rem;height:.55rem;border-radius:50%;background:#b9c7bf}
+.riquadro--live-on .live-punto{background:#2c7a5f;box-shadow:0 0 0 0 rgba(44,122,95,.5);animation:live-pulsa 1.8s ease-out infinite}
+@keyframes live-pulsa{to{box-shadow:0 0 0 .55rem rgba(44,122,95,0)}}
+.riquadro .live-domanda,.riquadro--live h3.live-domanda{margin:0;font-weight:800;letter-spacing:-.01em;font-family:Manrope,system-ui,sans-serif;font-size:clamp(1.6rem,6vw,2rem)!important;line-height:1.12;color:#1d3a2f}
+.live-sotto{margin:0;color:#4a5b53}
+.riquadro--live .live-switch{margin:.35rem 0 .2rem;align-self:flex-start}
+.live-attiva{background:#fff;border:1px solid #cfe2c3;border-radius:14px;padding:.6rem .8rem}
+.live-attiva p{margin:0}
+.live-programma{align-self:flex-start;border:0;background:none;padding:.3rem 0;font:inherit;font-weight:700;color:#2c6a50;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px}
+@media (prefers-reduced-motion:reduce){.riquadro--live-on .live-punto{animation:none}}

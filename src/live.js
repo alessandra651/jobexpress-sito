@@ -75,17 +75,19 @@ export function riquadroLive() {
   const ora2 = Date.now()
   const inCorso = mie.find((d) => new Date(d.inizio) <= ora2 && new Date(d.fine) > ora2)
   const future = mie.filter((d) => new Date(d.inizio) > ora2)
+  const prova = s.utente()?.prova
   return `<article class="riquadro riquadro--live ${inCorso ? 'riquadro--live-on' : ''}">
-    <div class="riquadro__testa"><h3>JobExpress Live</h3><span class="stato">${inCorso ? 'Disponibile' : 'Non disponibile'}</span></div>
+    <p class="live-etichetta"><span class="live-punto" aria-hidden="true"></span>JobExpress Live</p>
+    <h3 class="live-domanda">${inCorso ? 'Sei libero/a: ti stiamo facendo trovare!' : 'Sei libero/a adesso?'}</h3>
+    <p class="live-sotto">${inCorso ? 'Chi cerca personale vicino a te può proporti un lavoro.' : 'Faccelo sapere: chi cerca personale vicino a te potrà proporti un lavoro.'}</p>
     <div class="live-switch" role="group" aria-label="La tua disponibilità">
       <button type="button" data-live="on" aria-pressed="${!!inCorso}">Disponibile</button>
       <button type="button" data-live="off" aria-pressed="${!inCorso}">Non disponibile</button>
     </div>
-    ${inCorso ? `<p class="grande">Fino alle ${ora(inCorso.fine)}</p><p>${esc(inCorso.citta)}${inCorso.zona ? ` · ${esc(inCorso.zona)}` : ''} · entro ${inCorso.raggio_km} km${inCorso.mansioni?.length ? ` · ${esc(inCorso.mansioni.join(', '))}` : ''}</p>`
-      : '<p>Il tuo tempo libero, nuove opportunità. Dichiara quando sei libero/a: chi cerca personale può proporti un incarico.</p>'}
-    ${future.length ? `<p class="trust-etichetta">Programmate</p><ul class="live-lista">${future.map((d) => `<li><span>${esc(fascia(d.inizio, d.fine))} · ${esc(d.citta)}</span><button type="button" class="tasto tasto--chiaro tasto--piccolo" data-live-togli="${esc(d.id)}">Togli</button></li>`).join('')}</ul>` : ''}
-    <div class="pa-azioni-riga"><button type="button" class="tasto tasto--chiaro" data-live="programma">Programma una disponibilità</button></div>
-    <p class="finestra__nota">Non è un obbligo di reperibilità: puoi spegnere quando vuoi, rifiutare o non rispondere senza penalità. La posizione precisa non viene mai condivisa. ${s.utente()?.prova ? 'Con l’account di prova resta su questo dispositivo.' : ''}</p>
+    ${inCorso ? `<div class="live-attiva"><p class="grande">Fino alle ${ora(inCorso.fine)}</p><p>${esc(inCorso.citta)}${inCorso.zona ? ` · ${esc(inCorso.zona)}` : ''} · entro ${inCorso.raggio_km} km${inCorso.mansioni?.length ? ` · ${esc(inCorso.mansioni.join(', '))}` : ''}</p></div>` : ''}
+    ${future.length ? `<p class="trust-etichetta">Le prossime volte che sarai libero/a</p><ul class="live-lista">${future.map((d) => `<li><span>${esc(fascia(d.inizio, d.fine))} · ${esc(d.citta)}</span><button type="button" class="tasto tasto--chiaro tasto--piccolo" data-live-togli="${esc(d.id)}">Togli</button></li>`).join('')}</ul>` : ''}
+    <button type="button" class="live-programma" data-live="programma">Sarai libero/a più tardi? Fissalo adesso</button>
+    <p class="finestra__nota">Non sei obbligato/a a niente: puoi spegnere quando vuoi e rifiutare senza penalità. La tua posizione precisa non viene mai mostrata.${prova ? ' Con l’account di prova resta su questo dispositivo.' : ''}</p>
   </article>`
 }
 
