@@ -15,7 +15,8 @@ function testi(periodo) {
       plusNota: 'Si rinnova ogni mese, disdici quando vuoi',
       friends: [eur(friends.mese), '/mese in tre'],
       friendsNota: 'Un solo abbonamento, si rinnova ogni mese',
-      testa: [eur(friends.mese / 3), 'a testa al mese'],
+      testa: [eur(friends.mese / 3), '/mese a persona'],
+      friendsTot: `${eur(friends.mese)} al mese in tutto, per 3 persone`,
       conto: `Tre Plus costerebbero ${eur(tre)}. Con Friends risparmiate ${eur(tre - friends.mese)} al mese, circa il ${perc(tre - friends.mese, tre)}%.`,
     }
   }
@@ -25,7 +26,8 @@ function testi(periodo) {
     plusNota: `Circa ${eur(plus.anno / 12)} al mese. Risparmi ${eur(plus.mese * 12 - plus.anno)} rispetto al mensile (circa il ${perc(plus.mese * 12 - plus.anno, plus.mese * 12)}%)`,
     friends: [eur(friends.anno), '/anno in tre'],
     friendsNota: `Addebito unico di ${eur(friends.anno)} l’anno. Risparmiate ${eur(friends.mese * 12 - friends.anno)} rispetto al mensile`,
-    testa: [eur(friends.anno / 36), 'a testa al mese, con il piano annuale'],
+    testa: [eur(friends.anno / 36), '/mese a persona'],
+    friendsTot: `${eur(friends.anno)} l’anno in tutto, per 3 persone`,
     conto: `Tre Plus annuali costerebbero ${eur(tre)}. Con Friends annuale pagate ${eur(friends.anno)} in tutto: risparmiate ${eur(tre - friends.anno)}.`,
   }
 }
