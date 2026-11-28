@@ -228,6 +228,7 @@ export function candidati(a, quando) {
 // ================= LA MIA AREA =================
 let scheda = 'home'
 let modo = null // 'lavoro' oppure 'pubblico'
+let modoAnimaDa = null // modalità di prima, per far scivolare l'ellisse
 let sottoAttivita = 'calendario'
 let esempio = false
 let area = null
@@ -350,10 +351,12 @@ function disegnaArea() {
     ? { home: pannelloPubblicatoreHome, attivita: () => pannelloBusiness(pannelloAnnunci), chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche }
     : { home: pannelloHome, attivita: attivitaLavoro, percorso: pannelloPercorso, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche })[scheda] || pannelloHome
   const scambio = lavora && pubblica ? `
-    <div class="scelta area__modo" role="group" aria-label="Modalità">
+    <div class="scelta area__modo area__modo--${modo}" role="group" aria-label="Modalità"${modoAnimaDa && modoAnimaDa !== modo ? ` data-da="${modoAnimaDa}"` : ''}>
+      <span class="area__modo-ellisse" aria-hidden="true"></span>
       <button type="button" data-modo-area="lavoro" aria-pressed="${modo === 'lavoro'}">Cerco lavoro</button>
       <button type="button" data-modo-area="pubblico" aria-pressed="${modo === 'pubblico'}">Cerco personale</button>
     </div>` : ''
+  modoAnimaDa = null // l'animazione parte solo subito dopo il cambio, non a ogni aggiornamento
   area.innerHTML = `
     <div class="area__interno">
       <header class="area__testa">
@@ -425,7 +428,7 @@ function collegaArea() {
     const c = gestisciChat(e)
     if (c) { disegnaArea(); return fineChat(c) }
     const m = t.closest('[data-modo-area]')
-    if (m) { modo = m.dataset.modoArea; scheda = 'home'; return disegnaArea() }
+    if (m) { if (m.dataset.modoArea === modo) return; modoAnimaDa = modo; modo = m.dataset.modoArea; scheda = 'home'; return disegnaArea() }
     const so = t.closest('[data-sotto]')
     if (so) { sottoAttivita = so.dataset.sotto; return disegnaArea() }
     const s = t.closest('[data-area-scheda]')

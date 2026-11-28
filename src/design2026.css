@@ -401,9 +401,26 @@ html.area-aperta .sito-nav{display:none}
 .area__data::first-letter{text-transform:uppercase}
 
 /* ===== Area di chi pubblica + procedura guidata ===== */
-.area__modo{margin-top:.8rem;background:#e8efd8}
-.area__modo button{border-radius:999px;font-weight:700}
-.area__modo button[aria-pressed=true]{background:#263d35;color:#c4db94}
+/* Selettore «Cerco lavoro / Cerco personale»: binario perlato e un'ellisse che scivola */
+.area__modo{margin-top:.8rem;position:relative;display:inline-grid;grid-template-columns:1fr 1fr;padding:5px;gap:0;isolation:isolate;
+  background:linear-gradient(135deg,#f6f8ef 0%,#e9f0dd 55%,#f1f4e8 100%);
+  border:1px solid rgba(160,176,128,.45);
+  box-shadow:inset 0 1px 2px rgba(38,61,53,.08),0 1px 0 rgba(255,255,255,.9),0 10px 28px -18px rgba(38,61,53,.35)}
+.area__modo button{position:relative;z-index:1;border-radius:999px;font-weight:700;background:transparent!important;color:#5f7268;
+  letter-spacing:.01em;transition:color .35s ease;min-width:9.5rem}
+.area__modo button:hover{color:#263d35}
+.area__modo button[aria-pressed=true]{color:#1d3a2f;background:transparent}
+.area__modo-ellisse{position:absolute;z-index:0;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:999px;pointer-events:none;
+  background:radial-gradient(120% 140% at 30% 15%,#ffffff 0%,rgba(255,255,255,0) 45%),linear-gradient(160deg,#e4efcf 0%,#cfe2ad 55%,#bdd598 100%);
+  border:1px solid rgba(124,152,92,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -2px 6px rgba(71,131,91,.12),0 6px 16px -8px rgba(47,90,62,.45),0 1px 2px rgba(38,61,53,.12);
+  transform:translateX(0);transition:transform .5s cubic-bezier(.65,0,.25,1)}
+.area__modo--pubblico .area__modo-ellisse{transform:translateX(100%)}
+.area__modo[data-da="lavoro"] .area__modo-ellisse{animation:ellisse-a-destra .55s cubic-bezier(.65,0,.25,1)}
+.area__modo[data-da="pubblico"] .area__modo-ellisse{animation:ellisse-a-sinistra .55s cubic-bezier(.65,0,.25,1)}
+@keyframes ellisse-a-destra{from{transform:translateX(0)}55%{transform:translateX(62%) scaleX(1.12)}to{transform:translateX(100%)}}
+@keyframes ellisse-a-sinistra{from{transform:translateX(100%)}55%{transform:translateX(38%) scaleX(1.12)}to{transform:translateX(0)}}
+@media (prefers-reduced-motion:reduce){.area__modo-ellisse{animation:none!important;transition:none}}
 .area__sotto{margin-bottom:1rem}
 .riquadro--largo{grid-column:1/-1}
 .tasto--lime{background:#c4db94;color:#263d35;border:0}
