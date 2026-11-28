@@ -71,6 +71,7 @@ function comeIncarico(a) {
     esperienza: a.esperienza, requisiti: a.requisiti.length ? a.requisiti : ['Nessun requisito particolare'], descrizione: a.descrizione,
     ore, totale: Math.round(a.euroOra * ore * 100) / 100, mio: true, forma: a.forma,
     pagamento: `${a.pagamento} · compenso ${a.natura.toLowerCase()}`, mansioni: a.mansioni, rimborsi: a.rimborsi,
+    sicurezza: a.sicurezza || '', posti: a.posti || 1,
   }
 }
 export function annunciInBacheca() {
@@ -91,7 +92,7 @@ function nuovaBozza() {
     data: oggiIso(), inizio: 18, fine: 22, ricorrenza: 'nessuna', urgente: false,
     citta: u.citta || 'Forlì', zona: '', luogo: privato ? 'A casa mia' : 'Nella mia attività', indirizzo: '',
     euroOra: 11, natura: 'Lordo', pagamento: privato ? 'Libretto Famiglia (INPS)' : 'In busta paga', rimborsi: '',
-    forma: privato ? FORME[4] : FORME[0],
+    forma: privato ? FORME[4] : FORME[0], posti: 1, qualifiche: '', sicurezza: '',
     tipo: privato ? 'privato' : 'azienda', chi: privato ? 'Privato' : (u.nome || 'La mia attività'), candidati: [], creato: Date.now(),
   }
 }
@@ -112,6 +113,8 @@ function corpoPasso() {
       ${campo('pa-desc', 'Descrizione', `<textarea id="pa-desc" name="descrizione" required minlength="20" maxlength="1000" rows="3" placeholder="Cosa c’è da fare, in poche righe">${esc(b.descrizione)}</textarea>`)}
       ${campo('pa-mans', 'Mansioni', `<input id="pa-mans" name="mansioni" maxlength="200" value="${esc(b.mansioni)}" placeholder="Servizio ai tavoli, sparecchiare" />`, ' <span class="facoltativo">facoltativo</span>')}
       ${campo('pa-req', 'Requisiti', `<input id="pa-req" name="requisiti" maxlength="200" value="${esc(b.requisiti.join(', '))}" placeholder="Divisa fornita, automunito/a" />`, ' <span class="facoltativo">separati da virgola</span>')}
+      ${campo('pa-posti', 'Quante persone ti servono', `<input id="pa-posti" name="posti" type="number" inputmode="numeric" min="1" max="50" value="${b.posti || 1}" />`, ' <span class="facoltativo">ognuna avrà la sua conferma</span>')}
+      ${campo('pa-qual', 'Qualifiche obbligatorie', `<input id="pa-qual" name="qualifiche" maxlength="200" value="${esc(b.qualifiche || '')}" placeholder="HACCP, patentino muletto" />`, ' <span class="facoltativo">solo se servono davvero</span>')}
       ${campo('pa-esp', 'Esperienza necessaria', `<select id="pa-esp" name="esperienza">${[['nessuna', 'Nessuna'], ['minima', 'Un po’'], ['richiesta', 'Richiesta']].map(([v, t]) => `<option value="${v}" ${b.esperienza === v ? 'selected' : ''}>${t}</option>`).join('')}</select>`)}`
     case 2: return `
       ${campo('pa-data', 'Giorno', `<input id="pa-data" name="data" type="date" required min="${oggiIso()}" value="${b.data}" />`)}
@@ -139,7 +142,8 @@ function corpoPasso() {
       <p class="finestra__nota">Il compenso lo paghi tu direttamente alla persona. JobExpress non trattiene niente e la pubblicazione è gratuita.</p>`
     case 5: return `
       ${campo('pa-forma', 'Come pensi di formalizzare l’incarico?', `<select id="pa-forma" name="forma">${opz(FORME, b.forma)}</select>`)}
-      <p class="finestra__nota">Un incarico breve non è per forza una prestazione occasionale: la forma giusta dipende da come si svolge il lavoro. Nel dubbio, chiedi a un consulente del lavoro.</p>`
+      <p class="finestra__nota">Un incarico breve non è per forza una prestazione occasionale: la forma giusta dipende da come si svolge il lavoro. Nel dubbio, chiedi a un consulente del lavoro.</p>
+      ${campo('pa-sic', 'Informazioni sulla sicurezza', `<textarea id="pa-sic" name="sicurezza" rows="2" maxlength="600" placeholder="Scarpe antinfortunistiche, lavoro in altezza, carichi pesanti…">${esc(b.sicurezza || '')}</textarea>`, ' <span class="facoltativo">rischi e dispositivi necessari</span>')}`
     case 6: return `
       <p>Così lo vedrà chi cerca lavoro:</p>
       <div class="pa-anteprima">${scheda(comeIncarico(bozza), false)}</div>
@@ -229,6 +233,8 @@ function leggiCampi(f) {
     case 1:
       b.titolo = v('titolo'); b.descrizione = v('descrizione'); b.mansioni = v('mansioni'); b.esperienza = v('esperienza')
       b.requisiti = v('requisiti').split(',').map((x) => x.trim()).filter(Boolean).slice(0, 5)
+      b.posti = Math.max(1, Math.min(50, Math.round(Number(v('posti')) || 1)))
+      b.qualifiche = v('qualifiche')
       if (b.titolo.length < 4) return 'Scrivi un titolo di almeno 4 lettere.'
       if (b.descrizione.length < 20) return 'Scrivi una descrizione di almeno 20 caratteri: aiuta a ricevere candidature giuste.'
       break
@@ -255,6 +261,7 @@ function leggiCampi(f) {
     }
     case 5:
       b.forma = v('forma')
+      b.sicurezza = v('sicurezza')
       break
     case 7: {
       const come = f.querySelector('[name=come]:checked')?.value

@@ -259,6 +259,8 @@ function dettaglio(a, strumenti, salvati, ridisegna) {
       <dt>Dove</dt><dd>${esc(luogo(a))}, a circa ${String(a.km).replace('.', ',')} km${privato ? '. Zona indicativa: l’indirizzo preciso arriva solo dopo la conferma.' : ''}
         ${pulsantiMappe(`${a.zona && a.zona !== 'zona indicativa' ? `${a.zona}, ` : ''}${a.citta}`, { etichetta: 'Vedi la zona su' })}</dd>
       <dt>Requisiti</dt><dd>${a.requisiti.map(esc).join(' · ')}</dd>
+      ${a.sicurezza ? `<dt>Sicurezza</dt><dd>${esc(a.sicurezza)}</dd>` : ''}
+      ${a.posti > 1 ? `<dt>Persone cercate</dt><dd>${a.posti} (ognuna con la propria conferma)</dd>` : ''}
       <dt>Esperienza</dt><dd>${ESPERIENZA[a.esperienza]}</dd>
       <dt>Compenso</dt><dd>Importo lordo stimato (ore × compenso orario). Il netto dipende dalla forma del rapporto.</dd>
       <dt>Pagamento</dt><dd>${a.pagamento ? esc(a.pagamento) + '. ' : ''}Lo paga direttamente chi pubblica. JobExpress non trattiene nulla dal compenso.</dd>${a.mansioni ? `<dt>Mansioni</dt><dd>${esc(a.mansioni)}</dd>` : ''}${a.rimborsi ? `<dt>Rimborsi</dt><dd>${esc(a.rimborsi)}</dd>` : ''}
