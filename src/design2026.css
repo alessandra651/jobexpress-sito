@@ -682,8 +682,9 @@ html.area-aperta .sito-nav{display:none}
 .voto__stelle input:focus-visible + label{outline:3px solid #47835b;outline-offset:2px;border-radius:6px}
 .voto__stelle label:active{transform:scale(.9)}
 .obiettivo-form{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;font-weight:700;font-size:1.05rem}
-.obiettivo-form input{width:6rem;font:inherit;font-size:1.1rem;padding:.35rem .6rem;border-radius:12px;border:1.5px solid #d5dfc4;min-height:2.75rem}
-.obiettivo-form select{font:inherit;padding:.35rem .6rem;border-radius:12px;border:1.5px solid #d5dfc4;min-height:2.75rem;background:#fff}
+.obiettivo-form input{width:6rem;font:inherit;font-size:1.1rem;padding:.35rem .6rem;border-radius:12px;border:1.5px solid #d5dfc4;min-height:2.75rem;background:#fff!important;color:#111!important;-webkit-text-fill-color:#111;color-scheme:light;caret-color:#111}
+.obiettivo-form input:focus{outline:2px solid #47835b;outline-offset:1px;border-color:#47835b}
+.obiettivo-form select{font:inherit;padding:.35rem .6rem;border-radius:12px;border:1.5px solid #d5dfc4;min-height:2.75rem;background:#fff!important;color:#111!important;color-scheme:light}
 .obiettivo__barra--doppia{display:flex;height:14px}
 .obiettivo__barra--doppia i{border-radius:999px 0 0 999px}
 .obiettivo__barra--doppia b{display:block;height:100%;background:repeating-linear-gradient(135deg,#c4db94 0 6px,#e8efd8 6px 12px)}
