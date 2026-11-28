@@ -1264,3 +1264,70 @@ html.con-barra .avviso-versione{bottom:calc(5.5rem + env(safe-area-inset-bottom)
 .condiviso-pagina main{max-width:40rem;margin:0 auto;padding:1.2rem}
 .condiviso-scheda h1{font-size:clamp(1.4rem,4vw,2rem);margin:.3rem 0 .5rem}
 .condiviso-stato{font-weight:700;color:#1d4b3c;background:#eef7f1;border-radius:10px;padding:.5rem .8rem;display:inline-block}
+
+/* ---------- Fase 4 · Business ---------- */
+.biz-schede{display:flex;gap:.35rem;overflow-x:auto;padding:.2rem 0 .6rem;margin:0 0 .6rem;scrollbar-width:none}
+.biz-schede::-webkit-scrollbar{display:none}
+.biz-schede button{flex:none;border:1px solid var(--linea);background:#fff;border-radius:999px;padding:.5rem 1rem;font:inherit;font-weight:700;color:#3b4a43;cursor:pointer;min-height:44px}
+.biz-schede button[aria-pressed="true"]{background:#1d4b3c;border-color:#1d4b3c;color:#fff}
+.biz-periodo{display:inline-flex;flex-wrap:wrap;gap:.25rem;padding:.25rem;border-radius:999px;background:#eef1ec;margin:.2rem 0 .8rem}
+.biz-periodo button{border:0;background:transparent;padding:.45rem .9rem;border-radius:999px;font:inherit;font-weight:700;color:#4a5a53;cursor:pointer;min-height:40px}
+.biz-periodo button[aria-pressed="true"]{background:#fff;color:#1d4b3c;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.biz-esempio{display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:#5b6a63;margin:0 0 .6rem}
+.biz-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));gap:.6rem;margin:.2rem 0 .6rem}
+.biz-kpi>div{background:#fff;border:1px solid var(--linea);border-radius:16px;padding:.8rem .9rem;display:flex;flex-direction:column;gap:.15rem}
+.biz-kpi span{font-size:.85rem;color:#5b6a63}
+.biz-kpi strong{font-family:Manrope,sans-serif;font-size:1.55rem;color:#1d2b25;line-height:1.15}
+.biz-kpi small{color:#5b6a63;font-size:.8rem}
+.biz-barra{display:block;height:6px;border-radius:99px;background:#eef1ec;margin-top:.35rem;overflow:hidden}
+.biz-barra b{display:block;height:100%;background:#2c7a5f;border-radius:99px}
+.biz-fare{list-style:none;padding:0;margin:.3rem 0 1rem;display:grid;gap:.35rem}
+.biz-fare li{display:flex;align-items:center;gap:.6rem;background:#fff;border:1px solid var(--linea);border-radius:12px;padding:.5rem .8rem}
+.biz-fare li strong{font-family:Manrope,sans-serif;font-size:1.15rem;min-width:1.6rem;color:#1d4b3c}
+.biz-fare li button{margin-left:auto}
+.biz-pro{margin:1rem 0;border:1px dashed #b9c7bf;border-radius:14px;padding:.6rem .9rem;background:#fafbf9}
+.biz-pro summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center}
+.biz-cal-barra{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;margin-bottom:.6rem}
+.biz-cal-barra .biz-periodo{margin:0}
+.biz-cal-nav{display:flex;gap:.3rem}
+.biz-cal-titolo{margin:0;font-size:1.05rem;text-transform:capitalize;flex-basis:100%}
+@media (min-width:760px){.biz-cal-titolo{flex-basis:auto;margin-left:auto}}
+.biz-settimana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.4rem}
+.biz-col{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:.4rem;display:flex;flex-direction:column;gap:.3rem;min-height:8rem}
+.biz-col--oggi{border-color:#2c7a5f;box-shadow:inset 0 0 0 1px #2c7a5f}
+.biz-col__testa{border:0;background:none;font:inherit;text-align:left;padding:.2rem .3rem;cursor:pointer;color:#5b6a63;min-height:36px}
+.biz-col__testa strong{color:#1d2b25;font-size:1.05rem}
+.biz-vuoto{color:#a3ada8;text-align:center;margin:.4rem 0}
+.biz-voce{display:flex;flex-direction:column;gap:.05rem;border:0;text-align:left;font:inherit;border-radius:10px;padding:.4rem .5rem;cursor:pointer;border-left:4px solid #2c7a5f;background:#eef7f1;width:100%}
+.biz-voce span{font-size:.78rem;color:#4a5a53}
+.biz-voce strong{font-size:.86rem;line-height:1.2}
+.biz-voce small{font-size:.75rem;color:#4a5a53}
+.biz-voce--scoperti{border-left-color:#d08a1e;background:#fdf4e5}
+@media (max-width:759px){
+  .biz-settimana{grid-template-columns:1fr}
+  .biz-col{min-height:0;flex-direction:row;flex-wrap:wrap;align-items:flex-start}
+  .biz-col__testa{flex:0 0 4.2rem}
+  .biz-col .biz-voce,.biz-col .biz-vuoto{flex:1 1 12rem}
+}
+.biz-giorno{list-style:none;padding:0;margin:0;display:grid;gap:.5rem}
+.biz-giorno .biz-voce{cursor:default;padding:.7rem .9rem}
+.biz-giorno .biz-voce strong{font-size:1rem}
+.biz-giorno .biz-voce small{font-size:.85rem}
+.biz-persone{display:flex;flex-wrap:wrap;gap:.3rem;margin:.4rem 0 0}
+.biz-persone span{background:#fff;border:1px solid var(--linea);border-radius:999px;padding:.15rem .6rem;font-size:.82rem}
+.biz-mese{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.3rem}
+.biz-mese__intest{font-size:.78rem;font-weight:700;color:#5b6a63;text-align:center;padding:.2rem 0}
+.biz-mese__g{min-height:4.4rem;border:1px solid var(--linea);background:#fff;border-radius:10px;font:inherit;padding:.3rem;display:flex;flex-direction:column;align-items:flex-start;gap:.2rem;cursor:pointer}
+.biz-mese__g .n{font-weight:700;font-size:.9rem}
+.biz-mese__g.fuori{opacity:.45}
+.biz-mese__g.oggi{border-color:#2c7a5f;box-shadow:inset 0 0 0 1px #2c7a5f}
+.biz-mese__turni{font-size:.72rem;font-weight:700;border-radius:6px;padding:.1rem .35rem;line-height:1.3}
+.biz-mese__turni.coperti{background:#e3f2e8;color:#1d4b3c}
+.biz-mese__turni.scoperti{background:#fbe8c8;color:#7a4a05}
+@media (max-width:480px){.biz-mese__g{min-height:3.2rem}.biz-mese__turni{font-size:0;width:.6rem;height:.6rem;padding:0;border-radius:50%}.biz-mese__turni.coperti{background:#2c7a5f}.biz-mese__turni.scoperti{background:#d08a1e}}
+.biz-legenda{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.8rem;color:#5b6a63;margin:.7rem 0}
+.biz-legenda span::before{content:"";display:inline-block;width:.7rem;height:.7rem;border-radius:3px;margin-right:.3rem;vertical-align:-1px}
+.biz-legenda .coperti::before{background:#2c7a5f}.biz-legenda .scoperti::before{background:#d08a1e}.biz-legenda .rescue::before{background:#b23b2a}
+.biz-conferma{border:1px solid #f0d9a8;background:#fffaf0}
+.biz-giorni{display:flex;flex-wrap:wrap;gap:.35rem}
+.biz-azioni-annuncio{margin:.4rem 0}

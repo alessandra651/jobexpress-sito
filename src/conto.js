@@ -16,6 +16,7 @@ import { aggiorna as aggiornaReale, avviaReale, candidaReale, gestisciReale, seg
 import { FUNZIONI } from './config.js'
 import { aggiornaLive, avviaLive, gestisciLive, riquadroLive } from './live.js'
 import { aggiornaSafe, avviaSafe, riquadroRecensioniReali } from './safe.js'
+import { avviaBusiness, azzeraBusiness, pannelloBusiness } from './business.js'
 import { avatarUtente, avviaTrust, caricaTrust, finestraTrust, gestisciTrust, impostaSottoProfilo, pannelloTrust, requisitiMancanti } from './trust.js'
 import { leggiDisponibile, quandoCambia } from './disponibile.js'
 import { avviaAnnunci, gestisciPubblicatore, haAnnunci, pannelloAnnunci, pannelloPubblicatoreHome } from './annunci.js'
@@ -346,7 +347,7 @@ function disegnaArea() {
       <button type="button" data-sotto="salvati" aria-pressed="${sottoAttivita === 'salvati'}">Salvati</button>
     </div>${sottoAttivita === 'calendario' ? pannelloCalendario() : sottoAttivita === 'salvati' ? pannelloSalvati() : pannelloAttivita()}`
   const pann = (modo === 'pubblico'
-    ? { home: pannelloPubblicatoreHome, attivita: pannelloAnnunci, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche }
+    ? { home: pannelloPubblicatoreHome, attivita: () => pannelloBusiness(pannelloAnnunci), chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche }
     : { home: pannelloHome, attivita: attivitaLavoro, percorso: pannelloPercorso, chat: pannelloChat, profilo: pannelloProfilo, notifiche: pannelloNotifiche })[scheda] || pannelloHome
   const scambio = lavora && pubblica ? `
     <div class="scelta area__modo" role="group" aria-label="Modalità">
@@ -623,6 +624,8 @@ export async function avviaConto(strumenti) {
   quandoCambiaUtente(() => aggiornaLive())
   avviaSafe({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() } })
   quandoCambiaUtente(() => aggiornaSafe())
+  avviaBusiness({ utente, token: tokenValido, apri, ridisegna: () => { if (!area.hidden) disegnaArea() } })
+  quandoCambiaUtente(() => azzeraBusiness())
   impostaSalvaRicerca(() => {
     if (!utente()) { apriAccesso('Per salvare le ricerche, registrati o accedi'); return '' }
     const m = salvaRicercaCorrente()

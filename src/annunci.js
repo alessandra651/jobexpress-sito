@@ -296,11 +296,13 @@ function concludi() {
   scrivi(l)
   aggiornaBacheca()
   // Account vero: l'annuncio attivo viene pubblicato anche nel database (le regole le applica Supabase)
+  const dopo = dopoPubblica; dopoPubblica = null
   if (b.stato === 'attivo' && !b.realeId) {
     pubblicaReale(b).then((id) => {
       if (!id) return
       const l2 = leggi(); const x = l2.find((y) => y.id === b.id)
       if (x) { x.realeId = id; x.candidati = []; scrivi(l2) }
+      if (dopo) Promise.resolve(dopo(id)).catch(() => {})
       caricaBacheca(); aggiornaReale(); aggiornaBacheca()
     }).catch((err) => {
       const c = codiciTrust(err)
@@ -317,8 +319,9 @@ function concludi() {
   }
   s.apri(`<h2>${{ attivo: 'Incarico pubblicato', bozza: 'Bozza salvata', programmato: 'Pubblicazione programmata', revisione: 'Inviato in revisione' }[b.stato]}</h2>
     <p>${esc(b.titolo)} · ${nomeData(b.data)}, ${hhmm(b.inizio)}–${hhmm(b.fine)}</p><p>${testi[b.stato]}</p>
-    <div class="finestra__azioni"><button type="button" class="tasto" data-vai-area>Vai ai tuoi annunci</button></div>`)
+    <div class="finestra__azioni"><button type="button" class="tasto" data-vai-area>Vai ai tuoi annunci</button>${s.utente() && !s.utente().prova && b.stato === 'attivo' ? '<button type="button" class="tasto tasto--chiaro" data-biz="modello-ultima">Salva come modello</button>' : ''}</div>`)
   document.querySelector('dialog.finestra [data-vai-area]').onclick = () => { document.querySelector('dialog.finestra').close(); s.dopo() }
+  ultima = Object.fromEntries(Object.entries(b).filter(([k]) => !['id', 'stato', 'candidati', 'realeId', 'creato', 'data', 'pubblicaIl'].includes(k)))
   bozza = null
   if (manca.length) finestraTrust(manca, 'pubblica')
 }
@@ -337,6 +340,24 @@ export function moderaAnnuncio(id, approvato) {
   aggiornaBacheca()
   notifica('annuncio', approvato ? `«${a.titolo}» è stato approvato ed è visibile.` : `«${a.titolo}» non è stato approvato: lo trovi tra le bozze per correggerlo.`, { scheda: 'attivita', modo: 'pubblico' })
   return a
+}
+
+// Fase 4: modulo già compilato da un modello, da un annuncio da duplicare o da una data ricorrente
+let dopoPubblica = null
+let ultima = null
+export const ultimaPubblicata = () => ultima
+export function bozzaDaDati(dati, data) {
+  const b = { ...nuovaBozza(), ...dati, id: `m-${Date.now()}`, stato: 'bozza', candidati: [], realeId: undefined }
+  b.data = data && data >= oggiIso() ? data : oggiIso()
+  return b
+}
+export function apriProceduraDa(dati, data, dopo = null) {
+  const u = s.utente()
+  if (!u) return s.apriAccesso('Per pubblicare un incarico, registrati o accedi')
+  bozza = bozzaDaDati(dati, data)
+  dopoPubblica = dopo
+  passo = 1
+  disegnaProcedura()
 }
 
 export function apriProcedura(id) {

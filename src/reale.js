@@ -279,6 +279,8 @@ export function pannelloCommittenteReale() {
           ${c.incarico?.stato === 'programmato' && finito(a.turni) ? `<button type="button" class="tasto" data-re="completa" data-id="${esc(c.incarico.id)}">Segna come completato</button>` : ''}
           ${c.incarico && ['programmato', 'completato'].includes(c.incarico.stato) && iniziato(a.turni) ? `<button type="button" class="tasto tasto--chiaro" data-re="contesta" data-id="${esc(c.incarico.id)}">Contesta</button>` : ''}
         </div></li>`).join('')}</ul>` : '<p class="finestra__nota">Ancora nessuna candidatura.</p>'}
+      <div class="pa-azioni-riga biz-azioni-annuncio"><button type="button" class="tasto tasto--chiaro tasto--piccolo" data-biz="duplica" data-id="${esc(a.id)}">Duplica</button>
+        <button type="button" class="tasto tasto--chiaro tasto--piccolo" data-biz="modello" data-id="${esc(a.id)}">Salva come modello</button></div>
       ${['pubblicato', 'completo'].includes(a.stato) && !iniziato(a.turni) ? `<details class="re-orari"><summary>Cambia orari o annulla</summary>
         <form class="cv-ed__form" data-re-orari="${esc(a.id)}" novalidate>
           <label><span>Nuovo inizio</span><input type="datetime-local" name="inizio" value="${isoInput(a.turni[0].inizio)}" /></label>
